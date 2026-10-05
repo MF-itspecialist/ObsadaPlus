@@ -7,7 +7,7 @@ równomierne rozłożenie spotkań. Logistyka ma największy wpływ na wybór.
 
 * **Backend:** Python 3.11+, FastAPI, SQLAlchemy 2.0, Pydantic 2, Alembic
 * **Baza:** PostgreSQL (docker) / SQLite (dev, testy)
-* **Frontend:** React 19, TypeScript, Tailwind CSS 4, Vite
+* **Frontend:** React 19, TypeScript, Tailwind CSS 4, Vite, ikony lucide-react, font Inter
 * **Optymalizacja:** własny algorytm scoringowy (strategia wymienna na OR-Tools / CP-SAT)
 * **Routing:** `RoutingService` → `HaversineRoutingService` (wymienny na OSRM / Google Maps)
 

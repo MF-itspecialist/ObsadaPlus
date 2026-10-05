@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import Avatar from "../components/Avatar";
 import { ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
 import { usePeriod } from "../context/PeriodContext";
 import { useAsync } from "../hooks/useAsync";
@@ -83,17 +84,17 @@ export default function AvailabilityPage() {
 
   return (
     <div>
-      <PageHeader title="Dyspozycyjność">
+      <PageHeader title="Dyspozycyjność" subtitle="Godziny, w których sędziowie mogą prowadzić mecze">
         <button className="btn-primary" onClick={save} disabled={saving || !data.data}>
           Zapisz zmiany
         </button>
       </PageHeader>
       <ErrorBanner message={error ?? data.error} onClose={() => setError(null)} />
       <InfoBanner message={info} onClose={() => setInfo(null)} />
-      <p className="mb-3 text-sm text-slate-500">
+      <p className="mb-4 text-sm text-zinc-500">
         Puste pola oznaczają brak zgłoszenia — sędzia jest wtedy traktowany jako niedostępny (zmienisz to w Ustawieniach).
       </p>
-      <div className="card overflow-x-auto">
+      <div className="card overflow-hidden"><div className="overflow-x-auto">
         {data.loading && !data.data ? (
           <Loading />
         ) : (
@@ -102,8 +103,8 @@ export default function AvailabilityPage() {
               <tr>
                 <th>Sędzia</th>
                 {days.map((d) => (
-                  <th key={d}>
-                    {dayName(d)} {formatDate(d)}
+                  <th key={d} className="capitalize">
+                    {dayName(d)} <span className="font-normal text-zinc-400">{formatDate(d)}</span>
                   </th>
                 ))}
               </tr>
@@ -111,9 +112,16 @@ export default function AvailabilityPage() {
             <tbody>
               {referees.map((r) => (
                 <tr key={r.id}>
-                  <td className="whitespace-nowrap font-medium">
-                    {r.first_name} {r.last_name}
-                    <div className="text-xs font-normal text-slate-500">{r.city}</div>
+                  <td className="whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <Avatar name={`${r.first_name} ${r.last_name}`} />
+                      <div>
+                        <div className="font-medium">
+                          {r.first_name} {r.last_name}
+                        </div>
+                        <div className="text-xs text-zinc-500">{r.city}</div>
+                      </div>
+                    </div>
                   </td>
                   {days.map((d) => {
                     const v = form[key(r.id, d)] ?? EMPTY_DAY;
@@ -121,18 +129,18 @@ export default function AvailabilityPage() {
                     return (
                       <td key={d}>
                         <div className="flex flex-wrap items-center gap-2">
-                          <label className="text-xs text-slate-500">od</label>
-                          <input type="time" className="input w-28" disabled={timesDisabled} value={v.from} onChange={(e) => update(r.id, d, { from: e.target.value })} />
-                          <label className="text-xs text-slate-500">do</label>
-                          <input type="time" className="input w-28" disabled={timesDisabled} value={v.to} onChange={(e) => update(r.id, d, { to: e.target.value })} />
+                          <label className="text-xs text-zinc-400">od</label>
+                          <input type="time" className="input w-28 py-1.5" disabled={timesDisabled} value={v.from} onChange={(e) => update(r.id, d, { from: e.target.value })} />
+                          <label className="text-xs text-zinc-400">do</label>
+                          <input type="time" className="input w-28 py-1.5" disabled={timesDisabled} value={v.to} onChange={(e) => update(r.id, d, { to: e.target.value })} />
                         </div>
-                        <div className="mt-1 flex gap-4 text-xs">
-                          <label className="flex items-center gap-1">
-                            <input type="checkbox" checked={v.allDay} onChange={(e) => update(r.id, d, { allDay: e.target.checked, unavailable: false })} />
+                        <div className="mt-2 flex gap-2 text-xs">
+                          <label className={`flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ring-inset transition ${v.allDay ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20" : "text-zinc-500 ring-zinc-200 hover:bg-zinc-50"}`}>
+                            <input type="checkbox" className="accent-emerald-600" checked={v.allDay} onChange={(e) => update(r.id, d, { allDay: e.target.checked, unavailable: false })} />
                             cały dzień
                           </label>
-                          <label className="flex items-center gap-1">
-                            <input type="checkbox" checked={v.unavailable} onChange={(e) => update(r.id, d, { unavailable: e.target.checked, allDay: false })} />
+                          <label className={`flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ring-inset transition ${v.unavailable ? "bg-red-50 text-red-700 ring-red-600/20" : "text-zinc-500 ring-zinc-200 hover:bg-zinc-50"}`}>
+                            <input type="checkbox" className="accent-red-600" checked={v.unavailable} onChange={(e) => update(r.id, d, { unavailable: e.target.checked, allDay: false })} />
                             niedostępny
                           </label>
                         </div>
@@ -144,7 +152,7 @@ export default function AvailabilityPage() {
             </tbody>
           </table>
         )}
-      </div>
+      </div></div>
     </div>
   );
 }

@@ -1,5 +1,7 @@
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
+import Avatar from "../components/Avatar";
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
 import Modal from "../components/Modal";
 import RefereeForm from "../components/RefereeForm";
@@ -36,13 +38,13 @@ export default function RefereesPage() {
 
   return (
     <div>
-      <PageHeader title="Sędziowie">
+      <PageHeader title="Sędziowie" subtitle="Dostępność i obciążenie sędziów w wybranym weekendzie">
         <button className="btn-primary" onClick={() => setEditing("new")}>
-          + Dodaj sędziego
+          <Plus className="size-4" /> Dodaj sędziego
         </button>
       </PageHeader>
       <ErrorBanner message={error ?? overview.error} onClose={() => setError(null)} />
-      <div className="card overflow-x-auto">
+      <div className="card overflow-hidden"><div className="overflow-x-auto">
         {overview.loading && !overview.data ? (
           <Loading />
         ) : (
@@ -58,22 +60,29 @@ export default function RefereesPage() {
                     Mecze {dayName(d)}
                   </th>
                 ))}
-                <th className="text-center">Mecze weekend</th>
+                <th>Mecze weekend</th>
                 <th className="text-right">Akcje</th>
               </tr>
             </thead>
             <tbody>
               {overview.data?.map(({ referee: r, days: load, matches_in_period }) => (
-                <tr key={r.id} className={r.active ? "" : "text-slate-400"}>
-                  <td>{r.first_name}</td>
+                <tr key={r.id} className={r.active ? "" : "text-zinc-400"}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={`${r.first_name} ${r.last_name}`} muted={!r.active} />
+                      {r.first_name}
+                    </div>
+                  </td>
                   <td className="font-medium">
                     {r.last_name} {!r.active && <Tag>nieaktywny</Tag>}
                   </td>
                   <td>{r.city}</td>
                   <td className="text-xs">
                     {load.map((d) => (
-                      <div key={d.date}>
-                        <span className="text-slate-500">{dayName(d.date).slice(0, 3)}:</span> {d.availability}
+                      <div key={d.date} className="flex items-center gap-1.5">
+                        <span className={`size-1.5 rounded-full ${availabilityDot(d.availability)}`} />
+                        <span className="w-8 text-zinc-400 capitalize">{dayName(d.date).slice(0, 3)}</span>
+                        <span className="text-zinc-600">{d.availability}</span>
                       </div>
                     ))}
                   </td>
@@ -82,16 +91,15 @@ export default function RefereesPage() {
                       {d.matches}
                     </td>
                   ))}
-                  <td className="text-center font-semibold tabular-nums">
-                    {matches_in_period}
-                    <span className="font-normal text-slate-400"> / {r.max_matches_per_weekend}</span>
+                  <td>
+                    <LoadBar value={matches_in_period} max={r.max_matches_per_weekend} />
                   </td>
                   <td className="whitespace-nowrap text-right">
-                    <button className="btn-link mr-3" onClick={() => setEditing(r)}>
-                      Edytuj
+                    <button className="icon-btn" onClick={() => setEditing(r)} aria-label="Edytuj" title="Edytuj">
+                      <Pencil className="size-4" />
                     </button>
-                    <button className="btn-link text-red-600" onClick={() => remove(r)}>
-                      Usuń
+                    <button className="icon-btn hover:bg-red-50 hover:text-red-600" onClick={() => remove(r)} aria-label="Usuń" title="Usuń">
+                      <Trash2 className="size-4" />
                     </button>
                   </td>
                 </tr>
@@ -99,12 +107,35 @@ export default function RefereesPage() {
             </tbody>
           </table>
         )}
-      </div>
+      </div></div>
       {editing && (
         <Modal title={editing === "new" ? "Nowy sędzia" : "Edycja sędziego"} onClose={() => setEditing(null)}>
           <RefereeForm initial={editing === "new" ? undefined : editing} onSubmit={save} onCancel={() => setEditing(null)} />
         </Modal>
       )}
+    </div>
+  );
+}
+
+function availabilityDot(text: string): string {
+  if (text.startsWith("dostępny cały")) return "bg-emerald-500";
+  if (text.startsWith("dostępny")) return "bg-amber-400";
+  if (text === "niedostępny") return "bg-red-500";
+  return "bg-zinc-300";
+}
+
+/** Pasek wykorzystania limitu weekendowego. */
+function LoadBar({ value, max }: { value: number; max: number }) {
+  const pct = max ? Math.min(100, (value / max) * 100) : 0;
+  const color = pct >= 100 ? "bg-red-500" : pct >= 60 ? "bg-amber-400" : "bg-brand-500";
+  return (
+    <div className="flex min-w-28 items-center gap-2">
+      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-100">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+      </div>
+      <span className="text-xs tabular-nums text-zinc-600">
+        <span className="font-semibold text-zinc-900">{value}</span>/{max}
+      </span>
     </div>
   );
 }

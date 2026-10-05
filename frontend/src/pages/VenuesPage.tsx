@@ -1,3 +1,4 @@
+import { MapPin, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
@@ -31,13 +32,13 @@ export default function VenuesPage() {
 
   return (
     <div>
-      <PageHeader title="Obiekty">
+      <PageHeader title="Obiekty" subtitle="Stadiony i boiska z lokalizacją używaną do liczenia dojazdu">
         <button className="btn-primary" onClick={() => setEditing("new")}>
-          + Dodaj obiekt
+          <Plus className="size-4" /> Dodaj obiekt
         </button>
       </PageHeader>
       <ErrorBanner message={error ?? venues.error} onClose={() => setError(null)} />
-      <div className="card overflow-x-auto">
+      <div className="card overflow-hidden"><div className="overflow-x-auto">
         {venues.loading && !venues.data ? (
           <Loading />
         ) : (
@@ -54,18 +55,25 @@ export default function VenuesPage() {
             <tbody>
               {venues.data?.map((v) => (
                 <tr key={v.id}>
-                  <td className="font-medium">{v.name}</td>
+                  <td>
+                    <div className="flex items-center gap-3 font-medium">
+                      <span className="flex size-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                        <MapPin className="size-4" />
+                      </span>
+                      {v.name}
+                    </div>
+                  </td>
                   <td>{v.city}</td>
                   <td>{v.address}</td>
-                  <td className="text-xs tabular-nums text-slate-500">
+                  <td className="text-xs tabular-nums text-zinc-500">
                     {v.latitude.toFixed(4)}, {v.longitude.toFixed(4)}
                   </td>
                   <td className="whitespace-nowrap text-right">
-                    <button className="btn-link mr-3" onClick={() => setEditing(v)}>
-                      Edytuj
+                    <button className="icon-btn" onClick={() => setEditing(v)} aria-label="Edytuj" title="Edytuj">
+                      <Pencil className="size-4" />
                     </button>
-                    <button className="btn-link text-red-600" onClick={() => remove(v)}>
-                      Usuń
+                    <button className="icon-btn hover:bg-red-50 hover:text-red-600" onClick={() => remove(v)} aria-label="Usuń" title="Usuń">
+                      <Trash2 className="size-4" />
                     </button>
                   </td>
                 </tr>
@@ -73,7 +81,7 @@ export default function VenuesPage() {
             </tbody>
           </table>
         )}
-      </div>
+      </div></div>
       {editing && (
         <Modal title={editing === "new" ? "Nowy obiekt" : "Edycja obiektu"} onClose={() => setEditing(null)}>
           <VenueForm initial={editing === "new" ? undefined : editing} onSubmit={save} onCancel={() => setEditing(null)} />
