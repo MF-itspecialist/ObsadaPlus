@@ -11,6 +11,10 @@ from app.importers.base import MatchImporter, MatchImportRecord
 from app.models import Match, Venue
 
 
+class UnknownVenueError(ValueError):
+    pass
+
+
 def _resolve_venue(db: Session, r: MatchImportRecord) -> Venue:
     if r.venue_id is not None:
         venue = db.get(Venue, r.venue_id)
@@ -21,7 +25,7 @@ def _resolve_venue(db: Session, r: MatchImportRecord) -> Venue:
     if venue is not None:
         return venue
     if r.venue_latitude is None or r.venue_longitude is None:
-        raise ValueError(f"nieznany obiekt '{r.venue_name}' — podaj venue_latitude i venue_longitude")
+        raise UnknownVenueError(f"nieznany obiekt '{r.venue_name}' — podaj venue_latitude i venue_longitude")
     venue = Venue(
         name=r.venue_name,
         city=r.venue_city or "",
@@ -37,9 +41,15 @@ def _resolve_venue(db: Session, r: MatchImportRecord) -> Venue:
 def import_matches(db: Session, importer: MatchImporter, default_duration_minutes: int = 105) -> dict:
     created = updated = 0
     errors: list[str] = []
+    # Nieznane obiekty zgłaszamy raz na obiekt (import z LNP potrafi mieć wiele meczów na tym samym boisku).
+    unknown_venues: dict[str, int] = {}
     for i, r in enumerate(importer.fetch_matches(), start=1):
         try:
             venue = _resolve_venue(db, r)
+        except UnknownVenueError:
+            label = f"{r.venue_name}, {r.venue_city}" if r.venue_city else r.venue_name
+            unknown_venues[label] = unknown_venues.get(label, 0) + 1
+            continue
         except ValueError as exc:
             errors.append(f"Rekord {i} ({r.home_team} – {r.away_team}): {exc}")
             continue
@@ -63,4 +73,9 @@ def import_matches(db: Session, importer: MatchImporter, default_duration_minute
         match.required_referees = r.required_referees
         match.arrival_before_minutes = r.arrival_before_minutes
     db.commit()
+    errors += [
+        f"Nieznany obiekt '{name}' ({count} mecz.): dodaj go w zakładce Obiekty i zaimportuj plik ponownie"
+        for name, count in unknown_venues.items()
+    ]
+    errors += getattr(importer, "warnings", [])
     return {"created": created, "updated": updated, "errors": errors}

@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 from pathlib import Path
 from typing import Annotated
 
@@ -10,6 +11,7 @@ from app.api.deps import DbSession, not_found
 from app.importers import CSVMatchImporter, JSONMatchImporter, ManualMatchImporter, MatchImportRecord
 from app.importers.import_service import import_matches
 from app.importers.json_importer import ImportFormatError
+from app.importers.lnp_importer import LNPMatchImporter
 from app.models import Assignment, Match, MatchStatus, Venue
 from app.schemas.match import ImportResult, MatchCreate, MatchRead, MatchUpdate
 from app.services.settings_service import get_settings
@@ -117,12 +119,28 @@ def delete_match(match_id: int, db: DbSession) -> None:
     db.commit()
 
 
+def _is_lnp_export(content: bytes) -> bool:
+    try:
+        return LNPMatchImporter.is_lnp_export(json.loads(content))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return False
+
+
 @router.post("/import", response_model=ImportResult)
 async def import_file(db: DbSession, file: UploadFile = File(...)):
-    """Import meczów z pliku .json lub .csv (upsert po external_id)."""
+    """Import meczów z pliku .json lub .csv (upsert po external_id).
+
+    Plik JSON z eksportu terminarza Łączy Nas Piłka (``tools/lnp-export.js``) jest rozpoznawany
+    automatycznie; z niego importowane są tylko mecze od dziś.
+    """
     content = await file.read()
     suffix = Path(file.filename or "").suffix.lower()
-    importer = CSVMatchImporter(content) if suffix == ".csv" else JSONMatchImporter(content)
+    if suffix == ".csv":
+        importer = CSVMatchImporter(content)
+    elif _is_lnp_export(content):
+        importer = LNPMatchImporter(content)
+    else:
+        importer = JSONMatchImporter(content)
     try:
         return import_matches(db, importer, get_settings(db).default_match_duration_minutes)
     except ImportFormatError as exc:

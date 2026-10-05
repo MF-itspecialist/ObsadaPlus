@@ -91,10 +91,11 @@ backend/app/
   services/          routing_service, availability_service, problem_builder, scoring_service,
                      assignment_service, settings_service, statistics_service
   optimization/      domain, state, context, constraints, scoring, evaluator, generator (bez zależności od bazy)
-  importers/         MatchImporter + Manual/JSON/CSV, import_service
+  importers/         MatchImporter + Manual/JSON/CSV/LNP, import_service
 backend/tests/       test_generator.py, test_routing.py, test_api.py
 frontend/src/        pages, components, services/api.ts, context, hooks, types, utils
 examples/            matches.json, matches.csv — przykładowe pliki importu
+tools/               lnp-export.js — zakładka eksportu terminarza z laczynaspilka.pl
 ```
 
 ## Struktura bazy
@@ -198,9 +199,27 @@ start_time, estimated_end_time (opcjonalnie), league, home_team, away_team, venu
 **lub** `venue_name` (+ `venue_city, venue_address, venue_latitude, venue_longitude`, aby
 utworzyć nowy obiekt), `required_referees, arrival_before_minutes`. Przykłady w `examples/`.
 
+### Terminarz z Łączy Nas Piłka
+
+API terminarza laczynaspilka.pl wydaje token dopiero po przejściu Google reCAPTCHA, dlatego
+Obsada+ nie pobiera go sama. Dane zbiera zakładka uruchamiana w Twojej przeglądarce:
+
+1. Utwórz zakładkę, a jako jej adres wklej zawartość `tools/lnp-export.bookmarklet.txt`
+   (po zmianie `tools/lnp-export.js`: `node tools/build-bookmarklet.mjs`). Zamiast zakładki
+   możesz wkleić `tools/lnp-export.js` w konsoli przeglądarki (F12).
+2. Otwórz terminarz na laczynaspilka.pl/rozgrywki z wybranym sezonem i województwem i kliknij
+   zakładkę. Pobierze rozgrywki ZPN (IV liga – juniorzy D2) i zapisze `lnp-terminarz-RRRR-MM-DD.json`.
+3. Wgraj plik w **Mecze → Import JSON / CSV**. Importowane są mecze od dziś; ponowny import
+   aktualizuje mecze (klucz `lnp:<id meczu>`), bez dublowania.
+
+Obiekty dopasowywane są po nazwie (bez nazwy boiska: boisko gospodarza). Nieznane obiekty
+import wypisuje raz na obiekt; dodaj je w zakładce Obiekty i zaimportuj plik ponownie.
+Liczba sędziów: IV liga, V liga i klasa okręgowa 3, pozostałe 1 (`REFEREES_BY_LEVEL`
+w `importers/lnp_importer.py`).
+
 ## Testy
 
-`pytest` w katalogu `backend` (33 testy). Scenariusze generatora: sędzia niedostępny,
+`pytest` w katalogu `backend` (38 testów). Scenariusze generatora: sędzia niedostępny,
 konflikt dwóch meczów, brak czasu na transport (przykład 11:45 + 35 + 15 > 12:15),
 konfigurowalny bufor, blokada dojazdu na późniejszy ręczny mecz, `max_matches_per_day`
 i 4. mecz przy max 3, limit weekendowy, wybór bliższego sędziego, poprzedni mecz jako punkt
@@ -216,6 +235,5 @@ ręczne zmiany a ponowne generowanie, ostrzeżenia o konfliktach, import JSON/CS
   przyjmuje ten sam `Problem`, zwraca ten sam `GenerationResult`.
 * Nowe reguły (uprawnienia do lig, klasa sędziego, konflikt interesów, regiony): nowa klasa
   `HardConstraint` lub `ScoreComponent` i dopisanie do `DEFAULT_CONSTRAINTS` / `DEFAULT_COMPONENTS`.
-* Import ze strony komisji: `CommissionWebsiteImporter(MatchImporter)` w `importers/`.
 * Zespoły G + A1 + A2: `required_referees = 3` już tworzy trzy sloty; do dodania zasady
   wspólnego przejazdu jako `ScoreComponent`.

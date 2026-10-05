@@ -132,7 +132,7 @@ dane testowe MVP używają 1 sędziego.
 |---|---|
 | Google Maps / OSRM / OpenStreetMap | nowa klasa `RoutingService` + wpis w fabryce `get_routing_service()` |
 | OR-Tools / CP-SAT / optymalizacja całego weekendu | nowa `AssignmentStrategy` operująca na tym samym `Problem` → `GenerationResult` |
-| Scraper strony komisji, automatyczne aktualizacje | `CommissionWebsiteImporter(MatchImporter)`; upsert po `external_id` już działa |
+| Terminarz Łączy Nas Piłka | `LNPMatchImporter` czyta eksport z zakładki `tools/lnp-export.js` (API LNP wymaga reCAPTCHA, więc pobiera przeglądarka użytkownika); upsert po `external_id` |
 | Obsady G + A1 + A2, sędzia techniczny, obserwator | enum `RefereeRole`, sloty (mecz × rola), unikalność (match_id, role) |
 | Klasy sędziowskie, uprawnienia do lig, preferowane ligi, regiony, unikanie klubów, konflikt interesów | nowe klasy `HardConstraint` / `ScoreComponent`, pola w `RefereeProfile` |
 | Kilometrówka, mapa tras, wspólny przejazd | `distance_km` / `travel_minutes` per przypisanie, `RoutingService.get_route()` |
