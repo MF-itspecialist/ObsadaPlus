@@ -49,7 +49,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <PageHeader title="Dashboard" subtitle={`Weekend ${formatDate(period.date_from)} – ${formatDate(period.date_to)}`} />
+      <PageHeader title="Dashboard" subtitle={`Dni obsadowe pt–pon: ${formatDate(period.date_from)} – ${formatDate(period.date_to)}`} />
       <ErrorBanner message={stats.error} />
       {stats.loading && !s && <Loading />}
       {s && (

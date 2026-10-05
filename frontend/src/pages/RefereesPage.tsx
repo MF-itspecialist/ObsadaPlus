@@ -38,7 +38,7 @@ export default function RefereesPage() {
 
   return (
     <div>
-      <PageHeader title="Sędziowie" subtitle="Dostępność i obciążenie sędziów w wybranym weekendzie">
+      <PageHeader title="Sędziowie" subtitle="Dostępność i obciążenie sędziów w wybranych dniach obsadowych (pt–pon)">
         <button className="btn-primary" onClick={() => setEditing("new")}>
           <Plus className="size-4" /> Dodaj sędziego
         </button>
@@ -51,13 +51,10 @@ export default function RefereesPage() {
           <table className="table">
             <thead>
               <tr>
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>Miasto</th>
-                <th>Dostępność</th>
+                <th>Sędzia</th>
                 {days.map((d) => (
-                  <th key={d} className="text-center">
-                    Mecze {dayName(d)}
+                  <th key={d} className="text-center capitalize">
+                    {dayName(d)}
                   </th>
                 ))}
                 <th>Mecze weekend</th>
@@ -70,25 +67,21 @@ export default function RefereesPage() {
                   <td>
                     <div className="flex items-center gap-3">
                       <Avatar name={`${r.first_name} ${r.last_name}`} muted={!r.active} />
-                      {r.first_name}
+                      <div>
+                        <div className="font-medium whitespace-nowrap">
+                          {r.first_name} {r.last_name} {!r.active && <Tag>nieaktywny</Tag>}
+                        </div>
+                        <div className="text-xs text-zinc-500">{r.city}</div>
+                      </div>
                     </div>
                   </td>
-                  <td className="font-medium">
-                    {r.last_name} {!r.active && <Tag>nieaktywny</Tag>}
-                  </td>
-                  <td>{r.city}</td>
-                  <td className="text-xs">
-                    {load.map((d) => (
-                      <div key={d.date} className="flex items-center gap-1.5">
-                        <span className={`size-1.5 rounded-full ${availabilityDot(d.availability)}`} />
-                        <span className="w-8 text-zinc-400 capitalize">{dayName(d.date).slice(0, 3)}</span>
-                        <span className="text-zinc-600">{d.availability}</span>
-                      </div>
-                    ))}
-                  </td>
                   {load.map((d) => (
-                    <td key={d.date} className="text-center tabular-nums">
-                      {d.matches}
+                    <td key={d.date} className="text-center">
+                      <div className="text-base font-semibold tabular-nums">{d.matches}</div>
+                      <div className="mt-0.5 inline-flex items-center gap-1 text-[11px] whitespace-nowrap text-zinc-500">
+                        <span className={`size-1.5 rounded-full ${availabilityDot(d.availability)}`} />
+                        {shortAvailability(d.availability)}
+                      </div>
                     </td>
                   ))}
                   <td>
@@ -115,6 +108,13 @@ export default function RefereesPage() {
       )}
     </div>
   );
+}
+
+function shortAvailability(text: string): string {
+  if (text === "dostępny cały dzień") return "cały dzień";
+  if (text.startsWith("dostępny ")) return text.replace("dostępny ", "");
+  if (text === "brak zgłoszenia") return "brak zgłosz.";
+  return text;
 }
 
 function availabilityDot(text: string): string {

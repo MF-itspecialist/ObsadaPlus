@@ -1,4 +1,4 @@
-"""Wczytanie przykładowych danych (10 obiektów, 12 sędziów, 20 meczów, dyspozycyjność)."""
+"""Wczytanie przykładowych danych (10 obiektów, 12 sędziów, 24 mecze, dyspozycyjność)."""
 
 from __future__ import annotations
 

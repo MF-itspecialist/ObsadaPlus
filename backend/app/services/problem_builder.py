@@ -9,16 +9,14 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models import Assignment, Availability, GenerationMode, Match, MatchStatus, Referee
-from app.optimization.domain import FixedBooking, OptimizationSettings, Problem, RefereeProfile, Slot
+from app.optimization.domain import FixedBooking, OptimizationSettings, Problem, RefereeProfile, Slot, round_bounds
 from app.services.availability_service import to_entry
 from app.services.routing_service import GeoPoint
 
 
 def week_bounds(date_from: dt.date, date_to: dt.date) -> tuple[dt.date, dt.date]:
-    """Poszerza zakres do pełnych tygodni (limity weekendowe liczą też mecze spoza zakresu)."""
-    start = date_from - dt.timedelta(days=date_from.weekday())
-    end = date_to + dt.timedelta(days=6 - date_to.weekday())
-    return start, end
+    """Poszerza zakres do pełnych kolejek (limity weekendowe liczą też mecze spoza zakresu)."""
+    return round_bounds(date_from)[0], round_bounds(date_to)[1]
 
 
 def match_label(m: Match) -> str:
@@ -70,7 +68,7 @@ def build_problem(
     """Tworzy problem dla okresu [date_from, date_to].
 
     * sloty = wszystkie role wszystkich nieodwołanych meczów z okresu,
-    * zablokowane: przypisania spoza okresu (ten sam tydzień) oraz — w trybie
+    * zablokowane: przypisania spoza okresu (ta sama kolejka wt–pon) oraz — w trybie
       KEEP_MANUAL — ręczne przypisania z okresu,
     * ``keep_all_existing`` = wszystkie istniejące przypisania jako zablokowane
       (ocena bieżącej obsady, ranking kandydatów przy ręcznej zmianie).
