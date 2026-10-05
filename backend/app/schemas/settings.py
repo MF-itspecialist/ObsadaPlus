@@ -1,0 +1,29 @@
+from pydantic import BaseModel, Field
+
+
+class SystemSettings(BaseModel):
+    """Ustawienia edytowalne w UI. Domyślne wartości = specyfikacja MVP."""
+
+    transport_safety_buffer_minutes: int = Field(15, ge=0, le=180)
+    distance_weight: float = Field(2.0, ge=0)
+    travel_time_weight: float = Field(0.5, ge=0)
+    daily_match_weight: float = Field(20.0, ge=0)
+    weekend_match_weight: float = Field(10.0, ge=0)
+    workload_balance_weight: float = Field(10.0, ge=0)
+    within_preferred_factor: float = Field(0.25, ge=0)
+    over_preferred_factor: float = Field(1.5, ge=0)
+    # [[górna granica km, kara], ...] — ostatni próg dotyczy wszystkiego powyżej.
+    distance_brackets: list[tuple[float, float]] = [
+        (10, 0),
+        (20, 10),
+        (30, 30),
+        (50, 70),
+        (75, 150),
+        (100000, 300),
+    ]
+    assume_available_without_entry: bool = False
+    # Parametry HaversineRoutingService.
+    routing_road_factor: float = Field(1.3, ge=1.0, le=3.0)
+    routing_avg_speed_kmh: float = Field(40.0, gt=0, le=150)
+    # Domyślny czas meczu przy imporcie bez godziny zakończenia.
+    default_match_duration_minutes: int = Field(105, ge=30, le=300)

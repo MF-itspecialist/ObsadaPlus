@@ -1,0 +1,27 @@
+[
+  {
+    "external_id": "IMP-001",
+    "date": "2026-10-17",
+    "start_time": "11:00",
+    "estimated_end_time": "12:45",
+    "league": "U17",
+    "home_team": "Escola Varsovia",
+    "away_team": "Ursus Warszawa",
+    "venue_name": "Boisko Escola Varsovia",
+    "arrival_before_minutes": 45
+  },
+  {
+    "external_id": "IMP-002",
+    "date": "2026-10-17",
+    "start_time": "14:00",
+    "league": "Klasa A",
+    "home_team": "KS Wesoła",
+    "away_team": "Marcovia II",
+    "venue_name": "Stadion OSiR Wesoła",
+    "venue_city": "Warszawa",
+    "venue_address": "ul. Wspólna 1",
+    "venue_latitude": 52.2380,
+    "venue_longitude": 21.2240,
+    "arrival_before_minutes": 60
+  }
+]
