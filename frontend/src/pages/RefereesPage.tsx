@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import { useState } from "react";
 
 import Avatar from "../components/Avatar";
@@ -19,7 +19,9 @@ export default function RefereesPage() {
   const overview = useAsync(() => api.refereesOverview(period), [period.date_from]);
   const [editing, setEditing] = useState<Referee | "new" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const days = overview.data?.[0]?.days.map((d) => d.date) ?? [period.date_from, period.date_to];
+  const rows = overview.data?.filter(({ referee: r }) => matchesQuery(r, query)) ?? [];
 
   const save = async (data: RefereeInput) => {
     if (editing === "new") await api.createReferee(data);
@@ -46,6 +48,29 @@ export default function RefereesPage() {
         </button>
       </PageHeader>
       <ErrorBanner message={error ?? overview.error} onClose={() => setError(null)} />
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div className="relative w-full max-w-md">
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+          <input
+            className="input pr-9 pl-9"
+            type="search"
+            placeholder="Szukaj: imię, nazwisko, miejscowość, dzielnica lub licencja"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Szukaj sędziego"
+          />
+          {query && (
+            <button className="absolute top-1/2 right-2 -translate-y-1/2 icon-btn" onClick={() => setQuery("")} aria-label="Wyczyść" title="Wyczyść">
+              <X className="size-4" />
+            </button>
+          )}
+        </div>
+        {overview.data && (
+          <span className="text-sm text-zinc-500">
+            {query ? `${rows.length} z ${overview.data.length} sędziów` : `${overview.data.length} sędziów`}
+          </span>
+        )}
+      </div>
       <div className="card overflow-hidden"><div className="overflow-x-auto">
         {overview.loading && !overview.data ? (
           <Loading />
@@ -65,7 +90,7 @@ export default function RefereesPage() {
               </tr>
             </thead>
             <tbody>
-              {overview.data?.map(({ referee: r, days: load, matches_in_period }) => (
+              {rows.map(({ referee: r, days: load, matches_in_period }) => (
                 <tr key={r.id} className={r.active ? "" : "text-zinc-400"}>
                   <td>
                     <div className="flex items-center gap-3">
@@ -98,6 +123,13 @@ export default function RefereesPage() {
                   </td>
                 </tr>
               ))}
+              {overview.data && rows.length === 0 && (
+                <tr>
+                  <td colSpan={days.length + 4} className="py-10 text-center text-sm text-zinc-500">
+                    Nie znaleziono sędziów pasujących do „{query}”.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         )}
@@ -109,6 +141,17 @@ export default function RefereesPage() {
       )}
     </div>
   );
+}
+
+/** Bez wielkości liter i polskich znaków: „lodz” znajdzie „Łódź”. */
+function normalize(text: string): string {
+  return text.toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/\p{Diacritic}/gu, "");
+}
+
+/** Każde słowo zapytania musi wystąpić w imieniu, nazwisku, miejscowości/dzielnicy lub licencjach. */
+function matchesQuery(r: Referee, query: string): boolean {
+  const haystack = normalize([r.first_name, r.last_name, r.location_label, ...r.licenses].join(" "));
+  return normalize(query).split(/\s+/).filter(Boolean).every((word) => haystack.includes(word));
 }
 
 function shortAvailability(text: string): string {
