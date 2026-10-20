@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
 import MatchForm from "../components/MatchForm";
 import Modal from "../components/Modal";
+import RowActions from "../components/RowActions";
 import StatusBadge from "../components/StatusBadge";
 import { usePeriod } from "../context/PeriodContext";
 import { useAsync } from "../hooks/useAsync";
@@ -103,13 +104,8 @@ export default function MatchesPage() {
                   <td>
                     <StatusBadge status={m.status} />
                   </td>
-                  <td className="whitespace-nowrap text-right">
-                    <button className="btn-link mr-3" onClick={() => setEditing(m)}>
-                      Edytuj
-                    </button>
-                    <button className="btn-link text-red-600" onClick={() => remove(m)}>
-                      Usuń
-                    </button>
+                  <td className="whitespace-nowrap">
+                    <RowActions onEdit={() => setEditing(m)} onDelete={() => remove(m)} />
                   </td>
                 </tr>
               ))}

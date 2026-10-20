@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -14,6 +14,7 @@ from app.importers.json_importer import ImportFormatError
 from app.importers.lnp_importer import LNPMatchImporter
 from app.models import Assignment, Match, MatchStatus, Venue
 from app.schemas.match import ImportResult, MatchCreate, MatchRead, MatchUpdate
+from app.services.geocoding_service import Geocoder, get_geocoder
 from app.services.settings_service import get_settings
 
 router = APIRouter(prefix="/api/matches", tags=["matches"])
@@ -127,7 +128,9 @@ def _is_lnp_export(content: bytes) -> bool:
 
 
 @router.post("/import", response_model=ImportResult)
-async def import_file(db: DbSession, file: UploadFile = File(...)):
+async def import_file(
+    db: DbSession, geocoder: Annotated[Geocoder, Depends(get_geocoder)], file: UploadFile = File(...)
+):
     """Import meczów z pliku .json lub .csv (upsert po external_id).
 
     Plik JSON z eksportu terminarza Łączy Nas Piłka (``tools/lnp-export.js``) jest rozpoznawany
@@ -142,12 +145,16 @@ async def import_file(db: DbSession, file: UploadFile = File(...)):
     else:
         importer = JSONMatchImporter(content)
     try:
-        return import_matches(db, importer, get_settings(db).default_match_duration_minutes)
+        return import_matches(db, importer, get_settings(db).default_match_duration_minutes, geocoder)
     except ImportFormatError as exc:
         raise HTTPException(422, str(exc)) from exc
 
 
 @router.post("/import/json", response_model=ImportResult)
-def import_json(records: list[MatchImportRecord], db: DbSession):
-    """Import meczów przesłanych w treści żądania (lista rekordów)."""
-    return import_matches(db, ManualMatchImporter(records), get_settings(db).default_match_duration_minutes)
+def import_json(
+    records: list[MatchImportRecord], db: DbSession, geocoder: Annotated[Geocoder, Depends(get_geocoder)]
+):
+    """Import meczów przesłanych w treści żądania (lista rekordów). Nowe obiekty są geokodowane po adresie."""
+    return import_matches(
+        db, ManualMatchImporter(records), get_settings(db).default_match_duration_minutes, geocoder
+    )

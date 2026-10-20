@@ -43,7 +43,7 @@ def rank_candidates(db: Session, match: Match, role: RefereeRole) -> list[Candid
     generator, settings = _generator_and_settings(db)
     built = build_problem(db, match.date, match.date, settings, keep_all_existing=True)
     bookings = [Booking(slot=fb.slot, referee_id=fb.referee_id, fixed=True) for fb in built.problem.fixed]
-    return generator.rank_candidates(built.problem, make_slot(match, role), bookings)
+    return generator.rank_candidates(built.problem, make_slot(match, role, settings.arrival_before_minutes), bookings)
 
 
 def evaluate_referee(db: Session, match: Match, role: RefereeRole, referee_id: int) -> CandidateEvaluation | None:

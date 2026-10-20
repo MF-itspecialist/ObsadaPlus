@@ -1,12 +1,19 @@
-from fastapi import APIRouter, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 
 from app.api.deps import DbSession, PeriodParams, not_found
 from app.models import Referee
 from app.schemas.referee import RefereeCreate, RefereeOverview, RefereeRead, RefereeUpdate
 from app.services import statistics_service
+from app.services.geocoding_service import Geocoder, get_geocoder
+from app.services.location_service import apply_location
 
 router = APIRouter(prefix="/api/referees", tags=["referees"])
+
+GeocoderDep = Annotated[Geocoder, Depends(get_geocoder)]
+LOCATION_FIELDS = {"latitude", "longitude", "district"}
 
 
 @router.get("", response_model=list[RefereeRead])
@@ -32,8 +39,10 @@ def get_referee(referee_id: int, db: DbSession) -> Referee:
 
 
 @router.post("", response_model=RefereeRead, status_code=status.HTTP_201_CREATED)
-def create_referee(data: RefereeCreate, db: DbSession) -> Referee:
-    ref = Referee(**data.model_dump())
+def create_referee(data: RefereeCreate, db: DbSession, geocoder: GeocoderDep) -> Referee:
+    """Wystarczy adres — współrzędne i dzielnica są pobierane automatycznie."""
+    ref = Referee(**data.model_dump(exclude=LOCATION_FIELDS))
+    apply_location(ref, data, geocoder)
     db.add(ref)
     db.commit()
     db.refresh(ref)
@@ -41,11 +50,12 @@ def create_referee(data: RefereeCreate, db: DbSession) -> Referee:
 
 
 @router.put("/{referee_id}", response_model=RefereeRead)
-def update_referee(referee_id: int, data: RefereeUpdate, db: DbSession) -> Referee:
+def update_referee(referee_id: int, data: RefereeUpdate, db: DbSession, geocoder: GeocoderDep) -> Referee:
     ref = db.get(Referee, referee_id)
     if ref is None:
         raise not_found("Sędzia", referee_id)
-    for key, value in data.model_dump().items():
+    apply_location(ref, data, geocoder)
+    for key, value in data.model_dump(exclude=LOCATION_FIELDS).items():
         setattr(ref, key, value)
     db.commit()
     db.refresh(ref)

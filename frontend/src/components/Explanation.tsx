@@ -1,8 +1,7 @@
 import type { Explanation as ExplanationData } from "../types";
-import { SCORE_LABELS, score } from "../utils/format";
 
-/** Uzasadnienie wyboru sędziego: lista ✓ i rozbicie SCORE. */
-export default function Explanation({ data, total }: { data: ExplanationData | null; total?: number | null }) {
+/** Uzasadnienie wyboru sędziego — lista powodów w zwykłym języku. */
+export default function Explanation({ data }: { data: ExplanationData | null }) {
   if (!data) return <p className="text-sm text-slate-500">Brak uzasadnienia.</p>;
   return (
     <div className="space-y-2 text-sm">
@@ -16,24 +15,6 @@ export default function Explanation({ data, total }: { data: ExplanationData | n
             </li>
           ))}
         </ul>
-      )}
-      {data.score_breakdown && (
-        <table className="text-xs text-slate-600">
-          <tbody>
-            {Object.entries(data.score_breakdown).map(([k, v]) => (
-              <tr key={k}>
-                <td className="pr-4">{SCORE_LABELS[k] ?? k}</td>
-                <td className="text-right tabular-nums">{score(v)}</td>
-              </tr>
-            ))}
-            {total !== undefined && (
-              <tr className="font-semibold text-slate-800">
-                <td className="pr-4 pt-1">SCORE</td>
-                <td className="pt-1 text-right tabular-nums">{score(total)}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
       )}
     </div>
   );

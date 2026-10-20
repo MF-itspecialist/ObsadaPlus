@@ -3,9 +3,10 @@ import { Fragment, useState } from "react";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../services/api";
 import type { RefereeRole } from "../types";
-import { km, minutes, score } from "../utils/format";
+import { km, minutes } from "../utils/format";
 import Explanation from "./Explanation";
 import { ErrorBanner, Loading } from "./Feedback";
+import { LicenseList } from "./Licenses";
 import Modal from "./Modal";
 
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
   onAssigned: (warning: string | null) => void;
 }
 
-/** Ranking sędziów dla meczu (najpierw możliwi wg SCORE, potem odrzuceni z powodem). */
+/** Sędziowie dla meczu — od najlepiej pasującego; na końcu ci, którzy nie mogą, z powodem. */
 export default function CandidatePicker({ matchId, role, title, currentRefereeId, onClose, onAssigned }: Props) {
   const { data, error, loading } = useAsync(() => api.candidates(matchId, role), [matchId, role]);
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -46,9 +47,9 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
           <thead>
             <tr>
               <th>Sędzia</th>
-              <th>Odległość</th>
-              <th>Transport</th>
-              <th>SCORE</th>
+              <th>Licencje</th>
+              <th>Mieszka</th>
+              <th>Dojazd</th>
               <th />
             </tr>
           </thead>
@@ -63,9 +64,14 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
                     {c.referee_id === currentRefereeId && <span className="ml-2 text-xs text-emerald-700">(obecny)</span>}
                     {!c.feasible && <div className="text-xs text-red-500">✗ {c.rejection}</div>}
                   </td>
-                  <td>{km(c.distance_km)}</td>
-                  <td>{minutes(c.travel_minutes)}</td>
-                  <td className="tabular-nums">{score(c.score)}</td>
+                  <td className="max-w-56">
+                    <LicenseList licenses={c.referee_licenses} />
+                  </td>
+                  <td>{c.referee_location}</td>
+                  <td className="whitespace-nowrap">
+                    {km(c.distance_km)}
+                    {c.travel_minutes !== null && <span className="text-slate-400"> · {minutes(c.travel_minutes)}</span>}
+                  </td>
                   <td className="text-right">
                     <button
                       className={c.feasible ? "btn-primary" : "btn-secondary"}
@@ -79,7 +85,7 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
                 {expanded === c.referee_id && c.feasible && (
                   <tr>
                     <td colSpan={5} className="bg-slate-50">
-                      <Explanation data={{ reasons: c.reasons, score_breakdown: c.score_breakdown }} total={c.score} />
+                      <Explanation data={{ reasons: c.reasons }} />
                     </td>
                   </tr>
                 )}

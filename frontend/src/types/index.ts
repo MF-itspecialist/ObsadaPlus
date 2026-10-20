@@ -9,8 +9,7 @@ export interface RefereeInput {
   last_name: string;
   city: string;
   address: string;
-  latitude: number;
-  longitude: number;
+  licenses: string[];
   active: boolean;
   preferred_matches_per_day: number;
   max_matches_per_day: number;
@@ -21,6 +20,11 @@ export interface RefereeInput {
 
 export interface Referee extends RefereeInput {
   id: number;
+  district: string;
+  /** "Warszawa, Mokotów" albo samo miasto. */
+  location_label: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface DayLoad {
@@ -39,12 +43,20 @@ export interface VenueInput {
   name: string;
   city: string;
   address: string;
-  latitude: number;
-  longitude: number;
 }
 
 export interface Venue extends VenueInput {
   id: number;
+  latitude: number;
+  longitude: number;
+}
+
+export interface GeocodeResult {
+  latitude: number;
+  longitude: number;
+  city: string;
+  district: string;
+  formatted_address: string;
 }
 
 export interface MatchInput {
@@ -57,7 +69,6 @@ export interface MatchInput {
   away_team: string;
   venue_id: number;
   required_referees: number;
-  arrival_before_minutes: number;
   status?: MatchStatus | null;
 }
 
@@ -101,6 +112,8 @@ export interface Assignment {
   match_id: number;
   referee_id: number;
   referee_name: string;
+  referee_licenses: string[];
+  referee_location: string;
   role: RefereeRole;
   manually_modified: boolean;
   score: number | null;
@@ -127,6 +140,8 @@ export interface BoardItem {
 export interface Candidate {
   referee_id: number;
   referee_name: string;
+  referee_licenses: string[];
+  referee_location: string;
   feasible: boolean;
   score: number | null;
   distance_km: number | null;
@@ -157,6 +172,8 @@ export interface ProposedAssignment {
   role: RefereeRole;
   referee_id: number;
   referee_name: string;
+  referee_licenses: string[];
+  referee_location: string;
   score: number | null;
   distance_km: number | null;
   travel_minutes: number | null;
@@ -225,6 +242,8 @@ export interface DashboardStats {
 
 export interface SystemSettings {
   transport_safety_buffer_minutes: number;
+  arrival_before_minutes: number;
+  generator_max_matches_per_day: number;
   distance_weight: number;
   travel_time_weight: number;
   daily_match_weight: number;
@@ -244,6 +263,42 @@ export interface ImportResult {
   updated: number;
   errors: string[];
 }
+
+/** Rodzaje licencji sędziowskich, pogrupowane tak jak w regulaminie. */
+export const LICENSE_GROUPS: { title: string; licenses: string[] }[] = [
+  {
+    title: "Sędziowie",
+    licenses: [
+      "Sędzia TopAmator A (w tym zawodowi)",
+      "Sędzia TopAmator B",
+      "Sędzia III liga (TopAmator C)",
+      "Sędzia IV liga",
+      "Sędzia V liga",
+      "Sędzia klasa okręgowa",
+      "Sędzia klasa A",
+      "Sędzia klasa B",
+      "Sędzia próbny (C) – kurs 2025/2026",
+    ],
+  },
+  {
+    title: "Asystenci",
+    licenses: [
+      "Asystent zawodowy",
+      "Asystent s.c. (niezawodowy)",
+      "Asystent III/IV/V liga (w tym asystenci mazowieccy)",
+      "Asystent okręgowy / pozostali",
+      "Asystent próbny (C) – kurs 2025/2026",
+    ],
+  },
+  {
+    title: "Piłka kobiet",
+    licenses: ["Sędzia Ekstraliga kobiet", "Sędzia I liga kobiet", "Sędzia II liga kobiet / asystentka s.c."],
+  },
+  {
+    title: "Futsal i piłka plażowa",
+    licenses: ["Sędzia Ekstraklasa futsal i piłka plażowa", "Sędzia I liga futsal i piłka plażowa"],
+  },
+];
 
 export const ROLE_LABELS: Record<RefereeRole, string> = {
   MAIN: "Sędzia główny",

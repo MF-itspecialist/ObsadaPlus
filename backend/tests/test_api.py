@@ -146,3 +146,11 @@ def test_settings_roundtrip(client):
     assert s["transport_safety_buffer_minutes"] == 15
     s["transport_safety_buffer_minutes"] = 30
     assert client.put("/api/settings", json=s).json()["transport_safety_buffer_minutes"] == 30
+
+
+def test_import_reuses_venue_with_polish_capitals(client):
+    rec = {"date": "2026-10-10", "start_time": "12:00", "home_team": "A", "away_team": "B",
+           "venue_name": "ŚLIMAK ARENA ŁOMIANKI", "venue_latitude": 52.33, "venue_longitude": 20.88}
+    r = client.post("/api/matches/import/json", json=[{**rec, "external_id": "P-1"}, {**rec, "external_id": "P-2"}])
+    assert r.json()["created"] == 2
+    assert len(client.get("/api/venues").json()) == 1

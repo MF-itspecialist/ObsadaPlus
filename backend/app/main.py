@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import assignments, availability, dashboard, matches, optimization, referees, settings, venues
+from app.api import assignments, availability, dashboard, geocode, matches, optimization, referees, settings, venues
 from app.config import get_config
 
 
@@ -34,7 +34,7 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    for module in (referees, venues, matches, availability, assignments, optimization, settings, dashboard):
+    for module in (referees, venues, geocode, matches, availability, assignments, optimization, settings, dashboard):
         app.include_router(module.router)
 
     @app.get("/api/health", tags=["system"])

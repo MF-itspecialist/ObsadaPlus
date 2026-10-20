@@ -7,17 +7,24 @@ class VenueBase(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     city: str = ""
     address: str = ""
-    latitude: float = Field(ge=-90, le=90)
-    longitude: float = Field(ge=-180, le=180)
 
 
-class VenueCreate(VenueBase):
+class VenueInput(VenueBase):
+    """Współrzędne są opcjonalne — bez nich backend geokoduje adres."""
+
+    latitude: float | None = Field(None, ge=-90, le=90)
+    longitude: float | None = Field(None, ge=-180, le=180)
+
+
+class VenueCreate(VenueInput):
     pass
 
 
-class VenueUpdate(VenueBase):
+class VenueUpdate(VenueInput):
     pass
 
 
 class VenueRead(VenueBase, ORMModel):
     id: int
+    latitude: float
+    longitude: float

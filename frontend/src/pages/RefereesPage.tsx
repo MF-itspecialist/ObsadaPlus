@@ -1,7 +1,9 @@
 import { useState } from "react";
 
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
+import { LicenseList } from "../components/Licenses";
 import Modal from "../components/Modal";
+import RowActions from "../components/RowActions";
 import RefereeForm from "../components/RefereeForm";
 import { Tag } from "../components/StatusBadge";
 import { usePeriod } from "../context/PeriodContext";
@@ -51,7 +53,8 @@ export default function RefereesPage() {
               <tr>
                 <th>Imię</th>
                 <th>Nazwisko</th>
-                <th>Miasto</th>
+                <th>Licencje</th>
+                <th>Miejsce zamieszkania</th>
                 <th>Dostępność</th>
                 {days.map((d) => (
                   <th key={d} className="text-center">
@@ -69,7 +72,10 @@ export default function RefereesPage() {
                   <td className="font-medium">
                     {r.last_name} {!r.active && <Tag>nieaktywny</Tag>}
                   </td>
-                  <td>{r.city}</td>
+                  <td className="min-w-52 max-w-72">
+                    <LicenseList licenses={r.licenses} />
+                  </td>
+                  <td>{r.location_label}</td>
                   <td className="text-xs">
                     {load.map((d) => (
                       <div key={d.date}>
@@ -86,13 +92,8 @@ export default function RefereesPage() {
                     {matches_in_period}
                     <span className="font-normal text-slate-400"> / {r.max_matches_per_weekend}</span>
                   </td>
-                  <td className="whitespace-nowrap text-right">
-                    <button className="btn-link mr-3" onClick={() => setEditing(r)}>
-                      Edytuj
-                    </button>
-                    <button className="btn-link text-red-600" onClick={() => remove(r)}>
-                      Usuń
-                    </button>
+                  <td className="whitespace-nowrap">
+                    <RowActions onEdit={() => setEditing(r)} onDelete={() => remove(r)} />
                   </td>
                 </tr>
               ))}

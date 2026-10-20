@@ -43,6 +43,8 @@ class OptimizationSettings:
     over_preferred_factor: float = 1.5
     # Brak wpisu dyspozycyjności = niedostępny (False) czy dostępny cały dzień (True).
     assume_available_without_entry: bool = False
+    # Na ile minut przed meczem sędzia ma być na miejscu (jeden bufor dla wszystkich meczów).
+    arrival_before_minutes: int = 45
 
 
 @dataclass(frozen=True)

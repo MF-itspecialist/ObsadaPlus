@@ -10,8 +10,7 @@ class RefereeBase(BaseModel):
     last_name: str = Field(min_length=1, max_length=100)
     city: str = ""
     address: str = ""
-    latitude: float = Field(ge=-90, le=90)
-    longitude: float = Field(ge=-180, le=180)
+    licenses: list[str] = []
     active: bool = True
     preferred_matches_per_day: int = Field(2, ge=0, le=10)
     max_matches_per_day: int = Field(3, ge=0, le=10)
@@ -28,16 +27,28 @@ class RefereeBase(BaseModel):
         return self
 
 
-class RefereeCreate(RefereeBase):
+class RefereeInput(RefereeBase):
+    """Współrzędne i dzielnica są opcjonalne — bez nich backend geokoduje adres."""
+
+    latitude: float | None = Field(None, ge=-90, le=90)
+    longitude: float | None = Field(None, ge=-180, le=180)
+    district: str | None = None
+
+
+class RefereeCreate(RefereeInput):
     pass
 
 
-class RefereeUpdate(RefereeBase):
+class RefereeUpdate(RefereeInput):
     """PUT — pełna aktualizacja rekordu."""
 
 
 class RefereeRead(RefereeBase, ORMModel):
     id: int
+    district: str
+    location_label: str
+    latitude: float
+    longitude: float
 
 
 class DayLoad(BaseModel):

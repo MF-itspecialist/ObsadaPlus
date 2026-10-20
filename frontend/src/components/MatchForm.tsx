@@ -26,7 +26,6 @@ export default function MatchForm({ initial, defaultDate, venues, onSubmit, onCa
           away_team: initial.away_team,
           venue_id: initial.venue_id,
           required_referees: initial.required_referees,
-          arrival_before_minutes: initial.arrival_before_minutes,
           status: initial.status === "CANCELLED" ? "CANCELLED" : null,
         }
       : {
@@ -39,7 +38,6 @@ export default function MatchForm({ initial, defaultDate, venues, onSubmit, onCa
           away_team: "",
           venue_id: venues[0]?.id ?? 0,
           required_referees: 1,
-          arrival_before_minutes: 45,
         },
   );
   const [error, setError] = useState<string | null>(null);
@@ -84,9 +82,6 @@ export default function MatchForm({ initial, defaultDate, venues, onSubmit, onCa
               </option>
             ))}
           </select>
-        </Field>
-        <Field label="Przyjazd przed (min)">
-          <input className="input" type="number" min={0} value={form.arrival_before_minutes} onChange={(e) => set("arrival_before_minutes", Number(e.target.value))} />
         </Field>
         <Field label="Liczba sędziów">
           <select className="input" value={form.required_referees} onChange={(e) => set("required_referees", Number(e.target.value))}>

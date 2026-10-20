@@ -1,11 +1,18 @@
-from fastapi import APIRouter, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 
 from app.api.deps import DbSession, not_found
 from app.models import Match, Venue
 from app.schemas.venue import VenueCreate, VenueRead, VenueUpdate
+from app.services.geocoding_service import Geocoder, get_geocoder
+from app.services.location_service import apply_location
 
 router = APIRouter(prefix="/api/venues", tags=["venues"])
+
+GeocoderDep = Annotated[Geocoder, Depends(get_geocoder)]
+LOCATION_FIELDS = {"latitude", "longitude"}
 
 
 @router.get("", response_model=list[VenueRead])
@@ -14,8 +21,10 @@ def list_venues(db: DbSession) -> list[Venue]:
 
 
 @router.post("", response_model=VenueRead, status_code=status.HTTP_201_CREATED)
-def create_venue(data: VenueCreate, db: DbSession) -> Venue:
-    venue = Venue(**data.model_dump())
+def create_venue(data: VenueCreate, db: DbSession, geocoder: GeocoderDep) -> Venue:
+    """Wystarczy adres — współrzędne są pobierane automatycznie."""
+    venue = Venue(**data.model_dump(exclude=LOCATION_FIELDS))
+    apply_location(venue, data, geocoder)
     db.add(venue)
     db.commit()
     db.refresh(venue)
@@ -23,11 +32,12 @@ def create_venue(data: VenueCreate, db: DbSession) -> Venue:
 
 
 @router.put("/{venue_id}", response_model=VenueRead)
-def update_venue(venue_id: int, data: VenueUpdate, db: DbSession) -> Venue:
+def update_venue(venue_id: int, data: VenueUpdate, db: DbSession, geocoder: GeocoderDep) -> Venue:
     venue = db.get(Venue, venue_id)
     if venue is None:
         raise not_found("Obiekt", venue_id)
-    for key, value in data.model_dump().items():
+    apply_location(venue, data, geocoder)
+    for key, value in data.model_dump(exclude=LOCATION_FIELDS).items():
         setattr(venue, key, value)
     db.commit()
     db.refresh(venue)

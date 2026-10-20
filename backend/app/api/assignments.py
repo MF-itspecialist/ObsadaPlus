@@ -40,10 +40,13 @@ def candidates(match_id: int, db: DbSession, role: RefereeRole = RefereeRole.MAI
     match = db.get(Match, match_id)
     if match is None:
         raise not_found("Mecz", match_id)
+    ranked = scoring_service.rank_candidates(db, match, role)
+    info = assignment_service.referee_info(db, {c.referee_id for c in ranked})
     return [
         {
             "referee_id": c.referee_id,
             "referee_name": c.referee_name,
+            **info.get(c.referee_id, {}),
             "feasible": c.feasible,
             "score": c.score,
             "distance_km": c.distance_km,
@@ -52,7 +55,7 @@ def candidates(match_id: int, db: DbSession, role: RefereeRole = RefereeRole.MAI
             "rejection": c.rejection.message if c.rejection else None,
             "score_breakdown": c.breakdown,
         }
-        for c in scoring_service.rank_candidates(db, match, role)
+        for c in ranked
     ]
 
 

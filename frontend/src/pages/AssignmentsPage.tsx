@@ -3,6 +3,7 @@ import { useState } from "react";
 import CandidatePicker from "../components/CandidatePicker";
 import Explanation from "../components/Explanation";
 import { ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
+import { LicenseList } from "../components/Licenses";
 import StatusBadge, { Tag } from "../components/StatusBadge";
 import { usePeriod } from "../context/PeriodContext";
 import { useAsync } from "../hooks/useAsync";
@@ -20,7 +21,7 @@ import {
   type UnassignedSlot,
 } from "../types";
 import { dayName, formatDate } from "../utils/dates";
-import { groupBy, hhmm, km, minutes, score } from "../utils/format";
+import { groupBy, hhmm, km, minutes } from "../utils/format";
 
 interface PickerState {
   matchId: number;
@@ -108,11 +109,7 @@ export default function AssignmentsPage() {
       ) : board.loading && !board.data ? (
         <Loading />
       ) : (
-        <BoardView
-          items={board.data ?? []}
-          onPick={setPicker}
-          onRemove={removeAssignment}
-        />
+        <BoardView items={board.data ?? []} onPick={setPicker} onRemove={removeAssignment} />
       )}
 
       {picker && (
@@ -178,12 +175,13 @@ function PreviewView({ preview }: { preview: GenerationPreview }) {
                 <RefereeLine
                   role={e.item.role}
                   name={e.item.referee_name}
+                  licenses={e.item.referee_licenses}
+                  location={e.item.referee_location}
                   distance={e.item.distance_km}
                   travel={e.item.travel_minutes}
-                  scoreValue={e.item.score}
                   manual={e.item.manually_modified}
                   conflict={e.item.conflict}
-                  explanation={<Explanation data={e.item.explanation} total={e.item.score} />}
+                  explanation={<Explanation data={e.item.explanation} />}
                 />
               </MatchCard>
             ) : (
@@ -229,15 +227,7 @@ function UnassignedReasons({ slot }: { slot: UnassignedSlot }) {
 
 // --- Zapisana obsada ----------------------------------------------------------------
 
-function BoardView({
-  items,
-  onPick,
-  onRemove,
-}: {
-  items: BoardItem[];
-  onPick: (p: PickerState) => void;
-  onRemove: (a: Assignment) => void;
-}) {
+function BoardView({ items, onPick, onRemove }: { items: BoardItem[]; onPick: (p: PickerState) => void; onRemove: (a: Assignment) => void }) {
   if (items.length === 0) return <p className="py-10 text-center text-sm text-slate-500">Brak meczów w wybranym weekendzie.</p>;
   return (
     <div>
@@ -274,21 +264,22 @@ function BoardView({
                       key={role}
                       role={role}
                       name={a.referee_name}
+                      licenses={a.referee_licenses}
+                      location={a.referee_location}
                       distance={a.distance_km}
                       travel={a.travel_minutes}
-                      scoreValue={a.score}
                       manual={a.manually_modified}
                       conflict={a.conflict}
-                      explanation={<Explanation data={a.explanation} total={a.score} />}
+                      explanation={<Explanation data={a.explanation} />}
                       actions={
                         <>
                           <button
-                            className="btn-link"
+                            className="btn-row"
                             onClick={() => onPick({ matchId: m.match_id, role, title: `Zmień sędziego: ${title}`, currentRefereeId: a.referee_id })}
                           >
                             Zmień sędziego
                           </button>
-                          <button className="btn-link text-red-600" onClick={() => onRemove(a)}>
+                          <button className="btn-row-danger" onClick={() => onRemove(a)}>
                             Usuń obsadę
                           </button>
                         </>
@@ -318,17 +309,7 @@ function DaySection({ date, children }: { date: string; children: React.ReactNod
   );
 }
 
-function MatchCard({
-  match,
-  unassigned,
-  status,
-  children,
-}: {
-  match: MatchInfo;
-  unassigned?: boolean;
-  status?: React.ReactNode;
-  children: React.ReactNode;
-}) {
+function MatchCard({ match, unassigned, status, children }: { match: MatchInfo; unassigned?: boolean; status?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className={`card flex flex-col gap-3 p-4 sm:flex-row ${unassigned ? "border-red-200" : ""}`}>
       <div className="sm:w-64 sm:shrink-0">
@@ -352,9 +333,10 @@ function MatchCard({
 function RefereeLine(props: {
   role: RefereeRole;
   name: string;
+  licenses: string[];
+  location: string;
   distance: number | null;
   travel: number | null;
-  scoreValue: number | null;
   manual: boolean;
   conflict: string | null;
   explanation: React.ReactNode;
@@ -370,10 +352,13 @@ function RefereeLine(props: {
             {props.name} {props.manual && <Tag tone="amber">ręcznie</Tag>}
           </div>
         </div>
-        <Metric label="Odległość" value={km(props.distance)} />
-        <Metric label="Transport" value={minutes(props.travel)} />
-        <Metric label="SCORE" value={score(props.scoreValue)} />
-        <div className="ml-auto flex gap-3">
+        <div className="max-w-xs">
+          <div className="text-xs uppercase text-slate-500">Licencje</div>
+          <LicenseList licenses={props.licenses} />
+        </div>
+        <Metric label="Mieszka" value={props.location || "—"} />
+        <Metric label="Dojazd" value={props.travel === null ? km(props.distance) : `${km(props.distance)} · ${minutes(props.travel)}`} />
+        <div className="ml-auto flex items-center gap-2">
           <button className="btn-link" onClick={() => setOpen(!open)}>
             {open ? "Ukryj" : "Dlaczego?"}
           </button>

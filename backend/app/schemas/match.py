@@ -17,7 +17,6 @@ class MatchBase(BaseModel):
     away_team: str = Field(min_length=1, max_length=200)
     venue_id: int
     required_referees: int = Field(1, ge=1, le=4)
-    arrival_before_minutes: int = Field(45, ge=0, le=240)
 
     @model_validator(mode="after")
     def _times(self) -> "MatchBase":

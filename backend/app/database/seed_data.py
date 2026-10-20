@@ -19,20 +19,20 @@ VENUES = [
     {"name": "Stadion Dolcanu", "city": "Ząbki", "address": "ul. Słowackiego 21", "latitude": 52.2930, "longitude": 21.1110},
 ]
 
-# (imię, nazwisko, miasto, adres, lat, lng, aktywny, pref/dzień, max/dzień, pref/weekend, max/weekend)
+# (imię, nazwisko, miasto, dzielnica, adres, lat, lng, licencje, aktywny, pref/dzień, max/dzień, pref/weekend, max/weekend)
 REFEREES = [
-    ("Jan", "Kowalski", "Warszawa", "Warszawa Ursynów", 52.1500, 21.0300, True, 2, 3, 4, 5),
-    ("Piotr", "Nowak", "Warszawa", "Warszawa Bielany", 52.2900, 20.9400, True, 2, 3, 4, 5),
-    ("Tomasz", "Wiśniewski", "Warszawa", "Warszawa Praga-Południe", 52.2400, 21.0800, True, 2, 3, 3, 4),
-    ("Krzysztof", "Wójcik", "Warszawa", "Warszawa Wola", 52.2350, 20.9700, True, 1, 2, 3, 4),
-    ("Michał", "Kamiński", "Warszawa", "Warszawa Białołęka", 52.3200, 20.9750, True, 2, 3, 4, 5),
-    ("Paweł", "Lewandowski", "Piaseczno", "Piaseczno, ul. Kościuszki", 52.0810, 21.0240, True, 2, 3, 4, 5),
-    ("Marcin", "Zieliński", "Legionowo", "Legionowo, ul. Sowińskiego", 52.4050, 20.9200, True, 2, 3, 4, 5),
-    ("Łukasz", "Szymański", "Pruszków", "Pruszków, ul. Kraszewskiego", 52.1700, 20.8000, True, 2, 3, 4, 5),
-    ("Adam", "Woźniak", "Marki", "Marki, ul. Piłsudskiego", 52.3260, 21.1000, True, 2, 2, 3, 4),
-    ("Grzegorz", "Dąbrowski", "Ząbki", "Ząbki, ul. Wojska Polskiego", 52.2920, 21.1050, True, 2, 3, 4, 5),
-    ("Rafał", "Kozłowski", "Otwock", "Otwock, ul. Andriollego", 52.1050, 21.2610, True, 2, 3, 4, 5),
-    ("Sebastian", "Jankowski", "Warszawa", "Warszawa Mokotów", 52.1950, 21.0200, False, 2, 3, 4, 5),
+    ("Jan", "Kowalski", "Warszawa", "Ursynów", "ul. Herbsta 4", 52.1500, 21.0300, ["Sędzia III liga (TopAmator C)", "Asystent III/IV/V liga (w tym asystenci mazowieccy)"], True, 2, 3, 4, 5),
+    ("Piotr", "Nowak", "Warszawa", "Bielany", "ul. Kasprowicza 60", 52.2900, 20.9400, ["Sędzia IV liga"], True, 2, 3, 4, 5),
+    ("Tomasz", "Wiśniewski", "Warszawa", "Praga-Południe", "ul. Grochowska 200", 52.2400, 21.0800, ["Sędzia klasa okręgowa"], True, 2, 3, 3, 4),
+    ("Krzysztof", "Wójcik", "Warszawa", "Wola", "ul. Górczewska 30", 52.2350, 20.9700, ["Sędzia klasa A"], True, 1, 2, 3, 4),
+    ("Michał", "Kamiński", "Warszawa", "Białołęka", "ul. Modlińska 150", 52.3200, 20.9750, ["Sędzia IV liga"], True, 2, 3, 4, 5),
+    ("Paweł", "Lewandowski", "Piaseczno", "", "ul. Kościuszki 10", 52.0810, 21.0240, ["Sędzia klasa okręgowa"], True, 2, 3, 4, 5),
+    ("Marcin", "Zieliński", "Legionowo", "", "ul. Sowińskiego 15", 52.4050, 20.9200, ["Sędzia IV liga"], True, 2, 3, 4, 5),
+    ("Łukasz", "Szymański", "Pruszków", "", "ul. Kraszewskiego 20", 52.1700, 20.8000, ["Sędzia klasa A"], True, 2, 3, 4, 5),
+    ("Adam", "Woźniak", "Marki", "", "al. Piłsudskiego 90", 52.3260, 21.1000, ["Sędzia klasa B"], True, 2, 2, 3, 4),
+    ("Grzegorz", "Dąbrowski", "Ząbki", "", "ul. Wojska Polskiego 12", 52.2920, 21.1050, ["Sędzia klasa okręgowa"], True, 2, 3, 4, 5),
+    ("Rafał", "Kozłowski", "Otwock", "", "ul. Andriollego 50", 52.1050, 21.2610, ["Sędzia klasa A"], True, 2, 3, 4, 5),
+    ("Sebastian", "Jankowski", "Warszawa", "Mokotów", "ul. Puławska 100", 52.1950, 21.0200, ["Sędzia III liga (TopAmator C)", "Asystent III/IV/V liga (w tym asystenci mazowieccy)"], False, 2, 3, 4, 5),
 ]
 
 # nazwisko → {dzień: None (cały dzień) | (od, do) | False (niedostępny)}; brak dnia = brak zgłoszenia

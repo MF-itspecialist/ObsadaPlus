@@ -24,14 +24,16 @@ def seed_database(db: Session, force: bool = False) -> bool:
     db.add_all(venues)
 
     referees: dict[str, Referee] = {}
-    for first, last, city, address, lat, lng, active, pd, md, pw, mw in data.REFEREES:
+    for first, last, city, district, address, lat, lng, licenses, active, pd, md, pw, mw in data.REFEREES:
         referees[last] = Referee(
             first_name=first,
             last_name=last,
             city=city,
+            district=district,
             address=address,
             latitude=lat,
             longitude=lng,
+            licenses=licenses,
             active=active,
             preferred_matches_per_day=pd,
             max_matches_per_day=md,

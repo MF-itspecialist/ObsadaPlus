@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
 import Modal from "../components/Modal";
+import RowActions from "../components/RowActions";
 import VenueForm from "../components/VenueForm";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../services/api";
@@ -47,7 +48,6 @@ export default function VenuesPage() {
                 <th>Nazwa</th>
                 <th>Miasto</th>
                 <th>Adres</th>
-                <th>Współrzędne</th>
                 <th className="text-right">Akcje</th>
               </tr>
             </thead>
@@ -57,16 +57,8 @@ export default function VenuesPage() {
                   <td className="font-medium">{v.name}</td>
                   <td>{v.city}</td>
                   <td>{v.address}</td>
-                  <td className="text-xs tabular-nums text-slate-500">
-                    {v.latitude.toFixed(4)}, {v.longitude.toFixed(4)}
-                  </td>
-                  <td className="whitespace-nowrap text-right">
-                    <button className="btn-link mr-3" onClick={() => setEditing(v)}>
-                      Edytuj
-                    </button>
-                    <button className="btn-link text-red-600" onClick={() => remove(v)}>
-                      Usuń
-                    </button>
+                  <td className="whitespace-nowrap">
+                    <RowActions onEdit={() => setEditing(v)} onDelete={() => remove(v)} />
                   </td>
                 </tr>
               ))}

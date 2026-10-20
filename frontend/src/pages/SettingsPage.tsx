@@ -10,29 +10,33 @@ type NumericKey = {
   [K in keyof SystemSettings]: SystemSettings[K] extends number ? K : never;
 }[keyof SystemSettings];
 
-const SECTIONS: { title: string; fields: { key: NumericKey; label: string; step?: number }[] }[] = [
-  {
-    title: "Logistyka",
-    fields: [
-      { key: "transport_safety_buffer_minutes", label: "Bufor bezpieczeństwa transportu (min)" },
-      { key: "routing_avg_speed_kmh", label: "Średnia prędkość przejazdu (km/h)" },
-      { key: "routing_road_factor", label: "Współczynnik krętości dróg", step: 0.05 },
-      { key: "default_match_duration_minutes", label: "Domyślny czas meczu przy imporcie (min)" },
-    ],
-  },
-  {
-    title: "Wagi scoringu",
-    fields: [
-      { key: "distance_weight", label: "DISTANCE_WEIGHT (pkt / km)", step: 0.1 },
-      { key: "travel_time_weight", label: "TRAVEL_TIME_WEIGHT (pkt / min)", step: 0.1 },
-      { key: "daily_match_weight", label: "DAILY_MATCH_WEIGHT" },
-      { key: "weekend_match_weight", label: "WEEKEND_MATCH_WEIGHT" },
-      { key: "workload_balance_weight", label: "WORKLOAD_BALANCE_WEIGHT" },
-      { key: "within_preferred_factor", label: "Mnożnik kary w granicach preferencji", step: 0.05 },
-      { key: "over_preferred_factor", label: "Mnożnik kary powyżej preferencji", step: 0.1 },
-    ],
-  },
-];
+type Section = { title: string; fields: { key: NumericKey; label: string; step?: number }[] };
+
+const LOGISTICS: Section = {
+  title: "Logistyka",
+  fields: [
+    { key: "arrival_before_minutes", label: "Przyjazd sędziego przed meczem (min)" },
+    { key: "transport_safety_buffer_minutes", label: "Zapas czasu na dojazd (min)" },
+    { key: "generator_max_matches_per_day", label: "Maks. meczów dziennie dla sędziego z automatu" },
+    { key: "routing_avg_speed_kmh", label: "Średnia prędkość przejazdu (km/h)" },
+    { key: "routing_road_factor", label: "Współczynnik krętości dróg", step: 0.05 },
+    { key: "default_match_duration_minutes", label: "Domyślny czas meczu przy imporcie (min)" },
+  ],
+};
+
+// Parametry algorytmu — dla zaawansowanych; domyślne wartości są dobrane do typowego weekendu.
+const PRIORITIES: Section = {
+  title: "Priorytety automatycznej obsady",
+  fields: [
+    { key: "distance_weight", label: "Jak mocno unikać długich dojazdów (km)", step: 0.1 },
+    { key: "travel_time_weight", label: "Jak mocno unikać długiego czasu jazdy (min)", step: 0.1 },
+    { key: "daily_match_weight", label: "Jak mocno unikać wielu meczów jednego dnia" },
+    { key: "weekend_match_weight", label: "Jak mocno unikać wielu meczów w weekend" },
+    { key: "workload_balance_weight", label: "Jak mocno wyrównywać liczbę meczów między sędziami" },
+    { key: "within_preferred_factor", label: "Mnożnik w granicach preferencji sędziego", step: 0.05 },
+    { key: "over_preferred_factor", label: "Mnożnik powyżej preferencji sędziego", step: 0.1 },
+  ],
+};
 
 export default function SettingsPage() {
   const loaded = useAsync(() => api.settings(), []);
@@ -72,57 +76,78 @@ export default function SettingsPage() {
       <ErrorBanner message={error ?? loaded.error} onClose={() => setError(null)} />
       <InfoBanner message={info} onClose={() => setInfo(null)} />
       <div className="grid gap-4 md:grid-cols-2">
-        {SECTIONS.map((section) => (
-          <div key={section.title} className="card space-y-3 p-4">
-            <h2 className="font-semibold">{section.title}</h2>
-            {section.fields.map((f) => (
-              <Field key={f.key} label={f.label}>
-                <input className="input" type="number" step={f.step ?? 1} min={0} value={form[f.key]} onChange={(e) => setNum(f.key, e.target.value)} />
-              </Field>
-            ))}
-            {section.title === "Logistyka" && (
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={form.assume_available_without_entry}
-                  onChange={(e) => setForm({ ...form, assume_available_without_entry: e.target.checked })}
-                />
-                Brak zgłoszenia dyspozycyjności = dostępny cały dzień
-              </label>
-            )}
-          </div>
-        ))}
-        <div className="card p-4 md:col-span-2">
-          <h2 className="mb-2 font-semibold">Kary za odległość</h2>
-          <p className="mb-3 text-sm text-slate-500">
-            Próg „do X km” → kara. Ostatni próg obejmuje wszystkie większe odległości. Do kary progowej dodawane jest km × DISTANCE_WEIGHT.
-          </p>
-          <table className="table max-w-md">
-            <thead>
-              <tr>
-                <th>Do (km)</th>
-                <th>Kara (pkt)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {form.distance_brackets.map(([upper, penalty], i) => (
-                <tr key={i}>
-                  <td>
-                    {i === form.distance_brackets.length - 1 ? (
-                      <span className="text-slate-500">powyżej {form.distance_brackets[i - 1]?.[0] ?? 0}</span>
-                    ) : (
-                      <input className="input w-28" type="number" value={upper} onChange={(e) => setBracket(i, 0, e.target.value)} />
-                    )}
-                  </td>
-                  <td>
-                    <input className="input w-28" type="number" value={penalty} onChange={(e) => setBracket(i, 1, e.target.value)} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <SectionCard section={LOGISTICS} form={form} setNum={setNum}>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={form.assume_available_without_entry}
+              onChange={(e) => setForm({ ...form, assume_available_without_entry: e.target.checked })}
+            />
+            Brak zgłoszenia dyspozycyjności = dostępny cały dzień
+          </label>
+        </SectionCard>
       </div>
+      <details className="mt-6">
+        <summary className="cursor-pointer text-sm font-semibold text-slate-700">Ustawienia zaawansowane (algorytm obsady)</summary>
+        <p className="mt-2 text-sm text-slate-500">Zwykle nie trzeba ich zmieniać. Wyższa wartość = algorytm bardziej unika danej sytuacji.</p>
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
+          <SectionCard section={PRIORITIES} form={form} setNum={setNum} />
+          <div className="card p-4">
+            <h2 className="mb-2 font-semibold">Unikanie dalekich dojazdów</h2>
+            <p className="mb-3 text-sm text-slate-500">
+              Im dalej sędzia ma na mecz, tym mniej chętnie algorytm go wybiera. Ostatni próg obejmuje wszystkie większe odległości.
+            </p>
+            <table className="table max-w-md">
+              <thead>
+                <tr>
+                  <th>Do (km)</th>
+                  <th>Kara</th>
+                </tr>
+              </thead>
+              <tbody>
+                {form.distance_brackets.map(([upper, penalty], i) => (
+                  <tr key={i}>
+                    <td>
+                      {i === form.distance_brackets.length - 1 ? (
+                        <span className="text-slate-500">powyżej {form.distance_brackets[i - 1]?.[0] ?? 0}</span>
+                      ) : (
+                        <input className="input w-28" type="number" value={upper} onChange={(e) => setBracket(i, 0, e.target.value)} />
+                      )}
+                    </td>
+                    <td>
+                      <input className="input w-28" type="number" value={penalty} onChange={(e) => setBracket(i, 1, e.target.value)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    </div>
+  );
+}
+
+function SectionCard({
+  section,
+  form,
+  setNum,
+  children,
+}: {
+  section: Section;
+  form: SystemSettings;
+  setNum: (k: NumericKey, v: string) => void;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="card space-y-3 p-4">
+      <h2 className="font-semibold">{section.title}</h2>
+      {section.fields.map((f) => (
+        <Field key={f.key} label={f.label}>
+          <input className="input" type="number" step={f.step ?? 1} min={0} value={form[f.key]} onChange={(e) => setNum(f.key, e.target.value)} />
+        </Field>
+      ))}
+      {children}
     </div>
   );
 }

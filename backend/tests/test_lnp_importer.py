@@ -83,7 +83,7 @@ def test_upload_endpoint_detects_lnp_export_and_reports_unknown_venues(client):
     files = {"file": ("lnp-terminarz.json", json.dumps(data), "application/json")}
     result = client.post("/api/matches/import", files=files).json()
     assert result["created"] == 1 and result["updated"] == 0
-    assert result["errors"] == ["Nieznany obiekt 'Mazur' (2 mecz.): dodaj go w zakładce Obiekty i zaimportuj plik ponownie"]
+    assert result["errors"] == ["Nie znaleziono adresu obiektu 'Mazur' (2 mecz.): dodaj go w zakładce Obiekty i zaimportuj plik ponownie"]
     match = client.get("/api/matches").json()[0]
     assert match["external_id"] == "lnp:1" and match["required_referees"] == 3
     # ponowny import aktualizuje zamiast dublować

@@ -74,13 +74,25 @@ def serialize_result(result: GenerationResult, matches: dict[int, Match]) -> dic
     }
 
 
-def run_to_preview(run: GenerationRun) -> dict[str, Any]:
+def referee_info(db: Session, referee_ids: set[int]) -> dict[int, dict[str, str]]:
+    """Licencje i miejsce zamieszkania sędziów — to, co admin widzi przy obsadzie."""
+    if not referee_ids:
+        return {}
+    refs = db.scalars(select(Referee).where(Referee.id.in_(referee_ids)))
+    return {
+        r.id: {"referee_licenses": r.licenses or [], "referee_location": r.location_label} for r in refs
+    }
+
+
+def run_to_preview(db: Session, run: GenerationRun) -> dict[str, Any]:
+    info = referee_info(db, {a["referee_id"] for a in run.result["assignments"]})
     return {
         "run_id": run.id,
         "status": run.status,
         "params": run.params,
         "stats": run.stats,
         **run.result,
+        "assignments": [{**a, **info.get(a["referee_id"], {})} for a in run.result["assignments"]],
     }
 
 
@@ -88,7 +100,14 @@ def run_to_preview(run: GenerationRun) -> dict[str, Any]:
 def generate_preview(db: Session, req: GenerateRequest) -> GenerationRun:
     """Uruchamia generator i zapisuje propozycję (status PREVIEW). Nie zmienia obsady."""
     s = get_settings(db)
-    built = build_problem(db, req.date_from, req.date_to, to_optimization_settings(s), mode=req.mode)
+    built = build_problem(
+        db,
+        req.date_from,
+        req.date_to,
+        to_optimization_settings(s),
+        mode=req.mode,
+        daily_cap=s.generator_max_matches_per_day,
+    )
     result = AssignmentGenerator(routing_for(s)).generate_assignments(built.problem)
     run = GenerationRun(
         status=GenerationRunStatus.PREVIEW,
@@ -176,6 +195,8 @@ def to_read(a: Assignment, conflict: str | None = None) -> dict[str, Any]:
         "match_id": a.match_id,
         "referee_id": a.referee_id,
         "referee_name": a.referee.full_name if a.referee else "",
+        "referee_licenses": (a.referee.licenses or []) if a.referee else [],
+        "referee_location": a.referee.location_label if a.referee else "",
         "role": a.role,
         "manually_modified": a.manually_modified,
         "score": a.score,

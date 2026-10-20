@@ -30,6 +30,7 @@ class Match(Base):
     away_team: Mapped[str] = mapped_column(String(200))
     venue_id: Mapped[int] = mapped_column(ForeignKey("venues.id", ondelete="RESTRICT"))
     required_referees: Mapped[int] = mapped_column(Integer, default=1)
+    # Nieużywane przez generator — przyjazd przed meczem to globalne ustawienie (system_settings).
     arrival_before_minutes: Mapped[int] = mapped_column(Integer, default=45)
     status: Mapped[MatchStatus] = mapped_column(
         Enum(MatchStatus, native_enum=False, length=32), default=MatchStatus.UNASSIGNED

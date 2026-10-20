@@ -8,6 +8,7 @@ import type {
   DashboardStats,
   GenerationMode,
   GenerationPreview,
+  GeocodeResult,
   ImportResult,
   ManualAssignmentResult,
   Match,
@@ -48,9 +49,7 @@ function errorMessage(body: unknown, fallback: string): string {
     const detail = (body as { detail: unknown }).detail;
     if (typeof detail === "string") return detail;
     if (Array.isArray(detail)) {
-      return detail
-        .map((d: { loc?: unknown[]; msg?: string }) => `${(d.loc ?? []).slice(1).join(".")}: ${d.msg}`)
-        .join("; ");
+      return detail.map((d: { loc?: unknown[]; msg?: string }) => `${(d.loc ?? []).slice(1).join(".")}: ${d.msg}`).join("; ");
     }
   }
   return fallback;
@@ -90,6 +89,9 @@ export const api = {
   updateVenue: (id: number, data: VenueInput) => request<Venue>("PUT", `/api/venues/${id}`, { body: data }),
   deleteVenue: (id: number) => request<void>("DELETE", `/api/venues/${id}`),
 
+  // Lokalizacja adresu (podgląd w formularzach)
+  geocode: (address: string, city: string) => request<GeocodeResult>("GET", "/api/geocode", { query: { address, city } }),
+
   // Mecze
   matches: (p?: Partial<Period>) => request<Match[]>("GET", "/api/matches", { query: { ...p } }),
   createMatch: (data: MatchInput) => request<Match>("POST", "/api/matches", { body: data }),
@@ -115,8 +117,7 @@ export const api = {
   deleteAssignment: (id: number) => request<void>("DELETE", `/api/assignments/${id}`),
 
   // Generator
-  generate: (p: Period, mode: GenerationMode) =>
-    request<GenerationPreview>("POST", "/api/optimization/generate", { body: { ...p, mode } }),
+  generate: (p: Period, mode: GenerationMode) => request<GenerationPreview>("POST", "/api/optimization/generate", { body: { ...p, mode } }),
   confirm: (runId: number) => request<ConfirmResponse>("POST", "/api/optimization/confirm", { body: { run_id: runId } }),
 
   // Ustawienia i statystyki
