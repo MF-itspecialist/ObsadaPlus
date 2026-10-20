@@ -62,6 +62,11 @@ class OptimizationSettings:
     over_preferred_factor: float = 1.5
     # Brak wpisu dyspozycyjności = niedostępny (False) czy dostępny cały dzień (True).
     assume_available_without_entry: bool = False
+    # Na ile minut przed meczem sędzia ma być na miejscu (jeden bufor dla wszystkich meczów).
+    arrival_before_minutes: int = 45
+    # Kara za mecz męski dla sędzi z licencją kobiecą — tylko gdy w okresie są mecze kobiet.
+    women_priority_penalty: float = 30.0
+    women_matches_in_period: bool = False
 
 
 @dataclass(frozen=True)
@@ -92,7 +97,9 @@ class RefereeProfile:
     preferred_matches_per_weekend: int = 4
     max_matches_per_weekend: int = 5
     availability: dict[dt.date, AvailabilityEntry] = field(default_factory=dict)
-    # Rozbudowa: level, licensed_leagues, preferred_leagues, avoided_clubs, region…
+    # Przydzielone licencje (nazwy z app.optimization.licenses.LICENSE_RULES).
+    licenses: tuple[str, ...] = ()
+    # Rozbudowa: preferred_leagues, avoided_clubs, region…
 
 
 @dataclass(frozen=True)

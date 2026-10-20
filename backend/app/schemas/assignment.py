@@ -24,6 +24,8 @@ class AssignmentRead(ORMModel):
     match_id: int
     referee_id: int
     referee_name: str
+    referee_licenses: list[str] = []
+    referee_location: str = ""
     role: RefereeRole
     manually_modified: bool
     score: float | None
@@ -42,6 +44,8 @@ class ManualAssignmentResult(BaseModel):
 class CandidateRead(BaseModel):
     referee_id: int
     referee_name: str
+    referee_licenses: list[str] = []
+    referee_location: str = ""
     feasible: bool
     score: float | None
     distance_km: float | None

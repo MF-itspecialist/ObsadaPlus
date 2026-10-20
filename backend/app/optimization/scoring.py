@@ -12,6 +12,7 @@ from abc import ABC, abstractmethod
 
 from app.optimization.context import CandidateContext
 from app.optimization.domain import OptimizationSettings
+from app.optimization.licenses import has_women_license, is_women_match
 
 
 def distance_bracket_penalty(distance_km: float, settings: OptimizationSettings) -> float:
@@ -108,12 +109,26 @@ class WorkloadBalancePenalty(ScoreComponent):
         return max(0.0, excess) * ctx.settings.workload_balance_weight
 
 
+class WomenPriorityPenalty(ScoreComponent):
+    """Sędzie z licencją kobiecą najpierw na mecze kobiet: kara za mecz męski, gdy są mecze kobiet do obsadzenia."""
+
+    key = "women_priority_penalty"
+    label = "priorytet meczów kobiet"
+
+    def compute(self, ctx: CandidateContext) -> float:
+        s = ctx.settings
+        if s.women_matches_in_period and has_women_license(ctx.referee.licenses) and not is_women_match(ctx.slot.league):
+            return s.women_priority_penalty
+        return 0.0
+
+
 DEFAULT_COMPONENTS: tuple[ScoreComponent, ...] = (
     DistancePenalty(),
     TravelTimePenalty(),
     DailyMatchesPenalty(),
     WeekendMatchesPenalty(),
     WorkloadBalancePenalty(),
+    WomenPriorityPenalty(),
 )
 
 

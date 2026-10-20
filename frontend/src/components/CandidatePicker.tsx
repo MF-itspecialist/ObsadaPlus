@@ -7,6 +7,7 @@ import Avatar from "./Avatar";
 import { MetricChips } from "./Metrics";
 import Explanation from "./Explanation";
 import { ErrorBanner, Loading } from "./Feedback";
+import { LicenseList } from "./Licenses";
 import Modal from "./Modal";
 
 interface Props {
@@ -18,7 +19,7 @@ interface Props {
   onAssigned: (warning: string | null) => void;
 }
 
-/** Ranking sędziów dla meczu (najpierw możliwi wg SCORE, potem odrzuceni z powodem). */
+/** Sędziowie dla meczu — od najlepiej pasującego; na końcu ci, którzy nie mogą, z powodem. */
 export default function CandidatePicker({ matchId, role, title, currentRefereeId, onClose, onAssigned }: Props) {
   const { data, error, loading } = useAsync(() => api.candidates(matchId, role), [matchId, role]);
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -39,7 +40,7 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
   };
 
   return (
-    <Modal title={title} subtitle="Najlepsi kandydaci według SCORE, niżej sędziowie odrzuceni z powodem" onClose={onClose} wide>
+    <Modal title={title} subtitle="Od najlepiej pasującego; niżej sędziowie, którzy nie mogą, z powodem" onClose={onClose} wide>
       <ErrorBanner message={error ?? saveError} />
       {loading && <Loading />}
       {data && (
@@ -47,7 +48,9 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
           <thead>
             <tr>
               <th>Sędzia</th>
-              <th>Odległość · transport · SCORE</th>
+              <th>Licencje</th>
+              <th>Mieszka</th>
+              <th>Dojazd</th>
               <th />
             </tr>
           </thead>
@@ -67,7 +70,11 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
                       </div>
                     </div>
                   </td>
-                  <td>{c.feasible && <MetricChips distance={c.distance_km} travel={c.travel_minutes} scoreValue={c.score} />}</td>
+                  <td className="max-w-56">
+                    <LicenseList licenses={c.referee_licenses} />
+                  </td>
+                  <td className="text-zinc-600">{c.referee_location}</td>
+                  <td>{c.feasible && <MetricChips distance={c.distance_km} travel={c.travel_minutes} />}</td>
                   <td className="text-right">
                     <button
                       className={c.feasible ? "btn-primary" : "btn-secondary"}
@@ -80,8 +87,8 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
                 </tr>
                 {expanded === c.referee_id && c.feasible && (
                   <tr>
-                    <td colSpan={3} className="bg-zinc-50">
-                      <Explanation data={{ reasons: c.reasons, score_breakdown: c.score_breakdown }} total={c.score} />
+                    <td colSpan={5} className="bg-zinc-50">
+                      <Explanation data={{ reasons: c.reasons }} />
                     </td>
                   </tr>
                 )}

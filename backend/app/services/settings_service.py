@@ -46,6 +46,8 @@ def to_optimization_settings(s: SystemSettings) -> OptimizationSettings:
         within_preferred_factor=s.within_preferred_factor,
         over_preferred_factor=s.over_preferred_factor,
         assume_available_without_entry=s.assume_available_without_entry,
+        arrival_before_minutes=s.arrival_before_minutes,
+        women_priority_penalty=s.women_priority_penalty,
     )
 
 

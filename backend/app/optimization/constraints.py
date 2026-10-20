@@ -2,8 +2,8 @@
 
 Każde ograniczenie to osobna klasa. Kolejność w ``DEFAULT_CONSTRAINTS`` ma
 znaczenie: ewaluacja kończy się na pierwszym niespełnionym warunku, a jego kod
-trafia do statystyki przyczyn braku obsady. Nowe ograniczenia (uprawnienia do
-lig, konflikt interesów, region) dodaje się jako kolejne klasy.
+trafia do statystyki przyczyn braku obsady. Nowe ograniczenia (konflikt
+interesów, region) dodaje się jako kolejne klasy.
 """
 
 from __future__ import annotations
@@ -14,6 +14,7 @@ from dataclasses import dataclass
 
 from app.optimization.context import CandidateContext
 from app.optimization.domain import fmt_time
+from app.optimization.licenses import check_license
 
 
 @dataclass(frozen=True)
@@ -25,6 +26,7 @@ class Rejection:
 # Etykiety kodów odrzucenia (używane w podsumowaniu nieobsadzonych meczów).
 REJECTION_LABELS: dict[str, str] = {
     "INACTIVE": "sędzia nieaktywny",
+    "NO_LICENSE": "brak wymaganej licencji",
     "NOT_AVAILABLE_DAY": "brak dostępnych sędziów (dyspozycyjność w tym dniu)",
     "OUTSIDE_TIME_WINDOW": "mecz poza godzinami dyspozycyjności",
     "TIME_CONFLICT": "konflikty czasowe",
@@ -50,6 +52,16 @@ class ActiveConstraint(HardConstraint):
 
     def check(self, ctx: CandidateContext) -> Rejection | None:
         return None if ctx.referee.active else self.reject("sędzia jest nieaktywny")
+
+
+class LicenseConstraint(HardConstraint):
+    """Licencja musi uprawniać do poziomu rozgrywek meczu w danej roli (główny / asystent)."""
+
+    code = "NO_LICENSE"
+
+    def check(self, ctx: CandidateContext) -> Rejection | None:
+        reason = check_license(ctx.referee.licenses, ctx.slot.league, ctx.slot.role)
+        return self.reject(reason) if reason else None
 
 
 class DayAvailabilityConstraint(HardConstraint):
@@ -153,6 +165,7 @@ class TravelFeasibilityConstraint(HardConstraint):
 
 DEFAULT_CONSTRAINTS: tuple[HardConstraint, ...] = (
     ActiveConstraint(),
+    LicenseConstraint(),
     DayAvailabilityConstraint(),
     TimeWindowConstraint(),
     NoOverlapConstraint(),

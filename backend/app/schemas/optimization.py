@@ -27,6 +27,8 @@ class ProposedAssignmentRead(BaseModel):
     role: RefereeRole
     referee_id: int
     referee_name: str
+    referee_licenses: list[str] = []
+    referee_location: str = ""
     score: float | None
     distance_km: float | None
     travel_minutes: float | None

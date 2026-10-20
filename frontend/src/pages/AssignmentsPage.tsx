@@ -5,6 +5,7 @@ import CandidatePicker from "../components/CandidatePicker";
 import Avatar from "../components/Avatar";
 import Explanation from "../components/Explanation";
 import { EmptyState, ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
+import { LicenseList } from "../components/Licenses";
 import { MetricChips } from "../components/Metrics";
 import StatusBadge, { Tag } from "../components/StatusBadge";
 import { usePeriod } from "../context/PeriodContext";
@@ -111,11 +112,7 @@ export default function AssignmentsPage() {
       ) : board.loading && !board.data ? (
         <Loading />
       ) : (
-        <BoardView
-          items={board.data ?? []}
-          onPick={setPicker}
-          onRemove={removeAssignment}
-        />
+        <BoardView items={board.data ?? []} onPick={setPicker} onRemove={removeAssignment} />
       )}
 
       {picker && (
@@ -184,12 +181,13 @@ function PreviewView({ preview }: { preview: GenerationPreview }) {
                 <RefereeLine
                   role={e.item.role}
                   name={e.item.referee_name}
+                  licenses={e.item.referee_licenses}
+                  location={e.item.referee_location}
                   distance={e.item.distance_km}
                   travel={e.item.travel_minutes}
-                  scoreValue={e.item.score}
                   manual={e.item.manually_modified}
                   conflict={e.item.conflict}
-                  explanation={<Explanation data={e.item.explanation} total={e.item.score} />}
+                  explanation={<Explanation data={e.item.explanation} />}
                 />
               </MatchCard>
             ) : (
@@ -304,12 +302,13 @@ function BoardView({
                       key={role}
                       role={role}
                       name={a.referee_name}
+                      licenses={a.referee_licenses}
+                      location={a.referee_location}
                       distance={a.distance_km}
                       travel={a.travel_minutes}
-                      scoreValue={a.score}
                       manual={a.manually_modified}
                       conflict={a.conflict}
-                      explanation={<Explanation data={a.explanation} total={a.score} />}
+                      explanation={<Explanation data={a.explanation} />}
                       actions={
                         <>
                           <button
@@ -398,9 +397,10 @@ function MatchCard({
 function RefereeLine(props: {
   role: RefereeRole;
   name: string;
+  licenses: string[];
+  location: string;
   distance: number | null;
   travel: number | null;
-  scoreValue: number | null;
   manual: boolean;
   conflict: string | null;
   explanation: React.ReactNode;
@@ -424,7 +424,15 @@ function RefereeLine(props: {
             </div>
           </div>
         </div>
-        <MetricChips distance={props.distance} travel={props.travel} scoreValue={props.scoreValue} />
+        <div className="max-w-xs">
+          <div className="text-xs text-zinc-500">Licencje</div>
+          <LicenseList licenses={props.licenses} />
+        </div>
+        <div>
+          <div className="text-xs text-zinc-500">Mieszka</div>
+          <div className="text-zinc-700">{props.location || "—"}</div>
+        </div>
+        <MetricChips distance={props.distance} travel={props.travel} />
         <div className="ml-auto flex items-center gap-1">
           <button className="btn-link" onClick={() => setOpen(!open)}>
             Dlaczego? <ChevronDown className={`size-3.5 transition ${open ? "rotate-180" : ""}`} />

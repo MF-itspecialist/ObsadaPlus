@@ -39,7 +39,7 @@ class MatchImportRecord(BaseModel):
 
 
 class MatchImporter(ABC):
-    """Źródło meczów. Implementacje: ręczne, JSON, CSV; później CommissionWebsiteImporter."""
+    """Źródło meczów. Implementacje: ręczne, JSON, CSV, eksport terminarza Łączy Nas Piłka."""
 
     source_name: str = "abstract"
 
@@ -47,9 +47,3 @@ class MatchImporter(ABC):
     def fetch_matches(self) -> list[MatchImportRecord]:
         """Zwraca listę meczów do zapisania (upsert po ``external_id``)."""
 
-
-# class CommissionWebsiteImporter(MatchImporter):
-#     """Pobieranie meczów ze strony komisji sędziowskiej (poza zakresem MVP)."""
-#     source_name = "commission"
-#     def __init__(self, base_url: str, season: str) -> None: ...
-#     def fetch_matches(self) -> list[MatchImportRecord]: ...

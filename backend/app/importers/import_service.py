@@ -9,37 +9,67 @@ from sqlalchemy.orm import Session
 
 from app.importers.base import MatchImporter, MatchImportRecord
 from app.models import Match, Venue
+from app.services.geocoding_service import Geocoder, GeocodingError
 
 
-def _resolve_venue(db: Session, r: MatchImportRecord) -> Venue:
+class UnknownVenueError(ValueError):
+    pass
+
+
+def _resolve_venue(db: Session, r: MatchImportRecord, geocoder: Geocoder | None = None) -> Venue:
     if r.venue_id is not None:
         venue = db.get(Venue, r.venue_id)
         if venue is None:
             raise ValueError(f"obiekt {r.venue_id} nie istnieje")
         return venue
-    venue = db.scalar(select(Venue).where(func.lower(Venue.name) == (r.venue_name or "").lower()))
+    name = r.venue_name or ""
+    # Najpierw dokładna nazwa: lower() w SQLite nie zna polskich liter (Ś, Ł…), więc samo porównanie
+    # bez wielkości liter tworzyłoby duplikaty obiektów przy każdym meczu.
+    venue = db.scalar(select(Venue).where(Venue.name == name)) or db.scalar(
+        select(Venue).where(func.lower(Venue.name) == name.lower())
+    )
     if venue is not None:
         return venue
-    if r.venue_latitude is None or r.venue_longitude is None:
-        raise ValueError(f"nieznany obiekt '{r.venue_name}' — podaj venue_latitude i venue_longitude")
+    lat, lng = r.venue_latitude, r.venue_longitude
+    if (lat is None or lng is None) and geocoder is not None and (r.venue_address or r.venue_city):
+        # Nowy obiekt z adresem — lokalizację pobieramy z mapy, tak jak w formularzu.
+        try:
+            found = geocoder.geocode(r.venue_address or "", r.venue_city or "")
+            if found is None and r.venue_address and r.venue_city:
+                # Ulica nieznana mapie (np. w dopełniaczu „przy ul. Łabiszyńskiej”) — środek miejscowości.
+                found = geocoder.geocode("", r.venue_city)
+        except GeocodingError:
+            found = None
+        if found is not None:
+            lat, lng = found.latitude, found.longitude
+    if lat is None or lng is None:
+        raise UnknownVenueError(f"nieznany obiekt '{r.venue_name}' — nie udało się ustalić jego lokalizacji")
     venue = Venue(
         name=r.venue_name,
         city=r.venue_city or "",
         address=r.venue_address or "",
-        latitude=r.venue_latitude,
-        longitude=r.venue_longitude,
+        latitude=lat,
+        longitude=lng,
     )
     db.add(venue)
     db.flush()
     return venue
 
 
-def import_matches(db: Session, importer: MatchImporter, default_duration_minutes: int = 105) -> dict:
+def import_matches(
+    db: Session, importer: MatchImporter, default_duration_minutes: int = 105, geocoder: Geocoder | None = None
+) -> dict:
     created = updated = 0
     errors: list[str] = []
+    # Nieznane obiekty zgłaszamy raz na obiekt (import z LNP potrafi mieć wiele meczów na tym samym boisku).
+    unknown_venues: dict[str, int] = {}
     for i, r in enumerate(importer.fetch_matches(), start=1):
         try:
-            venue = _resolve_venue(db, r)
+            venue = _resolve_venue(db, r, geocoder)
+        except UnknownVenueError:
+            label = f"{r.venue_name}, {r.venue_city}" if r.venue_city else r.venue_name
+            unknown_venues[label] = unknown_venues.get(label, 0) + 1
+            continue
         except ValueError as exc:
             errors.append(f"Rekord {i} ({r.home_team} – {r.away_team}): {exc}")
             continue
@@ -63,4 +93,9 @@ def import_matches(db: Session, importer: MatchImporter, default_duration_minute
         match.required_referees = r.required_referees
         match.arrival_before_minutes = r.arrival_before_minutes
     db.commit()
+    errors += [
+        f"Nie znaleziono adresu obiektu '{name}' ({count} mecz.): dodaj go w zakładce Obiekty i zaimportuj plik ponownie"
+        for name, count in unknown_venues.items()
+    ]
+    errors += getattr(importer, "warnings", [])
     return {"created": created, "updated": updated, "errors": errors}

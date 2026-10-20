@@ -1,10 +1,11 @@
-import { Pencil, Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 
 import Avatar from "../components/Avatar";
 import { EmptyState, ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
 import MatchForm from "../components/MatchForm";
 import Modal from "../components/Modal";
+import RowActions from "../components/RowActions";
 import StatusBadge, { Tag } from "../components/StatusBadge";
 import { usePeriod } from "../context/PeriodContext";
 import { useAsync } from "../hooks/useAsync";
@@ -21,6 +22,7 @@ export default function MatchesPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [includePast, setIncludePast] = useState(false);
 
   const save = async (data: MatchInput) => {
     if (editing === "new") await api.createMatch(data);
@@ -42,7 +44,7 @@ export default function MatchesPage() {
   const importFile = async (file: File | undefined) => {
     if (!file) return;
     try {
-      const r = await api.importMatches(file);
+      const r = await api.importMatches(file, includePast);
       setInfo(`Import: dodano ${r.created}, zaktualizowano ${r.updated}.${r.errors.length ? ` Błędy: ${r.errors.join("; ")}` : ""}`);
       matches.reload();
       venues.reload();
@@ -57,6 +59,10 @@ export default function MatchesPage() {
     <div>
       <PageHeader title="Mecze" subtitle="Terminarz wybranego weekendu, dodawanie i import meczów">
         <input ref={fileRef} type="file" accept=".json,.csv" className="hidden" onChange={(e) => importFile(e.target.files?.[0])} />
+        <label className="flex items-center gap-2 text-sm text-zinc-600" title="Dotyczy eksportu z Łączy Nas Piłka — np. terminarz sezonu 2025/26 jako dane robocze">
+          <input type="checkbox" checked={includePast} onChange={(e) => setIncludePast(e.target.checked)} />
+          także rozegrane mecze
+        </label>
         <button className="btn-secondary" onClick={() => fileRef.current?.click()}>
           <Upload className="size-4" /> Import JSON / CSV
         </button>
@@ -119,13 +125,8 @@ export default function MatchesPage() {
                   <td>
                     <StatusBadge status={m.status} />
                   </td>
-                  <td className="whitespace-nowrap text-right">
-                    <button className="icon-btn" onClick={() => setEditing(m)} aria-label="Edytuj" title="Edytuj">
-                      <Pencil className="size-4" />
-                    </button>
-                    <button className="icon-btn hover:bg-red-50 hover:text-red-600" onClick={() => remove(m)} aria-label="Usuń" title="Usuń">
-                      <Trash2 className="size-4" />
-                    </button>
+                  <td className="whitespace-nowrap">
+                    <RowActions onEdit={() => setEditing(m)} onDelete={() => remove(m)} />
                   </td>
                 </tr>
               ))}

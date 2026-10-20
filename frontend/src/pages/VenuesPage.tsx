@@ -1,8 +1,9 @@
-import { MapPin, Pencil, Plus, Trash2 } from "lucide-react";
+import { MapPin, Plus } from "lucide-react";
 import { useState } from "react";
 
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
 import Modal from "../components/Modal";
+import RowActions from "../components/RowActions";
 import VenueForm from "../components/VenueForm";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../services/api";
@@ -48,7 +49,6 @@ export default function VenuesPage() {
                 <th>Nazwa</th>
                 <th>Miasto</th>
                 <th>Adres</th>
-                <th>Współrzędne</th>
                 <th className="text-right">Akcje</th>
               </tr>
             </thead>
@@ -65,16 +65,8 @@ export default function VenuesPage() {
                   </td>
                   <td>{v.city}</td>
                   <td>{v.address}</td>
-                  <td className="text-xs tabular-nums text-zinc-500">
-                    {v.latitude.toFixed(4)}, {v.longitude.toFixed(4)}
-                  </td>
-                  <td className="whitespace-nowrap text-right">
-                    <button className="icon-btn" onClick={() => setEditing(v)} aria-label="Edytuj" title="Edytuj">
-                      <Pencil className="size-4" />
-                    </button>
-                    <button className="icon-btn hover:bg-red-50 hover:text-red-600" onClick={() => remove(v)} aria-label="Usuń" title="Usuń">
-                      <Trash2 className="size-4" />
-                    </button>
+                  <td className="whitespace-nowrap">
+                    <RowActions onEdit={() => setEditing(v)} onDelete={() => remove(v)} />
                   </td>
                 </tr>
               ))}

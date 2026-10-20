@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/optimization", tags=["optimization"])
 def generate(req: GenerateRequest, db: DbSession):
     """Generuje propozycję obsady (podgląd). Nic nie zmienia w obsadzie do czasu /confirm."""
     run = assignment_service.generate_preview(db, req)
-    return assignment_service.run_to_preview(run)
+    return assignment_service.run_to_preview(db, run)
 
 
 @router.post("/confirm", response_model=ConfirmResponse)
@@ -31,7 +31,7 @@ def get_run(run_id: int, db: DbSession):
     run = db.get(GenerationRun, run_id)
     if run is None:
         raise not_found("Generowanie", run_id)
-    return assignment_service.run_to_preview(run)
+    return assignment_service.run_to_preview(db, run)
 
 
 @router.get("/runs", response_model=list[dict])
