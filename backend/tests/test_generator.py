@@ -223,3 +223,26 @@ def test_stats_are_computed():
     assert stats.avg_matches_per_referee == 1.0
     assert stats.total_distance_km >= 0
     assert stats.conflicts == 0
+
+
+# Dni obsadowe piątek–poniedziałek ---------------------------------------------
+def test_round_covers_friday_to_monday():
+    from app.optimization.domain import round_bounds, weekend_key
+
+    friday, monday, tuesday = SATURDAY - dt.timedelta(days=1), SATURDAY + dt.timedelta(days=2), SATURDAY + dt.timedelta(days=3)
+    assert {weekend_key(d) for d in (friday, SATURDAY, SATURDAY + dt.timedelta(days=1), monday)} == {SATURDAY}
+    assert weekend_key(tuesday) == SATURDAY + dt.timedelta(days=7)
+    assert round_bounds(SATURDAY) == (SATURDAY - dt.timedelta(days=4), monday)
+
+
+def test_weekend_limit_counts_friday_and_monday():
+    friday, monday = SATURDAY - dt.timedelta(days=1), SATURDAY + dt.timedelta(days=2)
+    ref = referee(URSYNOW, id=1, max_weekend=2, days=(friday, SATURDAY, monday))
+    slots = [
+        slot(1, URSYNOW, "18:00", "19:45", day=friday),
+        slot(2, URSYNOW, "10:00", "11:45"),
+        slot(3, URSYNOW, "18:00", "19:45", day=monday),
+    ]
+    result = generate(Problem(slots, [ref]))
+    assert assigned_to(result, 1) == 1 and assigned_to(result, 2) == 1
+    assert reason_codes(result, 3) == {"WEEKEND_LIMIT"}

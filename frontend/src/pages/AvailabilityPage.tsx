@@ -101,7 +101,7 @@ export default function AvailabilityPage() {
           <table className="table">
             <thead>
               <tr>
-                <th>Sędzia</th>
+                <th className="sticky left-0 z-[1] bg-zinc-50">Sędzia</th>
                 {days.map((d) => (
                   <th key={d} className="capitalize">
                     {dayName(d)} <span className="font-normal text-zinc-400">{formatDate(d)}</span>
@@ -112,7 +112,7 @@ export default function AvailabilityPage() {
             <tbody>
               {referees.map((r) => (
                 <tr key={r.id}>
-                  <td className="whitespace-nowrap">
+                  <td className="sticky left-0 z-[1] bg-white whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <Avatar name={`${r.first_name} ${r.last_name}`} />
                       <div>
@@ -127,14 +127,13 @@ export default function AvailabilityPage() {
                     const v = form[key(r.id, d)] ?? EMPTY_DAY;
                     const timesDisabled = v.allDay || v.unavailable;
                     return (
-                      <td key={d}>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <label className="text-xs text-zinc-400">od</label>
-                          <input type="time" className="input w-28 py-1.5" disabled={timesDisabled} value={v.from} onChange={(e) => update(r.id, d, { from: e.target.value })} />
-                          <label className="text-xs text-zinc-400">do</label>
-                          <input type="time" className="input w-28 py-1.5" disabled={timesDisabled} value={v.to} onChange={(e) => update(r.id, d, { to: e.target.value })} />
+                      <td key={d} className="min-w-56">
+                        <div className="flex items-center gap-1.5">
+                          <input type="time" aria-label="od" className="input w-[6.5rem] px-2 py-1.5" disabled={timesDisabled} value={v.from} onChange={(e) => update(r.id, d, { from: e.target.value })} />
+                          <span className="text-zinc-400">–</span>
+                          <input type="time" aria-label="do" className="input w-[6.5rem] px-2 py-1.5" disabled={timesDisabled} value={v.to} onChange={(e) => update(r.id, d, { to: e.target.value })} />
                         </div>
-                        <div className="mt-2 flex gap-2 text-xs">
+                        <div className="mt-2 flex gap-1.5 text-xs whitespace-nowrap">
                           <label className={`flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ring-inset transition ${v.allDay ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20" : "text-zinc-500 ring-zinc-200 hover:bg-zinc-50"}`}>
                             <input type="checkbox" className="accent-emerald-600" checked={v.allDay} onChange={(e) => update(r.id, d, { allDay: e.target.checked, unavailable: false })} />
                             cały dzień

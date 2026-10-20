@@ -18,21 +18,22 @@ export function addDays(iso: string, days: number): string {
   return toIso(d);
 }
 
-/** Sobota bieżącego weekendu (w sobotę/niedzielę) lub najbliższa sobota. */
-export function upcomingSaturday(today: Date = new Date()): string {
-  const d = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const dow = d.getDay(); // 0 = niedziela, 6 = sobota
-  const diff = dow === 6 ? 0 : dow === 0 ? -1 : 6 - dow;
+/**
+ * Sobota "kolejki", do której należy dzień (zgodnie z backendem: wtorek–sobota → najbliższa
+ * sobota, niedziela i poniedziałek → poprzednia sobota). Dni obsadowe to piątek–poniedziałek.
+ */
+export function saturdayOf(iso: string): string {
+  const d = fromIso(iso);
+  const dow = d.getDay(); // 0 = niedziela, 1 = poniedziałek, 6 = sobota
+  const diff = dow === 0 ? -1 : dow === 1 ? -2 : 6 - dow;
   d.setDate(d.getDate() + diff);
   return toIso(d);
 }
 
-/** Najbliższa sobota nie późniejsza niż podana data. */
-export function saturdayOf(iso: string): string {
-  const d = fromIso(iso);
-  const dow = d.getDay();
-  d.setDate(d.getDate() - ((dow + 1) % 7));
-  return toIso(d);
+/** Sobota najbliższych dni obsadowych; w poniedziałek planujemy już kolejny weekend. */
+export function upcomingSaturday(today: Date = new Date()): string {
+  const iso = toIso(today);
+  return today.getDay() === 1 ? addDays(saturdayOf(iso), 7) : saturdayOf(iso);
 }
 
 const DAY_NAMES = ["niedziela", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"];

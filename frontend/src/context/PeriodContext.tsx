@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 
 import { addDays, upcomingSaturday } from "../utils/dates";
 
-// Okres roboczy całej aplikacji: weekend (sobota–niedziela).
+// Okres roboczy całej aplikacji: dni obsadowe piątek–poniedziałek, identyfikowane sobotą.
 interface PeriodState {
   dateFrom: string;
   dateTo: string;
@@ -36,11 +36,12 @@ export function PeriodProvider({ children }: { children: ReactNode }) {
         /* ignoruj */
       }
     };
-    const dateTo = addDays(saturday, 1);
+    const dateFrom = addDays(saturday, -1);
+    const dateTo = addDays(saturday, 2);
     return {
-      dateFrom: saturday,
+      dateFrom,
       dateTo,
-      period: { date_from: saturday, date_to: dateTo },
+      period: { date_from: dateFrom, date_to: dateTo },
       setSaturday,
       shiftWeeks: (weeks: number) => setSaturday(addDays(saturday, 7 * weeks)),
     };
