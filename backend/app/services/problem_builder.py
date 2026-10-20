@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import datetime as dt
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models import Assignment, Availability, GenerationMode, Match, MatchStatus, Referee
 from app.optimization.domain import FixedBooking, OptimizationSettings, Problem, RefereeProfile, Slot, round_bounds
+from app.optimization.licenses import is_women_match
 from app.services.availability_service import to_entry
 from app.services.routing_service import GeoPoint
 
@@ -118,4 +119,5 @@ def build_problem(
     for a in avail_rows:
         by_ref.setdefault(a.referee_id, []).append(a)
     profiles = [referee_profile(r, by_ref.get(r.id, []), daily_cap) for r in referees]
+    settings = replace(settings, women_matches_in_period=any(is_women_match(s.league) for s in slots))
     return BuiltProblem(Problem(slots=slots, referees=profiles, fixed=fixed, settings=settings), in_period)

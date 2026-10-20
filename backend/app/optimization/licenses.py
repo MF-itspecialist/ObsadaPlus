@@ -59,41 +59,38 @@ def _rule(group: str, main: int | None, assistant: int | None, assumption: str |
 
 
 SEDZIOWIE, ASYSTENCI, KOBIETY, FUTSAL = "Sędziowie", "Asystenci", "Piłka kobiet", "Futsal i piłka plażowa"
+WOMEN_TO_MEN_ASSUMPTION = "poziom meczów męskich wg tabeli przeliczenia (do weryfikacji)"
 
 # ---------------------------------------------------------------------------
 # TABELA LICENCJI. Kolejność = kolejność w formularzu sędziego.
 # Sędzia z licencją do okręgówki lub niżej jako asystent: max klasa okręgowa;
-# z licencją wyższą: jako asystent max własny poziom.
+# z licencją wyższą jako asystent: max III liga — wyżej tylko licencje asystenckie.
 # ---------------------------------------------------------------------------
 LICENSE_RULES: dict[str, LicenseRule] = {
-    "Sędzia TopAmator A (w tym zawodowi)": _rule(SEDZIOWIE, EKSTRAKLASA, EKSTRAKLASA),
-    "Sędzia TopAmator B": _rule(SEDZIOWIE, II_LIGA, II_LIGA),
+    "Sędzia TopAmator A (w tym zawodowi)": _rule(SEDZIOWIE, EKSTRAKLASA, III_LIGA),
+    "Sędzia TopAmator B": _rule(SEDZIOWIE, II_LIGA, III_LIGA),
     "Sędzia III liga (TopAmator C)": _rule(SEDZIOWIE, III_LIGA, III_LIGA),
-    "Sędzia IV liga": _rule(SEDZIOWIE, IV_LIGA, IV_LIGA),
-    "Sędzia V liga": _rule(SEDZIOWIE, V_LIGA, V_LIGA),
+    "Sędzia IV liga": _rule(SEDZIOWIE, IV_LIGA, III_LIGA),
+    "Sędzia V liga": _rule(SEDZIOWIE, V_LIGA, III_LIGA),
     "Sędzia klasa okręgowa": _rule(SEDZIOWIE, OKREGOWA, OKREGOWA),
     "Sędzia klasa A": _rule(SEDZIOWIE, KLASA_A, OKREGOWA),
     "Sędzia klasa B": _rule(SEDZIOWIE, KLASA_B, OKREGOWA),
-    "Sędzia próbny (C)": _rule(
-        SEDZIOWIE, YOUTH, OKREGOWA,
-        assumption="jako główny tylko rozgrywki młodzieżowe, jako asystent do klasy okręgowej",
-    ),
+    "Sędzia próbny (C)": _rule(SEDZIOWIE, YOUTH, OKREGOWA),
     "Asystent zawodowy": _rule(ASYSTENCI, None, EKSTRAKLASA),
-    "Asystent s.c. (niezawodowy)": _rule(
-        ASYSTENCI, None, I_LIGA, assumption="szczebel centralny = asystent do I ligi"
-    ),
+    "Asystent s.c. (niezawodowy)": _rule(ASYSTENCI, None, I_LIGA),
     "Asystent III/IV/V liga (w tym asystenci mazowieccy)": _rule(ASYSTENCI, None, IV_LIGA),
     "Asystent okręgowy / pozostali": _rule(ASYSTENCI, None, OKREGOWA),
+    # Sędzie mogą prowadzić też mecze męskie (poziom z tabeli przeliczenia niżej),
+    # ale generator kieruje je najpierw na mecze kobiet (miękka preferencja w SCORE).
     "Sędzia Ekstraliga kobiet": LicenseRule(
-        KOBIETY, {Category.WOMEN: W_EKSTRALIGA}, {Category.WOMEN: W_EKSTRALIGA},
-        assumption="uprawnia tylko do meczów kobiet",
+        KOBIETY, {Category.WOMEN: W_EKSTRALIGA}, {Category.WOMEN: W_EKSTRALIGA}, assumption=WOMEN_TO_MEN_ASSUMPTION
     ),
     "Sędzia I liga kobiet": LicenseRule(
-        KOBIETY, {Category.WOMEN: W_I_LIGA}, {Category.WOMEN: W_I_LIGA}, assumption="uprawnia tylko do meczów kobiet"
+        KOBIETY, {Category.WOMEN: W_I_LIGA}, {Category.WOMEN: W_I_LIGA}, assumption=WOMEN_TO_MEN_ASSUMPTION
     ),
     "Sędzia II liga kobiet / asystentka s.c.": LicenseRule(
         KOBIETY, {Category.WOMEN: W_II_LIGA}, {Category.WOMEN: W_EKSTRALIGA},
-        assumption="główna do II ligi kobiet, asystentka do Ekstraligi kobiet",
+        assumption=f"główna do II ligi kobiet, asystentka do Ekstraligi kobiet; {WOMEN_TO_MEN_ASSUMPTION}",
     ),
     "Sędzia Ekstraklasa futsal i piłka plażowa": LicenseRule(
         FUTSAL, {Category.FUTSAL: F_EKSTRAKLASA}, {Category.FUTSAL: F_EKSTRAKLASA}
@@ -103,8 +100,9 @@ LICENSE_RULES: dict[str, LicenseRule] = {
     ),
 }
 
-# ZAŁOŻENIE do weryfikacji: sędzia z licencją „męską” może prowadzić mecze kobiet
-# do poziomu wynikającego z tej tabeli (minimalny poziom męski → poziom kobiet).
+# Przeliczenie poziomów między piłką męską a kobiecą (w obie strony):
+# licencja „męska” do poziomu X → mecze kobiet do poziomu Y i odwrotnie.
+# ZAŁOŻENIE do weryfikacji z Komisją Sędziowską.
 MEN_TO_WOMEN: tuple[tuple[int, int], ...] = ((III_LIGA, W_EKSTRALIGA), (V_LIGA, W_I_LIGA), (KLASA_A, W_II_LIGA), (YOUTH, W_NIZSZE))
 
 
@@ -169,7 +167,19 @@ def max_level(licenses: list[str] | tuple[str, ...], category: Category, role: R
         if category == Category.WOMEN:
             men = levels.get(Category.MEN, 0)
             best = max(best, next((w for threshold, w in MEN_TO_WOMEN if men >= threshold), 0))
+        elif category == Category.MEN:
+            women = levels.get(Category.WOMEN, 0)
+            best = max(best, next((m for m, w in MEN_TO_WOMEN if women >= w), 0))
     return best
+
+
+def has_women_license(licenses: list[str] | tuple[str, ...]) -> bool:
+    return any(Category.WOMEN in LICENSE_RULES[n].main for n in licenses if n in LICENSE_RULES)
+
+
+def is_women_match(league: str) -> bool:
+    match = classify_league(league)
+    return match is not None and match[0] == Category.WOMEN
 
 
 def check_license(licenses: list[str] | tuple[str, ...], league: str, role: RefereeRole) -> str | None:
@@ -202,6 +212,10 @@ def license_catalog() -> list[dict]:
         for label, levels in (("główny", rule.main), ("asystent", rule.assistant)):
             for cat, lvl in levels.items():
                 parts.append(f"{label}: do {LEVEL_NAMES[cat][lvl]}")
+            women = levels.get(Category.WOMEN)
+            if women and Category.MEN not in levels:
+                men = next((m for m, w in MEN_TO_WOMEN if women >= w), 0)
+                parts.append(f"{label} (mecze męskie): do {LEVEL_NAMES[Category.MEN][men]}")
         groups.setdefault(rule.group, []).append(
             {"name": name, "scope": "; ".join(parts), "assumption": rule.assumption}
         )

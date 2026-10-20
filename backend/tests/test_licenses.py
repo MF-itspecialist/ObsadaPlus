@@ -51,10 +51,16 @@ def test_district_assistant_up_to_okregowa():
     assert check_license(lic, "V liga", RefereeRole.ASSISTANT_2) is not None
 
 
-def test_higher_referee_as_assistant_up_to_own_level():
-    lic = ["Sędzia IV liga"]
-    assert check_license(lic, "IV liga", AS1) is None
-    assert check_license(lic, "III liga", AS1) is not None
+@pytest.mark.parametrize("license", ["Sędzia IV liga", "Sędzia V liga", "Sędzia TopAmator A (w tym zawodowi)"])
+def test_referee_above_okregowa_as_assistant_up_to_iii_liga(license):
+    assert check_license([license], "III liga", AS1) is None
+    assert check_license([license], "II liga", AS1) == "licencja jako asystent do: III liga, mecz: II liga"
+
+
+def test_above_iii_liga_assistants_need_assistant_license():
+    assert check_license(["Asystent s.c. (niezawodowy)"], "I liga", AS1) is None
+    assert check_license(["Asystent s.c. (niezawodowy)"], "Ekstraklasa", AS1) is not None
+    assert check_license(["Asystent zawodowy"], "Ekstraklasa", AS1) is None
 
 
 def test_trial_referee_youth_only_as_main():
@@ -69,6 +75,13 @@ def test_best_license_wins_and_unknown_league_is_not_checked():
     assert check_license([], "Puchar Polski", MAIN) is None
     assert check_license([], "Klasa B", MAIN).startswith("brak przydzielonej licencji")
     assert check_license([], "Klasa B", RefereeRole.OBSERVER) is None
+
+
+def test_women_referees_may_also_take_mens_matches():
+    assert check_license(["Sędzia Ekstraliga kobiet"], "III liga", MAIN) is None
+    assert check_license(["Sędzia Ekstraliga kobiet"], "II liga", MAIN) is not None
+    assert check_license(["Sędzia I liga kobiet"], "Klasa okręgowa", MAIN) is None
+    assert check_license(["Sędzia klasa okręgowa"], "Czwarta liga kobiet", MAIN) is None
 
 
 def test_futsal_requires_futsal_license():
@@ -120,3 +133,18 @@ def test_working_referees_use_known_licenses_and_load(db_session):
         assert load_referees(db) == len(records)
         assert load_referees(db) == 0  # ponowne wczytanie nie dubluje
         assert db.query(Referee).count() == len(records)
+
+
+def test_generator_prefers_women_referee_for_womens_match(client):
+    venue = client.post("/api/venues", json={"name": "Stadion", "city": "Warszawa", "latitude": 52.19, "longitude": 20.88}).json()
+    body = {"city": "Warszawa", "latitude": 52.19, "longitude": 20.88}
+    woman = client.post("/api/referees", json={**body, "first_name": "Ewa", "last_name": "Kobieca", "licenses": ["Sędzia I liga kobiet"]}).json()
+    man = client.post("/api/referees", json={**body, "first_name": "Jan", "last_name": "Okręgowy", "licenses": ["Sędzia klasa okręgowa"]}).json()
+    for r in (woman, man):
+        client.post("/api/availability", json={"referee_id": r["id"], "date": "2026-10-10"})
+    match = {"date": "2026-10-10", "start_time": "12:00", "estimated_end_time": "13:45", "venue_id": venue["id"]}
+    mens = client.post("/api/matches", json={**match, "league": "Klasa A", "home_team": "A", "away_team": "B"}).json()
+    womens = client.post("/api/matches", json={**match, "league": "Czwarta liga kobiet", "home_team": "C", "away_team": "D"}).json()
+    preview = client.post("/api/optimization/generate", json={"date_from": "2026-10-10", "date_to": "2026-10-10"}).json()
+    by_match = {a["match"]["match_id"]: a["referee_id"] for a in preview["assignments"]}
+    assert by_match == {womens["id"]: woman["id"], mens["id"]: man["id"]}

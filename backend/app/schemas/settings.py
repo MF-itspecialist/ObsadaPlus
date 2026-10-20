@@ -9,6 +9,8 @@ class SystemSettings(BaseModel):
     arrival_before_minutes: int = Field(45, ge=0, le=240)
     # Generator przydziela sędziemu najwyżej tyle meczów dziennie; więcej tylko ręcznie.
     generator_max_matches_per_day: int = Field(3, ge=1, le=10)
+    # Jak mocno kierować sędzie z licencją kobiecą najpierw na mecze kobiet.
+    women_priority_penalty: float = Field(30.0, ge=0)
     distance_weight: float = Field(2.0, ge=0)
     travel_time_weight: float = Field(0.5, ge=0)
     daily_match_weight: float = Field(20.0, ge=0)

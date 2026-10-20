@@ -64,6 +64,9 @@ class OptimizationSettings:
     assume_available_without_entry: bool = False
     # Na ile minut przed meczem sędzia ma być na miejscu (jeden bufor dla wszystkich meczów).
     arrival_before_minutes: int = 45
+    # Kara za mecz męski dla sędzi z licencją kobiecą — tylko gdy w okresie są mecze kobiet.
+    women_priority_penalty: float = 30.0
+    women_matches_in_period: bool = False
 
 
 @dataclass(frozen=True)
