@@ -63,6 +63,7 @@ def test_town_from_team_name():
     assert town_from_team("Agape Białołęka (Warszawa)") == "Białołęka, Warszawa"
     assert town_from_team("Pogoń Grodzisk Mazowiecki") == "Grodzisk Mazowiecki"
     assert town_from_team("KS Halinów") == "Halinów"
+    assert town_from_team("Iskra Zbrosza Duża") == "Zbrosza Duża"
 
 
 def test_import_twice_updates_instead_of_duplicating(db_session):

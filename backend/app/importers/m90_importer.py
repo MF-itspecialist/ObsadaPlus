@@ -47,8 +47,9 @@ _ROW = re.compile(
 )
 _DATE = re.compile(r"(\d{1,2})\s+(\w+),\s*(\d{1,2}):(\d{2})")
 # Ostatnie człony nazw miejscowości, których nie wolno odcinać ("Grodzisk Mazowiecki").
-_TOWN_SUFFIXES = {"mazowiecki", "mazowiecka", "podlaski", "kościelny", "duży", "mały", "wielki", "wielkie", "kalwaria",
-                  "jeziorna", "górne", "dolne", "nowe", "stare", "szlachecki", "rządowy"}
+_TOWN_SUFFIXES = {"mazowiecki", "mazowiecka", "podlaski", "kościelny", "kościelna", "kalwaria", "jeziorna", "szlachecki",
+                  "rządowy", "duży", "duża", "duże", "mały", "mała", "małe", "wielki", "wielka", "wielkie", "nowy", "nowa",
+                  "nowe", "stary", "stara", "stare", "górny", "górna", "górne", "dolny", "dolna", "dolne", "kolonia"}
 _ROMAN = re.compile(r"^(I{1,3}|IV|V|VI)$")
 
 
@@ -93,7 +94,7 @@ def town_from_team(team: str) -> str:
     for i in range(len(words) - 1, -1, -1):  # po numerze drużyny (II, III) zostaje miejscowość
         if _ROMAN.match(words[i]) and i < len(words) - 1:
             return " ".join(words[i + 1:])
-    if len(words) >= 3 and words[-1].lower() in _TOWN_SUFFIXES:
+    if len(words) >= 3 and words[-1].lower() in _TOWN_SUFFIXES:  # "Iskra Zbrosza Duża" → "Zbrosza Duża"
         return " ".join(words[-2:])
     return words[-1] if words else ""
 
