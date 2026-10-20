@@ -35,6 +35,9 @@ def _resolve_venue(db: Session, r: MatchImportRecord, geocoder: Geocoder | None 
         # Nowy obiekt z adresem — lokalizację pobieramy z mapy, tak jak w formularzu.
         try:
             found = geocoder.geocode(r.venue_address or "", r.venue_city or "")
+            if found is None and r.venue_address and r.venue_city:
+                # Ulica nieznana mapie (np. w dopełniaczu „przy ul. Łabiszyńskiej”) — środek miejscowości.
+                found = geocoder.geocode("", r.venue_city)
         except GeocodingError:
             found = None
         if found is not None:
