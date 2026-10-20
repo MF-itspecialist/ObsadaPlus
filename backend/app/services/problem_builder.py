@@ -48,6 +48,7 @@ def referee_profile(r: Referee, availability: list[Availability], daily_cap: int
         preferred_matches_per_weekend=r.preferred_matches_per_weekend,
         max_matches_per_weekend=r.max_matches_per_weekend,
         availability={a.date: to_entry(a) for a in availability},
+        licenses=tuple(r.licenses or ()),
     )
 
 

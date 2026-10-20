@@ -129,13 +129,18 @@ def required_referees_for(league: str) -> int:
 
 
 class LNPMatchImporter(MatchImporter):
-    """Mecze z pliku eksportu terminarza LNP; domyślnie tylko nadchodzące (od dziś)."""
+    """Mecze z pliku eksportu terminarza LNP; domyślnie tylko nadchodzące (od dziś).
+
+    ``include_past=True`` wczytuje też mecze rozegrane (np. sezon 2025/26 jako dane robocze).
+    """
 
     source_name = "lnp"
 
-    def __init__(self, content: str | bytes | dict, date_from: dt.date | None = None) -> None:
+    def __init__(
+        self, content: str | bytes | dict, date_from: dt.date | None = None, include_past: bool = False
+    ) -> None:
         self.content = content
-        self.date_from = date_from or dt.datetime.now(TZ).date()
+        self.date_from = None if include_past else (date_from or dt.datetime.now(TZ).date())
         self.warnings: list[str] = []
 
     @staticmethod
@@ -179,7 +184,7 @@ class LNPMatchImporter(MatchImporter):
     def _record(self, m: dict, league: str) -> MatchImportRecord | str | None:
         home, away = _name(_first(m, _HOST_KEYS)), _name(_first(m, _GUEST_KEYS))
         when = _parse_datetime(m)
-        if not home or not away or when is None or when.date() < self.date_from:
+        if not home or not away or when is None or (self.date_from and when.date() < self.date_from):
             return None
         state = " ".join(str(m.get(k) or "") for k in ("state", "stateTranslation", "status"))
         if _CANCELLED.search(state):

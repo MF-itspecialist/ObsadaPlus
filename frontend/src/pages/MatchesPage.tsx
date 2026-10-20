@@ -22,6 +22,7 @@ export default function MatchesPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [includePast, setIncludePast] = useState(false);
 
   const save = async (data: MatchInput) => {
     if (editing === "new") await api.createMatch(data);
@@ -43,7 +44,7 @@ export default function MatchesPage() {
   const importFile = async (file: File | undefined) => {
     if (!file) return;
     try {
-      const r = await api.importMatches(file);
+      const r = await api.importMatches(file, includePast);
       setInfo(`Import: dodano ${r.created}, zaktualizowano ${r.updated}.${r.errors.length ? ` Błędy: ${r.errors.join("; ")}` : ""}`);
       matches.reload();
       venues.reload();
@@ -58,6 +59,10 @@ export default function MatchesPage() {
     <div>
       <PageHeader title="Mecze" subtitle="Terminarz wybranego weekendu, dodawanie i import meczów">
         <input ref={fileRef} type="file" accept=".json,.csv" className="hidden" onChange={(e) => importFile(e.target.files?.[0])} />
+        <label className="flex items-center gap-2 text-sm text-zinc-600" title="Dotyczy eksportu z Łączy Nas Piłka — np. terminarz sezonu 2025/26 jako dane robocze">
+          <input type="checkbox" checked={includePast} onChange={(e) => setIncludePast(e.target.checked)} />
+          także rozegrane mecze
+        </label>
         <button className="btn-secondary" onClick={() => fileRef.current?.click()}>
           <Upload className="size-4" /> Import JSON / CSV
         </button>

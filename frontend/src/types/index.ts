@@ -264,41 +264,17 @@ export interface ImportResult {
   errors: string[];
 }
 
-/** Rodzaje licencji sędziowskich, pogrupowane tak jak w regulaminie. */
-export const LICENSE_GROUPS: { title: string; licenses: string[] }[] = [
-  {
-    title: "Sędziowie",
-    licenses: [
-      "Sędzia TopAmator A (w tym zawodowi)",
-      "Sędzia TopAmator B",
-      "Sędzia III liga (TopAmator C)",
-      "Sędzia IV liga",
-      "Sędzia V liga",
-      "Sędzia klasa okręgowa",
-      "Sędzia klasa A",
-      "Sędzia klasa B",
-      "Sędzia próbny (C) – kurs 2025/2026",
-    ],
-  },
-  {
-    title: "Asystenci",
-    licenses: [
-      "Asystent zawodowy",
-      "Asystent s.c. (niezawodowy)",
-      "Asystent III/IV/V liga (w tym asystenci mazowieccy)",
-      "Asystent okręgowy / pozostali",
-      "Asystent próbny (C) – kurs 2025/2026",
-    ],
-  },
-  {
-    title: "Piłka kobiet",
-    licenses: ["Sędzia Ekstraliga kobiet", "Sędzia I liga kobiet", "Sędzia II liga kobiet / asystentka s.c."],
-  },
-  {
-    title: "Futsal i piłka plażowa",
-    licenses: ["Sędzia Ekstraklasa futsal i piłka plażowa", "Sędzia I liga futsal i piłka plażowa"],
-  },
-];
+/** Licencja z katalogu backendu (app/optimization/licenses.py) z opisem uprawnień. */
+export interface LicenseInfo {
+  name: string;
+  scope: string;
+  assumption: string | null;
+}
+
+export interface LicenseGroup {
+  title: string;
+  licenses: LicenseInfo[];
+}
 
 export const ROLE_LABELS: Record<RefereeRole, string> = {
   MAIN: "Sędzia główny",

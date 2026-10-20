@@ -57,9 +57,9 @@ export default function AddressFields({ address, city, onChange, savedLabel }: P
         </Field>
       </div>
       <div className="mt-1 min-h-5 text-sm">
-        {lookup.state === "searching" && <span className="text-slate-500">Szukam adresu na mapie…</span>}
+        {lookup.state === "searching" && <span className="text-zinc-500">Szukam adresu na mapie…</span>}
         {lookup.state === "found" && (
-          <span className="text-emerald-700">
+          <span className="text-emerald-600">
             ✓ Lokalizacja: <strong>{lookup.label}</strong>
           </span>
         )}

@@ -62,8 +62,8 @@ export default function RefereeForm({ initial, onSubmit, onCancel }: Props) {
       </Section>
 
       <fieldset>
-        <legend className="text-sm font-semibold text-slate-800">Licencje</legend>
-        <p className="mb-2 text-xs text-slate-500">Kliknij, aby przydzielić lub odebrać licencję. Można wybrać kilka.</p>
+        <legend className="text-sm font-semibold text-zinc-800">Licencje</legend>
+        <p className="mb-2 text-xs text-zinc-500">Kliknij, aby przydzielić lub odebrać licencję. Można wybrać kilka.</p>
         <LicensePicker value={form.licenses} onChange={(licenses) => set("licenses", licenses)} />
       </fieldset>
 
@@ -113,8 +113,8 @@ export default function RefereeForm({ initial, onSubmit, onCancel }: Props) {
 export function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <fieldset>
-      <legend className="text-sm font-semibold text-slate-800">{title}</legend>
-      {hint && <p className="mb-2 text-xs text-slate-500">{hint}</p>}
+      <legend className="text-sm font-semibold text-zinc-800">{title}</legend>
+      {hint && <p className="mb-2 text-xs text-zinc-500">{hint}</p>}
       <div className="mt-2 grid grid-cols-2 gap-3">{children}</div>
     </fieldset>
   );

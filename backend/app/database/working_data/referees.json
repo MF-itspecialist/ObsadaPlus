@@ -1,0 +1,3797 @@
+[
+ {
+  "first_name": "Zbigniew",
+  "last_name": "Jabłoński",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.2081,
+  "longitude": 20.7999,
+  "licenses": [
+   "Sędzia TopAmator A (w tym zawodowi)"
+  ]
+ },
+ {
+  "first_name": "Witold",
+  "last_name": "Orłowski",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2776,
+  "longitude": 20.9527,
+  "licenses": [
+   "Sędzia TopAmator A (w tym zawodowi)"
+  ]
+ },
+ {
+  "first_name": "Stanisław",
+  "last_name": "Banach",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1833,
+  "longitude": 21.5604,
+  "licenses": [
+   "Asystent zawodowy"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Żukowski",
+  "city": "Kobyłka",
+  "district": "",
+  "latitude": 52.3463,
+  "longitude": 21.216,
+  "licenses": [
+   "Asystent zawodowy"
+  ]
+ },
+ {
+  "first_name": "Katarzyna",
+  "last_name": "Głowacka",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.4024,
+  "longitude": 20.9177,
+  "licenses": [
+   "Asystent zawodowy"
+  ]
+ },
+ {
+  "first_name": "Szymon",
+  "last_name": "Kopeć",
+  "city": "Wołomin",
+  "district": "",
+  "latitude": 52.3286,
+  "longitude": 21.2504,
+  "licenses": [
+   "Asystent zawodowy"
+  ]
+ },
+ {
+  "first_name": "Norbert",
+  "last_name": "Skowroński",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.2094,
+  "longitude": 21.1722,
+  "licenses": [
+   "Sędzia III liga (TopAmator C)"
+  ]
+ },
+ {
+  "first_name": "Dawid",
+  "last_name": "Mazurek",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1876,
+  "longitude": 20.931,
+  "licenses": [
+   "Sędzia III liga (TopAmator C)"
+  ]
+ },
+ {
+  "first_name": "Radosław",
+  "last_name": "Szewczyk",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2565,
+  "longitude": 20.9211,
+  "licenses": [
+   "Sędzia TopAmator B"
+  ]
+ },
+ {
+  "first_name": "Artur",
+  "last_name": "Jabłoński",
+  "city": "Raszyn",
+  "district": "",
+  "latitude": 52.1553,
+  "longitude": 20.9233,
+  "licenses": [
+   "Sędzia III liga (TopAmator C)"
+  ]
+ },
+ {
+  "first_name": "Szymon",
+  "last_name": "Stachowiak",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.204,
+  "longitude": 20.7931,
+  "licenses": [
+   "Sędzia TopAmator A (w tym zawodowi)"
+  ]
+ },
+ {
+  "first_name": "Marcin",
+  "last_name": "Zięba",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.1984,
+  "longitude": 21.1618,
+  "licenses": [
+   "Sędzia TopAmator A (w tym zawodowi)"
+  ]
+ },
+ {
+  "first_name": "Krzysztof",
+  "last_name": "Banach",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1723,
+  "longitude": 21.1071,
+  "licenses": [
+   "Sędzia TopAmator A (w tym zawodowi)"
+  ]
+ },
+ {
+  "first_name": "Norbert",
+  "last_name": "Makowski",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1892,
+  "longitude": 20.9407,
+  "licenses": [
+   "Sędzia III liga (TopAmator C)"
+  ]
+ },
+ {
+  "first_name": "Wojciech",
+  "last_name": "Olszewski",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.318,
+  "longitude": 20.9927,
+  "licenses": [
+   "Asystent s.c. (niezawodowy)"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Orłowski",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2292,
+  "longitude": 20.9819,
+  "licenses": [
+   "Asystent s.c. (niezawodowy)"
+  ]
+ },
+ {
+  "first_name": "Jacek",
+  "last_name": "Mazurek",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1896,
+  "longitude": 21.5779,
+  "licenses": [
+   "Asystent s.c. (niezawodowy)"
+  ]
+ },
+ {
+  "first_name": "Wojciech",
+  "last_name": "Florczak",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2415,
+  "longitude": 21.2437,
+  "licenses": [
+   "Asystent s.c. (niezawodowy)"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Adamczyk",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2784,
+  "longitude": 20.9683,
+  "licenses": [
+   "Asystent s.c. (niezawodowy)"
+  ]
+ },
+ {
+  "first_name": "Paulina",
+  "last_name": "Majewska",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.316,
+  "longitude": 21.0183,
+  "licenses": [
+   "Sędzia I liga kobiet"
+  ]
+ },
+ {
+  "first_name": "Marta",
+  "last_name": "Chojnowska",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1989,
+  "longitude": 20.886,
+  "licenses": [
+   "Sędzia I liga kobiet"
+  ]
+ },
+ {
+  "first_name": "Monika",
+  "last_name": "Kołodziej",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1921,
+  "longitude": 20.9483,
+  "licenses": [
+   "Sędzia I liga kobiet"
+  ]
+ },
+ {
+  "first_name": "Zuzanna",
+  "last_name": "Żurawska",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.254,
+  "longitude": 21.2444,
+  "licenses": [
+   "Sędzia I liga kobiet"
+  ]
+ },
+ {
+  "first_name": "Paulina",
+  "last_name": "Wawrzyniak",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.2074,
+  "longitude": 21.1708,
+  "licenses": [
+   "Sędzia I liga kobiet"
+  ]
+ },
+ {
+  "first_name": "Beata",
+  "last_name": "Gutowska",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.1908,
+  "longitude": 21.0176,
+  "licenses": [
+   "Sędzia I liga kobiet"
+  ]
+ },
+ {
+  "first_name": "Sylwia",
+  "last_name": "Żak",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2433,
+  "longitude": 20.9095,
+  "licenses": [
+   "Sędzia II liga kobiet / asystentka s.c."
+  ]
+ },
+ {
+  "first_name": "Marta",
+  "last_name": "Walczak",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.1934,
+  "longitude": 21.0334,
+  "licenses": [
+   "Sędzia II liga kobiet / asystentka s.c."
+  ]
+ },
+ {
+  "first_name": "Maja",
+  "last_name": "Kurek",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.228,
+  "longitude": 20.9699,
+  "licenses": [
+   "Sędzia II liga kobiet / asystentka s.c."
+  ]
+ },
+ {
+  "first_name": "Kamila",
+  "last_name": "Ostrowska",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.288,
+  "longitude": 20.9214,
+  "licenses": [
+   "Sędzia II liga kobiet / asystentka s.c."
+  ]
+ },
+ {
+  "first_name": "Małgorzata",
+  "last_name": "Kwiatek",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2783,
+  "longitude": 20.9669,
+  "licenses": [
+   "Sędzia II liga kobiet / asystentka s.c."
+  ]
+ },
+ {
+  "first_name": "Weronika",
+  "last_name": "Lipińska",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2458,
+  "longitude": 20.9117,
+  "licenses": [
+   "Sędzia II liga kobiet / asystentka s.c."
+  ]
+ },
+ {
+  "first_name": "Paulina",
+  "last_name": "Konieczny",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2365,
+  "longitude": 21.0819,
+  "licenses": [
+   "Sędzia II liga kobiet / asystentka s.c."
+  ]
+ },
+ {
+  "first_name": "Radosław",
+  "last_name": "Gołębiowski",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2354,
+  "longitude": 21.0754,
+  "licenses": [
+   "Sędzia I liga futsal i piłka plażowa"
+  ]
+ },
+ {
+  "first_name": "Wojciech",
+  "last_name": "Maciejewski",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2349,
+  "longitude": 21.0842,
+  "licenses": [
+   "Sędzia I liga futsal i piłka plażowa"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Sokołowski",
+  "city": "Łomianki",
+  "district": "",
+  "latitude": 52.3276,
+  "longitude": 20.9051,
+  "licenses": [
+   "Sędzia I liga futsal i piłka plażowa"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Leśniak",
+  "city": "Kobyłka",
+  "district": "",
+  "latitude": 52.3473,
+  "longitude": 21.1901,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Jerzy",
+  "last_name": "Jankowiak",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2332,
+  "longitude": 21.0094,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Jerzy",
+  "last_name": "Tomaszewski",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2592,
+  "longitude": 20.9963,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Olszewski",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3162,
+  "longitude": 21.0089,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Zbigniew",
+  "last_name": "Wilk",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2819,
+  "longitude": 20.9326,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Krystian",
+  "last_name": "Rogalski",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2588,
+  "longitude": 21.2432,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Maciejewski",
+  "city": "Pruszków",
+  "district": "",
+  "latitude": 52.1603,
+  "longitude": 20.7809,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Hajduk",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1456,
+  "longitude": 21.0432,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Kubacki",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.26,
+  "longitude": 21.0317,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Frankowski",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.1053,
+  "longitude": 20.6429,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Domański",
+  "city": "Raszyn",
+  "district": "",
+  "latitude": 52.1651,
+  "longitude": 20.9153,
+  "licenses": [
+   "Sędzia IV liga"
+  ]
+ },
+ {
+  "first_name": "Mateusz",
+  "last_name": "Szymczak",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.3211,
+  "longitude": 21.0967,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Jan",
+  "last_name": "Domański",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.3179,
+  "longitude": 21.0849,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Kamiński",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2787,
+  "longitude": 21.0531,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Maciejewski",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2669,
+  "longitude": 21.1665,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Emil",
+  "last_name": "Leśniak",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2724,
+  "longitude": 20.9809,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Kacper",
+  "last_name": "Białek",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2675,
+  "longitude": 20.9756,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Marek",
+  "last_name": "Konieczny",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.4091,
+  "longitude": 20.9281,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Marek",
+  "last_name": "Domański",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2578,
+  "longitude": 20.9002,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Bartłomiej",
+  "last_name": "Mroczek",
+  "city": "Warszawa",
+  "district": "Ochota",
+  "latitude": 52.2228,
+  "longitude": 20.9952,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Piotr",
+  "last_name": "Cybulski",
+  "city": "Józefów",
+  "district": "",
+  "latitude": 52.1385,
+  "longitude": 21.226,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Jan",
+  "last_name": "Frankowski",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1662,
+  "longitude": 21.089,
+  "licenses": [
+   "Sędzia V liga"
+  ]
+ },
+ {
+  "first_name": "Grzegorz",
+  "last_name": "Lewicki",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2655,
+  "longitude": 20.9231,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Brzeziński",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2821,
+  "longitude": 20.9419,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Krystian",
+  "last_name": "Konieczny",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.338,
+  "longitude": 21.0807,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Jerzy",
+  "last_name": "Wawrzyniak",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.1971,
+  "longitude": 21.1885,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Grzegorz",
+  "last_name": "Jabłoński",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.196,
+  "longitude": 21.1605,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Grzegorz",
+  "last_name": "Szymczak",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2866,
+  "longitude": 21.0689,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Jakub",
+  "last_name": "Banach",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1895,
+  "longitude": 21.5662,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Błaszczyk",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2595,
+  "longitude": 20.9661,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Dawid",
+  "last_name": "Adamczyk",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.3978,
+  "longitude": 20.9146,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Mariusz",
+  "last_name": "Turek",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.284,
+  "longitude": 20.9447,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Żukowski",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1809,
+  "longitude": 20.9308,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Rybak",
+  "city": "Kobyłka",
+  "district": "",
+  "latitude": 52.329,
+  "longitude": 21.2072,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Wójtowicz",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.1141,
+  "longitude": 20.614,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Mariusz",
+  "last_name": "Nowakowski",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1907,
+  "longitude": 20.8989,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Wojciech",
+  "last_name": "Kubacki",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2651,
+  "longitude": 21.0235,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Mikołaj",
+  "last_name": "Żukowski",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.1931,
+  "longitude": 21.1677,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Emil",
+  "last_name": "Nowakowski",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.1892,
+  "longitude": 21.0483,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Sebastian",
+  "last_name": "Sadowski",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2255,
+  "longitude": 21.0256,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Sikora",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1682,
+  "longitude": 21.086,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Mateusz",
+  "last_name": "Kuźma",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1998,
+  "longitude": 20.9439,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Jarosław",
+  "last_name": "Mazurek",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1844,
+  "longitude": 20.879,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Igor",
+  "last_name": "Banach",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.223,
+  "longitude": 21.0099,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Radosław",
+  "last_name": "Strzelecki",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1751,
+  "longitude": 21.5535,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Aleksander",
+  "last_name": "Marciniak",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.1926,
+  "longitude": 20.6222,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Hajduk",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2709,
+  "longitude": 21.1483,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Wieczorek",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2551,
+  "longitude": 21.2342,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Andrzej",
+  "last_name": "Sobczak",
+  "city": "Pruszków",
+  "district": "",
+  "latitude": 52.1624,
+  "longitude": 20.8094,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Kacper",
+  "last_name": "Stachowiak",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1912,
+  "longitude": 20.8757,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Wiktor",
+  "last_name": "Rogalski",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.2031,
+  "longitude": 20.8645,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Witold",
+  "last_name": "Kołodziej",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1441,
+  "longitude": 21.0552,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Jan",
+  "last_name": "Florczak",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.1953,
+  "longitude": 21.1733,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Duda",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.2024,
+  "longitude": 20.6276,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Marcel",
+  "last_name": "Tarnowski",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2464,
+  "longitude": 20.9688,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Michał",
+  "last_name": "Cybulski",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2767,
+  "longitude": 20.972,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Kalisz",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2464,
+  "longitude": 21.0243,
+  "licenses": [
+   "Sędzia klasa okręgowa"
+  ]
+ },
+ {
+  "first_name": "Rafał",
+  "last_name": "Kamiński",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2385,
+  "longitude": 21.0154,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Norbert",
+  "last_name": "Kędzierski",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2605,
+  "longitude": 20.9893,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Franciszek",
+  "last_name": "Kopeć",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3172,
+  "longitude": 21.0146,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Leszek",
+  "last_name": "Urbański",
+  "city": "Otwock",
+  "district": "",
+  "latitude": 52.0963,
+  "longitude": 21.2795,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Kamiński",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2437,
+  "longitude": 21.095,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Franciszek",
+  "last_name": "Lewicki",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1999,
+  "longitude": 20.9483,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Marcel",
+  "last_name": "Mroczek",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2582,
+  "longitude": 20.9922,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Arkadiusz",
+  "last_name": "Stachowiak",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.19,
+  "longitude": 21.0485,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Mazurek",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2657,
+  "longitude": 21.0215,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Julian",
+  "last_name": "Wójtowicz",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.24,
+  "longitude": 21.0997,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Rafał",
+  "last_name": "Siwiec",
+  "city": "Łomianki",
+  "district": "",
+  "latitude": 52.3452,
+  "longitude": 20.8922,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Sebastian",
+  "last_name": "Tarnowski",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2634,
+  "longitude": 21.0193,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Cezary",
+  "last_name": "Banaś",
+  "city": "Otwock",
+  "district": "",
+  "latitude": 52.0958,
+  "longitude": 21.2491,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Rafał",
+  "last_name": "Błaszczyk",
+  "city": "Warszawa",
+  "district": "Ochota",
+  "latitude": 52.2161,
+  "longitude": 20.9955,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Szewczyk",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2401,
+  "longitude": 21.0062,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Filip",
+  "last_name": "Mroczek",
+  "city": "Nowy Dwór Mazowiecki",
+  "district": "",
+  "latitude": 52.4271,
+  "longitude": 20.7223,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Gołębiowski",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1511,
+  "longitude": 21.0569,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Sokołowski",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2891,
+  "longitude": 20.9228,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Patryk",
+  "last_name": "Rybak",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2565,
+  "longitude": 21.0009,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Eryk",
+  "last_name": "Bielecki",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2789,
+  "longitude": 20.9544,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Marcin",
+  "last_name": "Stachowiak",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1696,
+  "longitude": 21.086,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Marek",
+  "last_name": "Matusiak",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2626,
+  "longitude": 21.1575,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Dawid",
+  "last_name": "Strzelecki",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1907,
+  "longitude": 20.93,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Jerzy",
+  "last_name": "Kalisz",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.1972,
+  "longitude": 20.6026,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Kamil",
+  "last_name": "Wilk",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2587,
+  "longitude": 21.2302,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Kubiak",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.3275,
+  "longitude": 21.1122,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Kurek",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.2007,
+  "longitude": 21.0469,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Radosław",
+  "last_name": "Królik",
+  "city": "Józefów",
+  "district": "",
+  "latitude": 52.1297,
+  "longitude": 21.2255,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Sikora",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.3951,
+  "longitude": 20.9435,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Mikołajczyk",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.2008,
+  "longitude": 20.7949,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Chojnowski",
+  "city": "Nowy Dwór Mazowiecki",
+  "district": "",
+  "latitude": 52.4382,
+  "longitude": 20.7176,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Wiktor",
+  "last_name": "Czarnecki",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2427,
+  "longitude": 21.0761,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Nowicki",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1551,
+  "longitude": 21.0713,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Kalisz",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1692,
+  "longitude": 21.0771,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Kamil",
+  "last_name": "Kubiak",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2412,
+  "longitude": 20.961,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Sowa",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1398,
+  "longitude": 21.0551,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Karol",
+  "last_name": "Strzelecki",
+  "city": "Ząbki",
+  "district": "",
+  "latitude": 52.2965,
+  "longitude": 21.0979,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Eryk",
+  "last_name": "Adamczyk",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.4122,
+  "longitude": 20.9259,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Górecki",
+  "city": "Piaseczno",
+  "district": "",
+  "latitude": 52.0846,
+  "longitude": 21.0135,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Marcel",
+  "last_name": "Laskowski",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2563,
+  "longitude": 20.9661,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Igor",
+  "last_name": "Siwiec",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2642,
+  "longitude": 21.17,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Grzegorz",
+  "last_name": "Zięba",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1697,
+  "longitude": 21.5571,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Przybylski",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.3008,
+  "longitude": 21.0452,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Adam",
+  "last_name": "Pająk",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.187,
+  "longitude": 21.0277,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Bartosz",
+  "last_name": "Kalisz",
+  "city": "Nowy Dwór Mazowiecki",
+  "district": "",
+  "latitude": 52.4365,
+  "longitude": 20.7261,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Marcel",
+  "last_name": "Przybylski",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2493,
+  "longitude": 21.2414,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Jabłoński",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2476,
+  "longitude": 20.9301,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Maciej",
+  "last_name": "Kubacki",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.187,
+  "longitude": 20.8671,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Patryk",
+  "last_name": "Kamiński",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2655,
+  "longitude": 20.9897,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Marcel",
+  "last_name": "Gutowski",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1588,
+  "longitude": 21.0431,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Igor",
+  "last_name": "Walczak",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2529,
+  "longitude": 21.0486,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Emil",
+  "last_name": "Pająk",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1833,
+  "longitude": 21.5765,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Marcel",
+  "last_name": "Lewicki",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2772,
+  "longitude": 21.0029,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Paulina",
+  "last_name": "Żurawska",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.156,
+  "longitude": 21.046,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Matusiak",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.2029,
+  "longitude": 21.1864,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Karol",
+  "last_name": "Gutowski",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2453,
+  "longitude": 20.8991,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Witold",
+  "last_name": "Kędzierski",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2376,
+  "longitude": 21.0725,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Andrzej",
+  "last_name": "Górecki",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.3192,
+  "longitude": 21.0849,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Maja",
+  "last_name": "Żak",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.1915,
+  "longitude": 21.0275,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Adam",
+  "last_name": "Hajduk",
+  "city": "Konstancin-Jeziorna",
+  "district": "",
+  "latitude": 52.0968,
+  "longitude": 21.1154,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Iwański",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2667,
+  "longitude": 21.0369,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Żak",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1642,
+  "longitude": 21.1042,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Mazurek",
+  "city": "Ząbki",
+  "district": "",
+  "latitude": 52.2822,
+  "longitude": 21.1124,
+  "licenses": [
+   "Sędzia klasa B"
+  ]
+ },
+ {
+  "first_name": "Rafał",
+  "last_name": "Duda",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3088,
+  "longitude": 20.9941,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Czarnecki",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2534,
+  "longitude": 21.2172,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Karol",
+  "last_name": "Mazurek",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2274,
+  "longitude": 21.0706,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Marcin",
+  "last_name": "Rutkowski",
+  "city": "Raszyn",
+  "district": "",
+  "latitude": 52.1629,
+  "longitude": 20.9318,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Górecki",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2276,
+  "longitude": 21.021,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Jacek",
+  "last_name": "Matusiak",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2706,
+  "longitude": 20.9861,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Maciej",
+  "last_name": "Lewicki",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.101,
+  "longitude": 20.6423,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Wieczorek",
+  "city": "Wołomin",
+  "district": "",
+  "latitude": 52.3306,
+  "longitude": 21.2463,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Adam",
+  "last_name": "Majewski",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1997,
+  "longitude": 20.8921,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Piotr",
+  "last_name": "Mazurek",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.2042,
+  "longitude": 21.189,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Robert",
+  "last_name": "Rakowski",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.1966,
+  "longitude": 21.1804,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Patryk",
+  "last_name": "Żukowski",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1672,
+  "longitude": 21.5685,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Arkadiusz",
+  "last_name": "Białek",
+  "city": "Wołomin",
+  "district": "",
+  "latitude": 52.341,
+  "longitude": 21.2438,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Mateusz",
+  "last_name": "Nowakowski",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2999,
+  "longitude": 21.0681,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Adamczyk",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.2999,
+  "longitude": 20.9871,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Norbert",
+  "last_name": "Rybak",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2684,
+  "longitude": 20.9897,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Maciej",
+  "last_name": "Kamiński",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2435,
+  "longitude": 21.2348,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Bartosz",
+  "last_name": "Jabłoński",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.413,
+  "longitude": 20.941,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Patryk",
+  "last_name": "Brzeziński",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2737,
+  "longitude": 20.9953,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Łukasz",
+  "last_name": "Kuźma",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.2142,
+  "longitude": 20.8088,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Radosław",
+  "last_name": "Wieczorek",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.26,
+  "longitude": 20.9809,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Artur",
+  "last_name": "Fijałkowski",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2577,
+  "longitude": 21.2246,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Filip",
+  "last_name": "Adamczyk",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.2006,
+  "longitude": 21.0319,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Krzysztof",
+  "last_name": "Skowroński",
+  "city": "Warszawa",
+  "district": "Ochota",
+  "latitude": 52.2054,
+  "longitude": 20.9654,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Maciej",
+  "last_name": "Błaszczyk",
+  "city": "Łomianki",
+  "district": "",
+  "latitude": 52.3332,
+  "longitude": 20.8701,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Drozd",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2815,
+  "longitude": 20.9288,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Michał",
+  "last_name": "Rogalski",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2695,
+  "longitude": 20.998,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Musiał",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1569,
+  "longitude": 21.0598,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Jakub",
+  "last_name": "Przybylski",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.194,
+  "longitude": 21.1759,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Jakub",
+  "last_name": "Laskowski",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1686,
+  "longitude": 21.5776,
+  "licenses": [
+   "Asystent III/IV/V liga (w tym asystenci mazowieccy)"
+  ]
+ },
+ {
+  "first_name": "Artur",
+  "last_name": "Żak",
+  "city": "Józefów",
+  "district": "",
+  "latitude": 52.1423,
+  "longitude": 21.2339,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Wawrzyniak",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1624,
+  "longitude": 21.1016,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Dariusz",
+  "last_name": "Marciniak",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2431,
+  "longitude": 21.0196,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Szewczyk",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2811,
+  "longitude": 21.0677,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Maciej",
+  "last_name": "Olszewski",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2614,
+  "longitude": 21.0522,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Błaszczyk",
+  "city": "Łomianki",
+  "district": "",
+  "latitude": 52.3227,
+  "longitude": 20.9006,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Przybylski",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2431,
+  "longitude": 20.9723,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Julian",
+  "last_name": "Chmiel",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.2005,
+  "longitude": 20.9295,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Rafał",
+  "last_name": "Dudek",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.204,
+  "longitude": 20.8711,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Żak",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.2186,
+  "longitude": 20.7802,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Aleksander",
+  "last_name": "Nowakowski",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3134,
+  "longitude": 20.9816,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Filip",
+  "last_name": "Strzelecki",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.161,
+  "longitude": 21.0356,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Julian",
+  "last_name": "Marciniak",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2567,
+  "longitude": 21.0421,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Brzeziński",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.1974,
+  "longitude": 20.6039,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Emil",
+  "last_name": "Majewski",
+  "city": "Wołomin",
+  "district": "",
+  "latitude": 52.3323,
+  "longitude": 21.252,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Łukasz",
+  "last_name": "Mazurek",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.2084,
+  "longitude": 20.7806,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Oskar",
+  "last_name": "Florczak",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.2157,
+  "longitude": 20.7999,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Witold",
+  "last_name": "Sadowski",
+  "city": "Józefów",
+  "district": "",
+  "latitude": 52.1426,
+  "longitude": 21.2473,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Mateusz",
+  "last_name": "Grabowski",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.1005,
+  "longitude": 20.6234,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Julian",
+  "last_name": "Musiał",
+  "city": "Raszyn",
+  "district": "",
+  "latitude": 52.1552,
+  "longitude": 20.9222,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Ewelina",
+  "last_name": "Szymczak",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3046,
+  "longitude": 21.0156,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Bartosz",
+  "last_name": "Kaźmierczak",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.1964,
+  "longitude": 20.6096,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Marek",
+  "last_name": "Musiał",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2202,
+  "longitude": 20.998,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Sokołowski",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.107,
+  "longitude": 20.6257,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Kamiński",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2294,
+  "longitude": 20.9939,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Florczak",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2726,
+  "longitude": 20.9945,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Adam",
+  "last_name": "Fijałkowski",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2662,
+  "longitude": 20.8922,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Aleksander",
+  "last_name": "Białek",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2569,
+  "longitude": 20.8948,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Artur",
+  "last_name": "Majewski",
+  "city": "Ząbki",
+  "district": "",
+  "latitude": 52.2918,
+  "longitude": 21.1238,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Frankowski",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2466,
+  "longitude": 21.0357,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Zbigniew",
+  "last_name": "Szewczyk",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2397,
+  "longitude": 20.9489,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Jabłoński",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2568,
+  "longitude": 21.1432,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Jacek",
+  "last_name": "Błaszczyk",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.271,
+  "longitude": 21.142,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Marcin",
+  "last_name": "Bąk",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2655,
+  "longitude": 20.9029,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Patryk",
+  "last_name": "Majewski",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.41,
+  "longitude": 20.9257,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Michał",
+  "last_name": "Żukowski",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2702,
+  "longitude": 21.1433,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Eryk",
+  "last_name": "Matusiak",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2399,
+  "longitude": 20.9763,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Stanisław",
+  "last_name": "Strzelecki",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.2019,
+  "longitude": 20.8871,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Igor",
+  "last_name": "Kurek",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2246,
+  "longitude": 20.9801,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Jakub",
+  "last_name": "Majewski",
+  "city": "Warszawa",
+  "district": "Ochota",
+  "latitude": 52.2243,
+  "longitude": 20.9864,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Matusiak",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.277,
+  "longitude": 20.9704,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Dariusz",
+  "last_name": "Szymczak",
+  "city": "Piaseczno",
+  "district": "",
+  "latitude": 52.085,
+  "longitude": 21.0228,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Michał",
+  "last_name": "Wilk",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1844,
+  "longitude": 20.8788,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Tadeusz",
+  "last_name": "Majewski",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2782,
+  "longitude": 20.9247,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Grzegorz",
+  "last_name": "Gutowski",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2475,
+  "longitude": 21.2131,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Bielecki",
+  "city": "Otwock",
+  "district": "",
+  "latitude": 52.0934,
+  "longitude": 21.2702,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Eryk",
+  "last_name": "Wieczorek",
+  "city": "Warszawa",
+  "district": "Ochota",
+  "latitude": 52.2011,
+  "longitude": 20.9708,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Julian",
+  "last_name": "Sowa",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2615,
+  "longitude": 20.9178,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Oskar",
+  "last_name": "Dudek",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.327,
+  "longitude": 21.1008,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Kacper",
+  "last_name": "Kopeć",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2363,
+  "longitude": 21.0795,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Robert",
+  "last_name": "Łuczak",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1796,
+  "longitude": 21.585,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Eryk",
+  "last_name": "Sowa",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3134,
+  "longitude": 20.9853,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Igor",
+  "last_name": "Hajduk",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1476,
+  "longitude": 21.0432,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Aleksander",
+  "last_name": "Kubiak",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2657,
+  "longitude": 20.9955,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Jarosław",
+  "last_name": "Rutkowski",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1851,
+  "longitude": 20.9258,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Duda",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1409,
+  "longitude": 21.0542,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Artur",
+  "last_name": "Olszewski",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.2012,
+  "longitude": 20.939,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Kurek",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.1014,
+  "longitude": 20.6302,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Maciejewski",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1388,
+  "longitude": 21.0596,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Bednarek",
+  "city": "Konstancin-Jeziorna",
+  "district": "",
+  "latitude": 52.0871,
+  "longitude": 21.1013,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Chmiel",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2462,
+  "longitude": 20.9045,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Adam",
+  "last_name": "Florczak",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.316,
+  "longitude": 21.1013,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Eryk",
+  "last_name": "Przybylski",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.2097,
+  "longitude": 20.6086,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Aleksander",
+  "last_name": "Kołodziej",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.1957,
+  "longitude": 20.6225,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Kacper",
+  "last_name": "Frankowski",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.3357,
+  "longitude": 21.0852,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Igor",
+  "last_name": "Mikołajczyk",
+  "city": "Błonie",
+  "district": "",
+  "latitude": 52.2073,
+  "longitude": 20.6247,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Tadeusz",
+  "last_name": "Turek",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2951,
+  "longitude": 21.0444,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Konieczny",
+  "city": "Raszyn",
+  "district": "",
+  "latitude": 52.1505,
+  "longitude": 20.94,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Marcin",
+  "last_name": "Rogalski",
+  "city": "Nowy Dwór Mazowiecki",
+  "district": "",
+  "latitude": 52.4277,
+  "longitude": 20.6986,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Tadeusz",
+  "last_name": "Grabowski",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2577,
+  "longitude": 21.1421,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Aleksander",
+  "last_name": "Szczepański",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1608,
+  "longitude": 21.0254,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Czarnecki",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2366,
+  "longitude": 20.9958,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Tadeusz",
+  "last_name": "Kubiak",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1892,
+  "longitude": 20.9104,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Piotr",
+  "last_name": "Szczepański",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.2079,
+  "longitude": 21.1622,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Szymon",
+  "last_name": "Laskowski",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2509,
+  "longitude": 21.2398,
+  "licenses": [
+   "Sędzia klasa A"
+  ]
+ },
+ {
+  "first_name": "Emil",
+  "last_name": "Matusiak",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2542,
+  "longitude": 20.906,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Oskar",
+  "last_name": "Banaś",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2911,
+  "longitude": 21.05,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Karol",
+  "last_name": "Nowakowski",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2279,
+  "longitude": 21.0899,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Sebastian",
+  "last_name": "Kuźma",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2657,
+  "longitude": 21.1798,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Wojciech",
+  "last_name": "Grabowski",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2614,
+  "longitude": 20.9112,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Wojciech",
+  "last_name": "Kuźma",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2469,
+  "longitude": 20.9109,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Emil",
+  "last_name": "Kubiak",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1674,
+  "longitude": 21.5555,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Krystian",
+  "last_name": "Wieczorek",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1904,
+  "longitude": 20.912,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Leszek",
+  "last_name": "Sikora",
+  "city": "Warszawa",
+  "district": "Wilanów",
+  "latitude": 52.1716,
+  "longitude": 21.0809,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Patryk",
+  "last_name": "Sobczak",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2484,
+  "longitude": 21.0427,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Grzegorz",
+  "last_name": "Górecki",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.158,
+  "longitude": 21.0336,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Oliwia",
+  "last_name": "Szymczak",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.1985,
+  "longitude": 21.1757,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Igor",
+  "last_name": "Duda",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3171,
+  "longitude": 20.9887,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Mroczek",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.1856,
+  "longitude": 21.0373,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Witold",
+  "last_name": "Grzelak",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2641,
+  "longitude": 20.9173,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Małgorzata",
+  "last_name": "Frankowska",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2284,
+  "longitude": 21.0767,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Michał",
+  "last_name": "Kalisz",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1807,
+  "longitude": 21.5596,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Turek",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2528,
+  "longitude": 21.0207,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Mielczarek",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.1035,
+  "longitude": 20.6449,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Maciej",
+  "last_name": "Frankowski",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2879,
+  "longitude": 21.0631,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Robert",
+  "last_name": "Cybulski",
+  "city": "Ożarów Mazowiecki",
+  "district": "",
+  "latitude": 52.2048,
+  "longitude": 20.8066,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Arkadiusz",
+  "last_name": "Błaszczyk",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.237,
+  "longitude": 20.9996,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Adam",
+  "last_name": "Jankowiak",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2498,
+  "longitude": 21.1713,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Rafał",
+  "last_name": "Chmiel",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.256,
+  "longitude": 20.9238,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Mateusz",
+  "last_name": "Matusiak",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2444,
+  "longitude": 20.8951,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Oskar",
+  "last_name": "Duda",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1605,
+  "longitude": 21.0389,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Karol",
+  "last_name": "Kołodziej",
+  "city": "Pruszków",
+  "district": "",
+  "latitude": 52.174,
+  "longitude": 20.794,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Kubiak",
+  "city": "Legionowo",
+  "district": "",
+  "latitude": 52.4022,
+  "longitude": 20.9262,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Bartłomiej",
+  "last_name": "Szczepański",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.189,
+  "longitude": 20.866,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Julian",
+  "last_name": "Turek",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2611,
+  "longitude": 21.0405,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Daniel",
+  "last_name": "Maciejewski",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2814,
+  "longitude": 21.0485,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Ewelina",
+  "last_name": "Banach",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2435,
+  "longitude": 21.0068,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Norbert",
+  "last_name": "Banaś",
+  "city": "Ząbki",
+  "district": "",
+  "latitude": 52.2981,
+  "longitude": 21.0923,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Krystian",
+  "last_name": "Błaszczyk",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.19,
+  "longitude": 21.1648,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Norbert",
+  "last_name": "Białek",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2818,
+  "longitude": 21.0559,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Wawrzyniak",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2501,
+  "longitude": 21.1645,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Cezary",
+  "last_name": "Sobczak",
+  "city": "Warszawa",
+  "district": "Bemowo",
+  "latitude": 52.2545,
+  "longitude": 20.9089,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Sebastian",
+  "last_name": "Kalisz",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2685,
+  "longitude": 20.9812,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Bogdan",
+  "last_name": "Banach",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2217,
+  "longitude": 21.0039,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Rafał",
+  "last_name": "Wilk",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2508,
+  "longitude": 21.1508,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Norbert",
+  "last_name": "Sokołowski",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.3263,
+  "longitude": 21.1092,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Mikołaj",
+  "last_name": "Jaworski",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.2036,
+  "longitude": 21.0205,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Leszek",
+  "last_name": "Kaźmierczak",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.279,
+  "longitude": 20.9259,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Lis",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.233,
+  "longitude": 20.9918,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Mateusz",
+  "last_name": "Białek",
+  "city": "Kobyłka",
+  "district": "",
+  "latitude": 52.3484,
+  "longitude": 21.1946,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Sebastian",
+  "last_name": "Duda",
+  "city": "Sulejówek",
+  "district": "",
+  "latitude": 52.2444,
+  "longitude": 21.2817,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Konrad",
+  "last_name": "Kubacki",
+  "city": "Marki",
+  "district": "",
+  "latitude": 52.3258,
+  "longitude": 21.0983,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Mielczarek",
+  "city": "Warszawa",
+  "district": "Ursynów",
+  "latitude": 52.1466,
+  "longitude": 21.0555,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Jakub",
+  "last_name": "Lewicki",
+  "city": "Warszawa",
+  "district": "Żoliborz",
+  "latitude": 52.2691,
+  "longitude": 20.9848,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Bartosz",
+  "last_name": "Kędzierski",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.1147,
+  "longitude": 20.6402,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Szymon",
+  "last_name": "Fijałkowski",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2324,
+  "longitude": 21.024,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Stępniak",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.249,
+  "longitude": 21.0176,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Pająk",
+  "city": "Warszawa",
+  "district": "Ochota",
+  "latitude": 52.2153,
+  "longitude": 20.9672,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Mariusz",
+  "last_name": "Rybak",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1957,
+  "longitude": 20.882,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Witold",
+  "last_name": "Sowa",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1997,
+  "longitude": 20.8771,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Błaszczyk",
+  "city": "Warszawa",
+  "district": "Wawer",
+  "latitude": 52.202,
+  "longitude": 21.173,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Damian",
+  "last_name": "Tarnowski",
+  "city": "Grodzisk Mazowiecki",
+  "district": "",
+  "latitude": 52.1035,
+  "longitude": 20.61,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Piotr",
+  "last_name": "Kubacki",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2896,
+  "longitude": 21.0423,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Eryk",
+  "last_name": "Musiał",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2288,
+  "longitude": 21.0261,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Witold",
+  "last_name": "Szewczyk",
+  "city": "Warszawa",
+  "district": "Praga-Południe",
+  "latitude": 52.2446,
+  "longitude": 21.0757,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Tomaszewski",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.3117,
+  "longitude": 20.9966,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Dominik",
+  "last_name": "Urbański",
+  "city": "Łomianki",
+  "district": "",
+  "latitude": 52.3301,
+  "longitude": 20.8707,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Jarosław",
+  "last_name": "Iwański",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.2021,
+  "longitude": 20.8743,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Mariusz",
+  "last_name": "Jaworski",
+  "city": "Warszawa",
+  "district": "Włochy",
+  "latitude": 52.1798,
+  "longitude": 20.9154,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Franciszek",
+  "last_name": "Bielecki",
+  "city": "Wołomin",
+  "district": "",
+  "latitude": 52.3432,
+  "longitude": 21.2378,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Bartosz",
+  "last_name": "Gołębiowski",
+  "city": "Sulejówek",
+  "district": "",
+  "latitude": 52.2363,
+  "longitude": 21.2982,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Dudek",
+  "city": "Warszawa",
+  "district": "Bielany",
+  "latitude": 52.2761,
+  "longitude": 20.9485,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Miłosz",
+  "last_name": "Wawrzyniak",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1913,
+  "longitude": 20.9019,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Aleksander",
+  "last_name": "Brzeziński",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2978,
+  "longitude": 21.0431,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Stanisław",
+  "last_name": "Laskowski",
+  "city": "Łomianki",
+  "district": "",
+  "latitude": 52.3423,
+  "longitude": 20.8879,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Kacper",
+  "last_name": "Czarnecki",
+  "city": "Otwock",
+  "district": "",
+  "latitude": 52.0966,
+  "longitude": 21.2697,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Mroczek",
+  "city": "Warszawa",
+  "district": "Śródmieście",
+  "latitude": 52.2249,
+  "longitude": 21.0184,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Michał",
+  "last_name": "Adamczyk",
+  "city": "Warszawa",
+  "district": "Mokotów",
+  "latitude": 52.2033,
+  "longitude": 21.0198,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Sebastian",
+  "last_name": "Florczak",
+  "city": "Warszawa",
+  "district": "Ursus",
+  "latitude": 52.1905,
+  "longitude": 20.8964,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Krystian",
+  "last_name": "Szczepański",
+  "city": "Warszawa",
+  "district": "Targówek",
+  "latitude": 52.2939,
+  "longitude": 21.0332,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Zuzanna",
+  "last_name": "Witkowska",
+  "city": "Kobyłka",
+  "district": "",
+  "latitude": 52.3419,
+  "longitude": 21.1836,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Hubert",
+  "last_name": "Grabowski",
+  "city": "Warszawa",
+  "district": "Praga-Północ",
+  "latitude": 52.2628,
+  "longitude": 21.0183,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Jakub",
+  "last_name": "Pająk",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.259,
+  "longitude": 21.1457,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Przemysław",
+  "last_name": "Bąk",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2413,
+  "longitude": 20.9471,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Dawid",
+  "last_name": "Mikołajczyk",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1767,
+  "longitude": 21.5578,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Kamil",
+  "last_name": "Lis",
+  "city": "Mińsk Mazowiecki",
+  "district": "",
+  "latitude": 52.1748,
+  "longitude": 21.5615,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Antoni",
+  "last_name": "Stachowiak",
+  "city": "Warszawa",
+  "district": "Wola",
+  "latitude": 52.2232,
+  "longitude": 20.9469,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Stanisław",
+  "last_name": "Sowa",
+  "city": "Warszawa",
+  "district": "Wesoła",
+  "latitude": 52.2446,
+  "longitude": 21.2181,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Grzegorz",
+  "last_name": "Wójtowicz",
+  "city": "Warszawa",
+  "district": "Rembertów",
+  "latitude": 52.2584,
+  "longitude": 21.1621,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ },
+ {
+  "first_name": "Adrian",
+  "last_name": "Sikora",
+  "city": "Warszawa",
+  "district": "Białołęka",
+  "latitude": 52.305,
+  "longitude": 21.0077,
+  "licenses": [
+   "Sędzia próbny (C)"
+  ]
+ }
+]

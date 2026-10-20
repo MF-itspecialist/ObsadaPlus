@@ -94,7 +94,9 @@ class RefereeProfile:
     preferred_matches_per_weekend: int = 4
     max_matches_per_weekend: int = 5
     availability: dict[dt.date, AvailabilityEntry] = field(default_factory=dict)
-    # Rozbudowa: level, licensed_leagues, preferred_leagues, avoided_clubs, region…
+    # Przydzielone licencje (nazwy z app.optimization.licenses.LICENSE_RULES).
+    licenses: tuple[str, ...] = ()
+    # Rozbudowa: preferred_leagues, avoided_clubs, region…
 
 
 @dataclass(frozen=True)

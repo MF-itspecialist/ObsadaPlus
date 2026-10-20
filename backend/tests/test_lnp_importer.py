@@ -88,3 +88,23 @@ def test_upload_endpoint_detects_lnp_export_and_reports_unknown_venues(client):
     assert match["external_id"] == "lnp:1" and match["required_referees"] == 3
     # ponowny import aktualizuje zamiast dublować
     assert client.post("/api/matches/import", files=files).json()["updated"] == 1
+
+
+def test_include_past_imports_played_matches_from_previous_season():
+    data = _export(_comp("Klasa okręgowa", [
+        _match(1, "2025-09-13T15:00:00", "KS Wesoła", "Delta"),  # sezon 2025/26
+        _match(2, "2026-10-12T14:00:00", "Mazur", "Pogoń"),
+    ]))
+    upcoming = LNPMatchImporter(json.dumps(data), date_from=TODAY).fetch_matches()
+    everything = LNPMatchImporter(json.dumps(data), date_from=TODAY, include_past=True).fetch_matches()
+    assert [r.external_id for r in upcoming] == ["lnp:2"]
+    assert [r.external_id for r in everything] == ["lnp:1", "lnp:2"]
+
+
+def test_upload_endpoint_include_past_flag(client):
+    client.post("/api/venues", json={"name": "Boisko", "city": "Warszawa", "latitude": 52.2, "longitude": 21.0})
+    data = _export(_comp("Klasa A", [_match(1, "2025-09-13T15:00:00", "A", "B", stadiumName="Boisko")]))
+    files = {"file": ("lnp.json", json.dumps(data), "application/json")}
+    assert client.post("/api/matches/import", files=files).json()["created"] == 0
+    files = {"file": ("lnp.json", json.dumps(data), "application/json")}
+    assert client.post("/api/matches/import", params={"include_past": "true"}, files=files).json()["created"] == 1

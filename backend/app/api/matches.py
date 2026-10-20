@@ -129,19 +129,23 @@ def _is_lnp_export(content: bytes) -> bool:
 
 @router.post("/import", response_model=ImportResult)
 async def import_file(
-    db: DbSession, geocoder: Annotated[Geocoder, Depends(get_geocoder)], file: UploadFile = File(...)
+    db: DbSession,
+    geocoder: Annotated[Geocoder, Depends(get_geocoder)],
+    file: UploadFile = File(...),
+    include_past: Annotated[bool, Query(description="Eksport LNP: wczytaj też mecze z przeszłości")] = False,
 ):
     """Import meczów z pliku .json lub .csv (upsert po external_id).
 
     Plik JSON z eksportu terminarza Łączy Nas Piłka (``tools/lnp-export.js``) jest rozpoznawany
-    automatycznie; z niego importowane są tylko mecze od dziś.
+    automatycznie; z niego importowane są tylko mecze od dziś, chyba że ``include_past=true``
+    (np. terminarz sezonu 2025/26 jako dane robocze).
     """
     content = await file.read()
     suffix = Path(file.filename or "").suffix.lower()
     if suffix == ".csv":
         importer = CSVMatchImporter(content)
     elif _is_lnp_export(content):
-        importer = LNPMatchImporter(content)
+        importer = LNPMatchImporter(content, include_past=include_past)
     else:
         importer = JSONMatchImporter(content)
     try:
