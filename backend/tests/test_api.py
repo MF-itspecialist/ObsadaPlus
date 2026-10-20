@@ -1,6 +1,6 @@
 """Testy integracyjne REST API (przepływ: dane → generowanie → podgląd → zatwierdzenie → korekta)."""
 
-PERIOD = {"date_from": "2026-10-10", "date_to": "2026-10-11"}
+PERIOD = {"date_from": "2026-10-09", "date_to": "2026-10-12"}
 
 
 def _venue(client, **kw):
@@ -62,8 +62,8 @@ def test_generate_preview_does_not_save_until_confirm(seeded_client):
     c = seeded_client
     preview = c.post("/api/optimization/generate", json=PERIOD).json()
     stats = preview["stats"]
-    assert stats["matches_total"] == 20
-    assert stats["matches_assigned"] + stats["matches_unassigned"] == 20
+    assert stats["matches_total"] == 24
+    assert stats["matches_assigned"] + stats["matches_unassigned"] == 24
     assert preview["unassigned"], "dane testowe zawierają mecz bez możliwej obsady"
     assert preview["unassigned"][0]["reasons"]
     assert c.get("/api/assignments", params=PERIOD).json() == []

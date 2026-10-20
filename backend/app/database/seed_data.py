@@ -1,10 +1,12 @@
-"""Przykładowe dane: Warszawa i okolice, weekend 10–11 października 2026.
+"""Przykładowe dane: Warszawa i okolice, dni obsadowe 9–12 października 2026 (pt–pon).
 
 Niedziela jest celowo "ciasna" (mało dyspozycyjności wieczorem), żeby pokazać
 mecz bez obsady i przyczyny w UI."""
 
+FRIDAY = "2026-10-09"
 SATURDAY = "2026-10-10"
 SUNDAY = "2026-10-11"
+MONDAY = "2026-10-12"
 
 VENUES = [
     {"name": "Stadion KS Ursus", "city": "Warszawa", "address": "ul. Sosnkowskiego 3", "latitude": 52.1960, "longitude": 20.8840},
@@ -37,14 +39,14 @@ REFEREES = [
 
 # nazwisko → {dzień: None (cały dzień) | (od, do) | False (niedostępny)}; brak dnia = brak zgłoszenia
 AVAILABILITY = {
-    "Kowalski": {SATURDAY: ("08:00", "18:00"), SUNDAY: ("12:00", "20:00")},
-    "Nowak": {SATURDAY: None, SUNDAY: ("12:00", "20:00")},
+    "Kowalski": {FRIDAY: ("16:00", "22:00"), SATURDAY: ("08:00", "18:00"), SUNDAY: ("12:00", "20:00"), MONDAY: False},
+    "Nowak": {FRIDAY: None, SATURDAY: None, SUNDAY: ("12:00", "20:00")},
     "Wiśniewski": {SATURDAY: ("09:00", "15:00"), SUNDAY: False},
-    "Wójcik": {SATURDAY: None, SUNDAY: ("13:00", "19:00")},
-    "Kamiński": {SATURDAY: ("10:00", "20:00"), SUNDAY: ("08:00", "14:00")},
-    "Lewandowski": {SATURDAY: None, SUNDAY: ("08:00", "16:00")},
-    "Zieliński": {SATURDAY: None, SUNDAY: ("09:00", "13:00")},
-    "Szymański": {SATURDAY: False, SUNDAY: ("08:00", "17:00")},
+    "Wójcik": {FRIDAY: ("17:00", "22:00"), SATURDAY: None, SUNDAY: ("13:00", "19:00")},
+    "Kamiński": {SATURDAY: ("10:00", "20:00"), SUNDAY: ("08:00", "14:00"), MONDAY: None},
+    "Lewandowski": {FRIDAY: False, SATURDAY: None, SUNDAY: ("08:00", "16:00"), MONDAY: ("16:00", "22:00")},
+    "Zieliński": {SATURDAY: None, SUNDAY: ("09:00", "13:00"), MONDAY: ("17:00", "22:00")},
+    "Szymański": {FRIDAY: None, SATURDAY: False, SUNDAY: ("08:00", "17:00")},
     "Woźniak": {SATURDAY: ("12:00", "19:00"), SUNDAY: None},
     "Dąbrowski": {SATURDAY: None},
     "Kozłowski": {SATURDAY: ("08:00", "13:00"), SUNDAY: False},
@@ -53,6 +55,8 @@ AVAILABILITY = {
 
 # (external_id, dzień, start, koniec, liga, gospodarz, gość, indeks obiektu, przyjazd przed)
 MATCHES = [
+    ("WZPN-021", FRIDAY, "18:00", "19:45", "U19", "Polonia Warszawa", "Hutnik Warszawa", 1, 45),
+    ("WZPN-022", FRIDAY, "19:00", "20:50", "Klasa A", "KS Ursus II", "Znicz III", 0, 60),
     ("WZPN-001", SATURDAY, "09:00", "10:30", "U13", "Escola Varsovia", "Polonia Warszawa", 2, 30),
     ("WZPN-002", SATURDAY, "10:00", "11:45", "U17", "Ursus Warszawa", "Znicz Pruszków", 0, 45),
     ("WZPN-003", SATURDAY, "10:30", "12:15", "U17", "Legionovia", "Hutnik Warszawa", 4, 45),
@@ -73,4 +77,6 @@ MATCHES = [
     ("WZPN-018", SUNDAY, "16:30", "18:20", "IV liga", "Legionovia", "Znicz Pruszków", 4, 60),
     ("WZPN-019", SUNDAY, "19:00", "20:50", "Klasa B", "Start II Otwock", "Dolcan III", 7, 45),
     ("WZPN-020", SUNDAY, "19:00", "20:50", "Klasa B", "Marcovia II", "Polonia III", 8, 45),
+    ("WZPN-023", MONDAY, "18:00", "19:45", "U17", "KS Piaseczno", "Ząbkovia", 5, 45),
+    ("WZPN-024", MONDAY, "19:00", "20:50", "Klasa okręgowa", "Legionovia II", "Dolcan Ząbki", 4, 60),
 ]

@@ -7,7 +7,7 @@ równomierne rozłożenie spotkań. Logistyka ma największy wpływ na wybór.
 
 * **Backend:** Python 3.11+, FastAPI, SQLAlchemy 2.0, Pydantic 2, Alembic
 * **Baza:** PostgreSQL (docker) / SQLite (dev, testy)
-* **Frontend:** React 19, TypeScript, Tailwind CSS 4, Vite
+* **Frontend:** React 19, TypeScript, Tailwind CSS 4, Vite, ikony lucide-react, font Inter
 * **Optymalizacja:** własny algorytm scoringowy (strategia wymienna na OR-Tools / CP-SAT)
 * **Routing:** `RoutingService` → `HaversineRoutingService` (wymienny na OSRM / Google Maps)
 
@@ -29,7 +29,7 @@ docker compose up --build
 | PostgreSQL | localhost:5432 (obsada / obsada) |
 
 Przy pierwszym starcie backend wykonuje migracje i wczytuje dane testowe
-(weekend **10–11.10.2026**: 10 obiektów, 12 sędziów, 20 meczów). Wybierz ten weekend
+(dni obsadowe **9–12.10.2026, piątek–poniedziałek**: 10 obiektów, 12 sędziów, 24 mecze). Wybierz ten okres
 w nagłówku panelu i kliknij **Obsada → GENERUJ OBSADĘ**.
 
 ## Instalacja backendu (bez Dockera)
@@ -118,12 +118,12 @@ Schemat tworzy migracja `backend/alembic/versions/0001_initial_schema.py` (Postg
 
 1. `problem_builder` buduje `Problem` z bazy: sloty (mecz × rola) w wybranym okresie,
    sędziowie z dyspozycyjnością, ustawienia. Przypisania **ręczne** oraz przypisania z
-   tego samego tygodnia spoza okresu są **zablokowane** (wliczają się do limitów i logistyki).
+   tej samej kolejki spoza okresu są **zablokowane** (wliczają się do limitów i logistyki).
    Tryb „Generuj całość od nowa” blokuje tylko te spoza okresu.
 2. Sloty przetwarzane chronologicznie. Dla każdego oceniani są wszyscy sędziowie.
 3. **Twarde ograniczenia** (`constraints.py`, ewaluacja do pierwszego niespełnionego):
    aktywny → dyspozycyjność w dniu → mecz (od wymaganego przyjazdu do końca) w oknie godzin
-   → brak nakładania się meczów → limit dzienny → limit weekendowy (tydzień ISO)
+   → brak nakładania się meczów → limit dzienny → limit weekendowy (dni obsadowe pt–pon)
    → możliwość dojazdu.
 4. **Dojazd**: punkt startowy to poprzedni mecz tego dnia, a gdy go nie ma — dom.
    `koniec_poprzedniego + przejazd + bufor ≤ start − arrival_before`. Dla pierwszego meczu

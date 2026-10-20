@@ -3,7 +3,8 @@ import { Fragment, useState } from "react";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../services/api";
 import type { RefereeRole } from "../types";
-import { km, minutes } from "../utils/format";
+import Avatar from "./Avatar";
+import { MetricChips } from "./Metrics";
 import Explanation from "./Explanation";
 import { ErrorBanner, Loading } from "./Feedback";
 import { LicenseList } from "./Licenses";
@@ -39,7 +40,7 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
   };
 
   return (
-    <Modal title={title} onClose={onClose} wide>
+    <Modal title={title} subtitle="Od najlepiej pasującego; niżej sędziowie, którzy nie mogą, z powodem" onClose={onClose} wide>
       <ErrorBanner message={error ?? saveError} />
       {loading && <Loading />}
       {data && (
@@ -56,22 +57,24 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
           <tbody>
             {data.map((c) => (
               <Fragment key={c.referee_id}>
-                <tr className={c.feasible ? "" : "text-slate-400"}>
+                <tr className={c.feasible ? "" : "text-zinc-400"}>
                   <td>
-                    <button className="text-left font-medium hover:underline" onClick={() => setExpanded(expanded === c.referee_id ? null : c.referee_id)}>
-                      {c.referee_name}
-                    </button>
-                    {c.referee_id === currentRefereeId && <span className="ml-2 text-xs text-emerald-700">(obecny)</span>}
-                    {!c.feasible && <div className="text-xs text-red-500">✗ {c.rejection}</div>}
+                    <div className="flex items-start gap-3">
+                      <Avatar name={c.referee_name} size="sm" muted={!c.feasible} />
+                      <div>
+                        <button className="text-left font-medium hover:text-brand-600" onClick={() => setExpanded(expanded === c.referee_id ? null : c.referee_id)}>
+                          {c.referee_name}
+                        </button>
+                        {c.referee_id === currentRefereeId && <span className="ml-2 text-xs font-medium text-emerald-600">obecny</span>}
+                        {!c.feasible && <div className="mt-0.5 text-xs text-red-500">{c.rejection}</div>}
+                      </div>
+                    </div>
                   </td>
                   <td className="max-w-56">
                     <LicenseList licenses={c.referee_licenses} />
                   </td>
-                  <td>{c.referee_location}</td>
-                  <td className="whitespace-nowrap">
-                    {km(c.distance_km)}
-                    {c.travel_minutes !== null && <span className="text-slate-400"> · {minutes(c.travel_minutes)}</span>}
-                  </td>
+                  <td className="text-zinc-600">{c.referee_location}</td>
+                  <td>{c.feasible && <MetricChips distance={c.distance_km} travel={c.travel_minutes} />}</td>
                   <td className="text-right">
                     <button
                       className={c.feasible ? "btn-primary" : "btn-secondary"}
@@ -84,7 +87,7 @@ export default function CandidatePicker({ matchId, role, title, currentRefereeId
                 </tr>
                 {expanded === c.referee_id && c.feasible && (
                   <tr>
-                    <td colSpan={5} className="bg-slate-50">
+                    <td colSpan={5} className="bg-zinc-50">
                       <Explanation data={{ reasons: c.reasons }} />
                     </td>
                   </tr>

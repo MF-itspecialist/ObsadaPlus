@@ -67,8 +67,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-4xl">
-      <PageHeader title="Ustawienia">
+    <div className="max-w-5xl">
+      <PageHeader title="Ustawienia" subtitle="Parametry logistyki i wagi algorytmu obsady">
         <button className="btn-primary" onClick={save}>
           Zapisz
         </button>
@@ -88,13 +88,13 @@ export default function SettingsPage() {
         </SectionCard>
       </div>
       <details className="mt-6">
-        <summary className="cursor-pointer text-sm font-semibold text-slate-700">Ustawienia zaawansowane (algorytm obsady)</summary>
-        <p className="mt-2 text-sm text-slate-500">Zwykle nie trzeba ich zmieniać. Wyższa wartość = algorytm bardziej unika danej sytuacji.</p>
+        <summary className="cursor-pointer text-sm font-semibold text-zinc-700">Ustawienia zaawansowane (algorytm obsady)</summary>
+        <p className="mt-2 text-sm text-zinc-500">Zwykle nie trzeba ich zmieniać. Wyższa wartość = algorytm bardziej unika danej sytuacji.</p>
         <div className="mt-3 grid gap-4 md:grid-cols-2">
           <SectionCard section={PRIORITIES} form={form} setNum={setNum} />
-          <div className="card p-4">
-            <h2 className="mb-2 font-semibold">Unikanie dalekich dojazdów</h2>
-            <p className="mb-3 text-sm text-slate-500">
+          <div className="card p-6">
+            <h2 className="mb-2 font-semibold tracking-tight">Unikanie dalekich dojazdów</h2>
+            <p className="mb-3 text-sm text-zinc-500">
               Im dalej sędzia ma na mecz, tym mniej chętnie algorytm go wybiera. Ostatni próg obejmuje wszystkie większe odległości.
             </p>
             <table className="table max-w-md">
@@ -109,7 +109,7 @@ export default function SettingsPage() {
                   <tr key={i}>
                     <td>
                       {i === form.distance_brackets.length - 1 ? (
-                        <span className="text-slate-500">powyżej {form.distance_brackets[i - 1]?.[0] ?? 0}</span>
+                        <span className="text-zinc-500">powyżej {form.distance_brackets[i - 1]?.[0] ?? 0}</span>
                       ) : (
                         <input className="input w-28" type="number" value={upper} onChange={(e) => setBracket(i, 0, e.target.value)} />
                       )}
@@ -140,8 +140,8 @@ function SectionCard({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="card space-y-3 p-4">
-      <h2 className="font-semibold">{section.title}</h2>
+    <div className="card space-y-4 p-6">
+      <h2 className="font-semibold tracking-tight">{section.title}</h2>
       {section.fields.map((f) => (
         <Field key={f.key} label={f.label}>
           <input className="input" type="number" step={f.step ?? 1} min={0} value={form[f.key]} onChange={(e) => setNum(f.key, e.target.value)} />

@@ -1,3 +1,4 @@
+import { MapPin, Plus } from "lucide-react";
 import { useState } from "react";
 
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
@@ -32,13 +33,13 @@ export default function VenuesPage() {
 
   return (
     <div>
-      <PageHeader title="Obiekty">
+      <PageHeader title="Obiekty" subtitle="Stadiony i boiska z lokalizacją używaną do liczenia dojazdu">
         <button className="btn-primary" onClick={() => setEditing("new")}>
-          + Dodaj obiekt
+          <Plus className="size-4" /> Dodaj obiekt
         </button>
       </PageHeader>
       <ErrorBanner message={error ?? venues.error} onClose={() => setError(null)} />
-      <div className="card overflow-x-auto">
+      <div className="card overflow-hidden"><div className="overflow-x-auto">
         {venues.loading && !venues.data ? (
           <Loading />
         ) : (
@@ -54,7 +55,14 @@ export default function VenuesPage() {
             <tbody>
               {venues.data?.map((v) => (
                 <tr key={v.id}>
-                  <td className="font-medium">{v.name}</td>
+                  <td>
+                    <div className="flex items-center gap-3 font-medium">
+                      <span className="flex size-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                        <MapPin className="size-4" />
+                      </span>
+                      {v.name}
+                    </div>
+                  </td>
                   <td>{v.city}</td>
                   <td>{v.address}</td>
                   <td className="whitespace-nowrap">
@@ -65,7 +73,7 @@ export default function VenuesPage() {
             </tbody>
           </table>
         )}
-      </div>
+      </div></div>
       {editing && (
         <Modal title={editing === "new" ? "Nowy obiekt" : "Edycja obiektu"} onClose={() => setEditing(null)}>
           <VenueForm initial={editing === "new" ? undefined : editing} onSubmit={save} onCancel={() => setEditing(null)} />

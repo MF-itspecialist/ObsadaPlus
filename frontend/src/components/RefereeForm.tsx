@@ -83,10 +83,10 @@ export default function RefereeForm({ initial, onSubmit, onCancel }: Props) {
         <Field label="Maksymalnie w jeden dzień">
           <input className="input" type="number" min={0} value={form.max_matches_per_day} onChange={num("max_matches_per_day")} />
         </Field>
-        <Field label="Najchętniej w weekend">
+        <Field label="Najchętniej w weekend (pt–pon)">
           <input className="input" type="number" min={0} value={form.preferred_matches_per_weekend} onChange={num("preferred_matches_per_weekend")} />
         </Field>
-        <Field label="Maksymalnie w weekend">
+        <Field label="Maksymalnie w weekend (pt–pon)">
           <input className="input" type="number" min={0} value={form.max_matches_per_weekend} onChange={num("max_matches_per_weekend")} />
         </Field>
       </Section>
