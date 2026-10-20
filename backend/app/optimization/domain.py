@@ -9,10 +9,29 @@ from app.models.enums import RefereeRole
 from app.services.routing_service import GeoPoint
 
 
-def weekend_key(day: dt.date) -> tuple[int, int]:
-    """Klucz "weekendu" (kolejki) — tydzień ISO. Sobota i niedziela mają ten sam klucz."""
-    iso = day.isocalendar()
-    return (iso.year, iso.week)
+def round_saturday(day: dt.date) -> dt.date:
+    """Sobota "kolejki", do której należy dzień.
+
+    Kolejka obejmuje dni od wtorku do poniedziałku, a dni obsadowe to piątek–poniedziałek:
+    wtorek–sobota należą do najbliższej soboty, niedziela i poniedziałek do poprzedniej.
+    """
+    wd = day.weekday()  # pon = 0 … nd = 6
+    if wd == 6:
+        return day - dt.timedelta(days=1)
+    if wd == 0:
+        return day - dt.timedelta(days=2)
+    return day + dt.timedelta(days=5 - wd)
+
+
+def round_bounds(day: dt.date) -> tuple[dt.date, dt.date]:
+    """Pełny zakres kolejki (wtorek–poniedziałek) zawierającej dzień."""
+    sat = round_saturday(day)
+    return sat - dt.timedelta(days=4), sat + dt.timedelta(days=2)
+
+
+def weekend_key(day: dt.date) -> dt.date:
+    """Klucz limitu weekendowego: piątek, sobota, niedziela i poniedziałek mają ten sam klucz."""
+    return round_saturday(day)
 
 
 def fmt_time(value: dt.time | dt.datetime | None) -> str:

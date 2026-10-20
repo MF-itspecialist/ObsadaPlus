@@ -76,10 +76,10 @@ export default function RefereeForm({ initial, onSubmit, onCancel }: Props) {
         <Field label="Maks. mecze / dzień">
           <input className="input" type="number" min={0} value={form.max_matches_per_day} onChange={num("max_matches_per_day")} />
         </Field>
-        <Field label="Preferowane mecze / weekend">
+        <Field label="Preferowane mecze / weekend (pt–pon)">
           <input className="input" type="number" min={0} value={form.preferred_matches_per_weekend} onChange={num("preferred_matches_per_weekend")} />
         </Field>
-        <Field label="Maks. mecze / weekend">
+        <Field label="Maks. mecze / weekend (pt–pon)">
           <input className="input" type="number" min={0} value={form.max_matches_per_weekend} onChange={num("max_matches_per_weekend")} />
         </Field>
       </div>

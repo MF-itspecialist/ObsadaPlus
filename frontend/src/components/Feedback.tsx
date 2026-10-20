@@ -1,11 +1,14 @@
+import { CircleCheck, Inbox, LoaderCircle, TriangleAlert, X } from "lucide-react";
+
 export function ErrorBanner({ message, onClose }: { message: string | null; onClose?: () => void }) {
   if (!message) return null;
   return (
-    <div className="mb-4 flex items-start justify-between gap-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-      <span>{message}</span>
+    <div className="animate-fade-in mb-5 flex items-start gap-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-red-600/10">
+      <TriangleAlert className="mt-0.5 size-4 shrink-0 text-red-500" />
+      <span className="flex-1">{message}</span>
       {onClose && (
-        <button className="font-semibold" onClick={onClose}>
-          ×
+        <button className="text-red-400 hover:text-red-700" onClick={onClose} aria-label="Zamknij">
+          <X className="size-4" />
         </button>
       )}
     </div>
@@ -15,11 +18,12 @@ export function ErrorBanner({ message, onClose }: { message: string | null; onCl
 export function InfoBanner({ message, onClose }: { message: string | null; onClose?: () => void }) {
   if (!message) return null;
   return (
-    <div className="mb-4 flex items-start justify-between gap-4 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-      <span>{message}</span>
+    <div className="animate-fade-in mb-5 flex items-start gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800 ring-1 ring-emerald-600/10">
+      <CircleCheck className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+      <span className="flex-1">{message}</span>
       {onClose && (
-        <button className="font-semibold" onClick={onClose}>
-          ×
+        <button className="text-emerald-400 hover:text-emerald-700" onClick={onClose} aria-label="Zamknij">
+          <X className="size-4" />
         </button>
       )}
     </div>
@@ -27,13 +31,32 @@ export function InfoBanner({ message, onClose }: { message: string | null; onClo
 }
 
 export function Loading() {
-  return <div className="py-10 text-center text-sm text-slate-500">Ładowanie…</div>;
+  return (
+    <div className="flex items-center justify-center gap-2 py-16 text-sm text-zinc-500">
+      <LoaderCircle className="size-4 animate-spin" /> Ładowanie…
+    </div>
+  );
 }
 
-export function PageHeader({ title, children }: { title: string; children?: React.ReactNode }) {
+export function EmptyState({ title, hint }: { title: string; hint?: string }) {
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <h1 className="text-2xl font-semibold text-slate-900">{title}</h1>
+    <div className="flex flex-col items-center justify-center py-14 text-center">
+      <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-zinc-100 text-zinc-400">
+        <Inbox className="size-5" />
+      </div>
+      <div className="text-sm font-medium text-zinc-700">{title}</div>
+      {hint && <div className="mt-1 text-sm text-zinc-500">{hint}</div>}
+    </div>
+  );
+}
+
+export function PageHeader({ title, subtitle, children }: { title: string; subtitle?: string; children?: React.ReactNode }) {
+  return (
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">{title}</h1>
+        {subtitle && <p className="mt-1 text-sm text-zinc-500">{subtitle}</p>}
+      </div>
       <div className="flex flex-wrap items-center gap-2">{children}</div>
     </div>
   );

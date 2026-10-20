@@ -63,8 +63,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-4xl">
-      <PageHeader title="Ustawienia">
+    <div className="max-w-5xl">
+      <PageHeader title="Ustawienia" subtitle="Parametry logistyki i wagi algorytmu obsady">
         <button className="btn-primary" onClick={save}>
           Zapisz
         </button>
@@ -73,8 +73,8 @@ export default function SettingsPage() {
       <InfoBanner message={info} onClose={() => setInfo(null)} />
       <div className="grid gap-4 md:grid-cols-2">
         {SECTIONS.map((section) => (
-          <div key={section.title} className="card space-y-3 p-4">
-            <h2 className="font-semibold">{section.title}</h2>
+          <div key={section.title} className="card space-y-4 p-6">
+            <h2 className="font-semibold tracking-tight">{section.title}</h2>
             {section.fields.map((f) => (
               <Field key={f.key} label={f.label}>
                 <input className="input" type="number" step={f.step ?? 1} min={0} value={form[f.key]} onChange={(e) => setNum(f.key, e.target.value)} />
@@ -92,9 +92,9 @@ export default function SettingsPage() {
             )}
           </div>
         ))}
-        <div className="card p-4 md:col-span-2">
-          <h2 className="mb-2 font-semibold">Kary za odległość</h2>
-          <p className="mb-3 text-sm text-slate-500">
+        <div className="card p-6 md:col-span-2">
+          <h2 className="mb-2 font-semibold tracking-tight">Kary za odległość</h2>
+          <p className="mb-3 text-sm text-zinc-500">
             Próg „do X km” → kara. Ostatni próg obejmuje wszystkie większe odległości. Do kary progowej dodawane jest km × DISTANCE_WEIGHT.
           </p>
           <table className="table max-w-md">
@@ -109,7 +109,7 @@ export default function SettingsPage() {
                 <tr key={i}>
                   <td>
                     {i === form.distance_brackets.length - 1 ? (
-                      <span className="text-slate-500">powyżej {form.distance_brackets[i - 1]?.[0] ?? 0}</span>
+                      <span className="text-zinc-500">powyżej {form.distance_brackets[i - 1]?.[0] ?? 0}</span>
                     ) : (
                       <input className="input w-28" type="number" value={upper} onChange={(e) => setBracket(i, 0, e.target.value)} />
                     )}
