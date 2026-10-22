@@ -218,6 +218,10 @@ def choose_crew(
     """
     venue = slots[0].venue
     options = [[e for e in evaluations[s.key] if e.feasible][:limit] for s in slots]
+    # Trasy między kandydatami (kierowca zabiera kolejnych) — jedną macierzą, nie po jednej.
+    starts = list({e.start_point.key(): e.start_point for opts in options for e in opts if e.start_point}.values())
+    if len(slots) > 1 and len(starts) > 1:
+        routing.prefetch(starts, starts)
     best: tuple[tuple[int, float], CrewChoice] | None = None
 
     def search(i: int, picked: list[CandidateEvaluation | None], used: set[int]) -> None:

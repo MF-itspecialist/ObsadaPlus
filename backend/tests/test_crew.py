@@ -79,3 +79,28 @@ def test_main_referee_needs_licence_for_the_league():
     main = next(a for a in result.assignments if a.slot.role == RefereeRole.MAIN)
     assert main.referee_id == 1
     assert crew_ids(result) == {1, 2, 3}
+
+
+def test_crew_routes_between_candidates_come_from_one_matrix():
+    """Trasy kierowca → zabierani pobierane hurtem, nie pojedynczo (OSRM/Google)."""
+    from app.services.routing_providers import MatrixRoutingService
+    from app.services.routing_service import CachedRoutingService
+
+    class CountingMatrix(MatrixRoutingService):
+        name = "osrm"
+
+        def __init__(self) -> None:
+            self.calls = 0
+            self.estimate = HaversineRoutingService()
+
+        def get_matrix(self, origins, destinations):
+            self.calls += 1
+            return {(o, d): self.estimate.get_route(o, d) for o in origins for d in destinations}
+
+    inner = CountingMatrix()
+    spread, cluster = spread_and_cluster()
+    result = AssignmentGenerator(CachedRoutingService(inner)).generate_assignments(
+        Problem(crew_slots(), spread + cluster)
+    )
+    assert crew_ids(result) == {11, 12, 13}
+    assert inner.calls <= 2  # dojazdy na obiekt + trasy między kandydatami

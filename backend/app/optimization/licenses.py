@@ -13,6 +13,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from enum import Enum
+from functools import lru_cache
 
 from app.models.enums import RefereeRole
 
@@ -120,6 +121,7 @@ def _numbered_liga(text: str) -> int | None:
     return _WORDS[m[1]] if m else None
 
 
+@lru_cache(maxsize=1024)
 def classify_league(league: str) -> tuple[Category, int] | None:
     """Kategoria i poziom meczu na podstawie nazwy ligi; ``None`` = nieznany (bez kontroli licencji)."""
     text = league.lower().strip()
@@ -184,6 +186,12 @@ def is_women_match(league: str) -> bool:
 
 def check_license(licenses: list[str] | tuple[str, ...], league: str, role: RefereeRole) -> str | None:
     """``None`` gdy sędzia ma uprawnienia; w przeciwnym razie powód odmowy dla admina."""
+    return _check_license(tuple(licenses), league, role)
+
+
+# Generator sprawdza tysiące par sędzia × mecz, a kombinacji licencji i lig jest niewiele.
+@lru_cache(maxsize=4096)
+def _check_license(licenses: tuple[str, ...], league: str, role: RefereeRole) -> str | None:
     if role == RefereeRole.OBSERVER:
         return None
     match = classify_league(league)
