@@ -23,6 +23,8 @@ class AppConfig(BaseSettings):
     routing_provider: str = "auto"
     # Klucz Google Maps (Geocoding API + Routes API). Pusty = OpenStreetMap (Nominatim) i OSRM.
     google_maps_api_key: str = ""
+    # Klucz tylko do wyszukiwania stadionów w Google Maps (Places API) — nie przełącza tras na Google.
+    google_places_api_key: str = ""
     # Adres serwera OSRM, np. http://osrm:5000 w docker-compose. Pusty = bez OSRM.
     osrm_url: str = ""
     # Obszar preferowany przy wyszukiwaniu adresów ("lon1,lat1,lon2,lat2"; domyślnie woj. mazowieckie).
