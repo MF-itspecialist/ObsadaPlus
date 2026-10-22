@@ -20,6 +20,7 @@ from app.models.enums import ROLE_ORDER
 from app.optimization.constraints import REJECTION_LABELS
 from app.optimization.evaluator import CandidateEvaluation, CandidateEvaluator
 from app.optimization.domain import Problem, RefereeProfile, Slot
+from app.optimization.licenses import YOUTH, Category, classify_league
 from app.optimization.state import Booking, ScheduleState, state_without
 from app.services.routing_service import RoutingService
 
@@ -78,13 +79,34 @@ def slot_sort_key(slot: Slot) -> tuple:
     return (slot.start, slot.match_id, ROLE_ORDER.index(slot.role) if slot.role in ROLE_ORDER else 99)
 
 
+def league_priority(league: str) -> int:
+    """Kolejność obsadzania: najpierw wyższe ligi seniorów (IV liga, V liga, okręgówka, A, B…),
+    potem piłka kobiet i futsal, na końcu młodzież i mecze bez rozpoznanej ligi."""
+    cls = classify_league(league)
+    if cls is None:
+        return 50
+    category, level = cls
+    if category == Category.MEN:
+        return 40 if level == YOUTH else 20 - level
+    return (25 if category == Category.WOMEN else 29) - level
+
+
+def priority_sort_key(slot: Slot) -> tuple:
+    return (league_priority(slot.league), *slot_sort_key(slot))
+
+
 class AssignmentStrategy(ABC):
     @abstractmethod
     def solve(self, problem: Problem, evaluator: CandidateEvaluator) -> GenerationResult: ...
 
 
 class GreedyScoringStrategy(AssignmentStrategy):
-    """Zachłanny przydział chronologiczny z oceną punktową."""
+    """Zachłanny przydział z oceną punktową: najpierw wyższe ligi, w obrębie ligi chronologicznie.
+
+    Wyższa liga wybiera sędziów pierwsza, więc najlepiej położeni sędziowie z wysokimi
+    licencjami nie są „zużywani” na niższe ligi. Konflikty z meczami obsadzonymi wcześniej
+    (także późniejszymi w ciągu dnia) sprawdzają ograniczenia dojazdu w obie strony.
+    """
 
     def __init__(self, crew_candidates: int = 6) -> None:
         # Ilu najlepszych kandydatów na każdą rolę rozważać przy doborze zespołu.
@@ -100,7 +122,8 @@ class GreedyScoringStrategy(AssignmentStrategy):
         proposed: dict[tuple, ProposedAssignment] = {}
         unassigned: list[UnassignedSlot] = []
 
-        open_slots = [s for s in sorted(problem.slots, key=slot_sort_key) if s.key not in fixed_keys]
+        open_slots = [s for s in sorted(problem.slots, key=priority_sort_key) if s.key not in fixed_keys]
+        rides: dict[tuple, SharedRide] = {}
         for _, group in groupby(open_slots, key=lambda s: (s.start, s.match_id)):
             slots = list(group)
             average_load = len(state.all_bookings()) / len(active) if active else 0.0
@@ -120,11 +143,21 @@ class GreedyScoringStrategy(AssignmentStrategy):
                     unassigned.append(self._unassigned(slot, evaluations[slot.key]))
                     continue
                 state.add(Booking(slot=slot, referee_id=best.referee_id))
-                proposal = self._proposal(slot, best, manual=False)
+                proposed[slot.key] = self._proposal(slot, best, manual=False)
                 if ride is not None:
-                    proposal.explanation["reasons"] = [*proposal.explanation["reasons"], ride.describe()]
-                    proposal.explanation["shared_ride_km"] = ride.distance_km
-                proposed[slot.key] = proposal
+                    rides[slot.key] = ride
+
+        # Dojazdy liczone na stanie końcowym: mecz obsadzony później mógł być wcześniej
+        # w ciągu dnia, więc sędzia jedzie z poprzedniego boiska, a nie z domu.
+        final_load = len(state.all_bookings()) / len(active) if active else 0.0
+        for key, prop in list(proposed.items()):
+            ref = problem.referee(prop.referee_id)
+            final = evaluator.evaluate(ref, prop.slot, state_without(state, key), final_load) if ref else None
+            if final is not None and final.feasible:
+                prop = proposed[key] = self._proposal(prop.slot, final, manual=False)
+            if key in rides:
+                prop.explanation["reasons"] = [*prop.explanation["reasons"], rides[key].describe()]
+                prop.explanation["shared_ride_km"] = rides[key].distance_km
 
         # Przypisania zablokowane (ręczne) z okresu generowania — ocena na stanie końcowym.
         for fb in problem.fixed:
