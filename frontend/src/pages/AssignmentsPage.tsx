@@ -1,5 +1,5 @@
 import { ChevronDown, Eye, Hand, RefreshCw, Search, Sparkles, Trash2, TriangleAlert, UserPlus, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import CandidatePicker from "../components/CandidatePicker";
 import Avatar from "../components/Avatar";
@@ -44,6 +44,19 @@ export default function AssignmentsPage() {
   const [picker, setPicker] = useState<PickerState | null>(null);
   const [filter, setFilter] = useState<Filter>(EMPTY_FILTER);
 
+  // Niezatwierdzona propozycja jest zapisana na serwerze — po odświeżeniu strony wraca.
+  useEffect(() => {
+    let active = true;
+    setPreview(null);
+    api
+      .pendingPreview(period)
+      .then((p) => active && setPreview(p))
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [period.date_from]);
+
   const generate = async (mode: GenerationMode) => {
     if (mode === "FULL" && !confirm("Wygenerować całą obsadę od nowa? Ręczne zmiany zostaną nadpisane po zatwierdzeniu.")) return;
     setBusy(true);
@@ -73,6 +86,19 @@ export default function AssignmentsPage() {
     }
   };
 
+  const discardPreview = async () => {
+    if (!preview) return;
+    setBusy(true);
+    try {
+      await api.discard(preview.run_id);
+      setPreview(null);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const removeAssignment = async (a: Assignment) => {
     if (!confirm(`Usunąć obsadę: ${a.referee_name}?`)) return;
     try {
@@ -88,7 +114,7 @@ export default function AssignmentsPage() {
       <PageHeader title="Obsada" subtitle={preview ? "Podgląd propozycji generatora — sprawdź i zatwierdź" : "Aktualna obsada weekendu, ręczne zmiany i generowanie"}>
         {preview ? (
           <>
-            <button className="btn-secondary" onClick={() => setPreview(null)} disabled={busy}>
+            <button className="btn-secondary" onClick={discardPreview} disabled={busy}>
               <X className="size-4" /> Odrzuć propozycję
             </button>
             <button className="btn-primary" onClick={confirmPreview} disabled={busy}>
@@ -312,7 +338,7 @@ function PreviewView({ preview, filter, onFilter }: { preview: GenerationPreview
       <div className="mb-5 flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-600/15">
         <Eye className="mt-0.5 size-4 shrink-0 text-amber-500" />
         <span>
-          To jest <strong>podgląd</strong> — obsada nie została jeszcze zapisana.{" "}
+          To jest <strong>podgląd</strong> — obsada nie została jeszcze zapisana. Kliknij <strong>ZATWIERDŹ OBSADĘ</strong>, aby ją zapisać.{" "}
           {preview.params.mode === "FULL" ? "Tryb: generowanie całości od nowa." : "Ręczne przypisania zostały zachowane."}
         </span>
       </div>

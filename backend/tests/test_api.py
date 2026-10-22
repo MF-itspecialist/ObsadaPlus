@@ -79,6 +79,25 @@ def test_generate_preview_does_not_save_until_confirm(seeded_client):
     assert dash["total_distance_km"] > 0
 
 
+def test_unconfirmed_preview_survives_page_reload(seeded_client):
+    c = seeded_client
+    assert c.get("/api/optimization/pending", params=PERIOD).json() is None
+    first = c.post("/api/optimization/generate", json=PERIOD).json()
+    second = c.post("/api/optimization/generate", json=PERIOD).json()
+    pending = c.get("/api/optimization/pending", params=PERIOD).json()
+    assert pending["run_id"] == second["run_id"]
+    assert pending["stats"] == second["stats"]
+    # starszy podgląd tego samego okresu jest nieaktualny
+    assert c.post("/api/optimization/confirm", json={"run_id": first["run_id"]}).status_code == 409
+
+    c.post("/api/optimization/confirm", json={"run_id": second["run_id"]})
+    assert c.get("/api/optimization/pending", params=PERIOD).json() is None
+
+    third = c.post("/api/optimization/generate", json=PERIOD).json()
+    assert c.post("/api/optimization/discard", json={"run_id": third["run_id"]}).status_code == 204
+    assert c.get("/api/optimization/pending", params=PERIOD).json() is None
+
+
 def test_manual_assignment_survives_regeneration_unless_full(seeded_client):
     c = seeded_client
     preview = c.post("/api/optimization/generate", json=PERIOD).json()

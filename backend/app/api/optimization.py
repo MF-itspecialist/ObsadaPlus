@@ -1,3 +1,5 @@
+import datetime as dt
+
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
@@ -24,6 +26,22 @@ def confirm(req: ConfirmRequest, db: DbSession):
         return assignment_service.confirm(db, req.run_id)
     except AssignmentError as exc:
         raise HTTPException(409, str(exc)) from exc
+
+
+@router.post("/discard", status_code=204)
+def discard(req: ConfirmRequest, db: DbSession):
+    """Odrzuca podgląd — nie zmienia obsady."""
+    try:
+        assignment_service.discard(db, req.run_id)
+    except AssignmentError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@router.get("/pending", response_model=GenerationPreview | None)
+def pending(date_from: dt.date, date_to: dt.date, db: DbSession):
+    """Niezatwierdzony podgląd okresu (albo null), odtwarzany po odświeżeniu strony."""
+    run = assignment_service.pending_preview(db, date_from, date_to)
+    return assignment_service.run_to_preview(db, run) if run else None
 
 
 @router.get("/runs/{run_id}", response_model=GenerationPreview)
