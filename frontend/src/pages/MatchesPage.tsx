@@ -1,9 +1,9 @@
 import { Plus, Upload } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 
 import Avatar from "../components/Avatar";
 import { EmptyState, ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
-import { FilterRow, SearchBox, SelectFilter, matchesText, regionOptions, uniqueSorted } from "../components/Filters";
+import { FilterRow, LoadMoreRow, SearchBox, SelectFilter, matchesText, regionOptions, uniqueSorted, useIncremental } from "../components/Filters";
 import MatchForm from "../components/MatchForm";
 import Modal from "../components/Modal";
 import RowActions from "../components/RowActions";
@@ -45,7 +45,8 @@ export default function MatchesPage() {
   const [includePast, setIncludePast] = useState(false);
   const [filter, setFilter] = useState<MatchFilter>(EMPTY_FILTER);
   const all = useMemo(() => matches.data ?? [], [matches.data]);
-  const rows = all.filter((m) => matchesFilter(m, filter));
+  const filtered = useMemo(() => all.filter((m) => matchesFilter(m, filter)), [all, filter]);
+  const page = useIncremental(filtered, filtered);
   const levels = useMemo(
     () => [...new Map(all.map((m) => [leagueLevel(m.league).label, leagueLevel(m.league).rank])).entries()].sort((a, b) => a[1] - b[1]).map(([l]) => l),
     [all],
@@ -64,15 +65,19 @@ export default function MatchesPage() {
     matches.reload();
   };
 
-  const remove = async (m: Match) => {
-    if (!confirm(`Usunąć mecz ${m.home_team} – ${m.away_team}?`)) return;
-    try {
-      await api.deleteMatch(m.id);
-      matches.reload();
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
+  const { reload } = matches;
+  const remove = useCallback(
+    async (m: Match) => {
+      if (!confirm(`Usunąć mecz ${m.home_team} – ${m.away_team}?`)) return;
+      try {
+        await api.deleteMatch(m.id);
+        reload();
+      } catch (e) {
+        setError((e as Error).message);
+      }
+    },
+    [reload],
+  );
 
   const importFile = async (file: File | undefined) => {
     if (!file) return;
@@ -105,7 +110,7 @@ export default function MatchesPage() {
       </PageHeader>
       <ErrorBanner message={error ?? matches.error} onClose={() => setError(null)} />
       <InfoBanner message={info} onClose={() => setInfo(null)} />
-      <FilterRow active={Object.values(filter).some(Boolean)} onClear={() => setFilter(EMPTY_FILTER)} shown={rows.length} total={all.length} noun="meczów">
+      <FilterRow active={Object.values(filter).some(Boolean)} onClear={() => setFilter(EMPTY_FILTER)} shown={filtered.length} total={all.length} noun="meczów">
         <SearchBox value={filter.query} onChange={(query) => set({ query })} placeholder="Szukaj: drużyna, liga, obiekt, adres" />
         <SelectFilter label="Klasa rozgrywkowa" all="Wszystkie klasy" options={levels} value={filter.level} onChange={(level) => set({ level })} />
         <SelectFilter label="Podokręg" all="Wszystkie podokręgi" options={regions} value={filter.region} onChange={(region) => set({ region, city: "" })} />
@@ -130,48 +135,11 @@ export default function MatchesPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((m) => (
-                <tr key={m.id}>
-                  <td className="whitespace-nowrap">
-                    <div className="font-medium tabular-nums">{formatDate(m.date)}</div>
-                    <div className="text-xs text-zinc-500 capitalize">{dayName(m.date)}</div>
-                  </td>
-                  <td className="whitespace-nowrap tabular-nums">
-                    <span className="font-medium">{hhmm(m.start_time)}</span>
-                    <span className="text-zinc-400">–{hhmm(m.estimated_end_time)}</span>
-                  </td>
-                  <td>{m.league && <Tag tone="brand">{m.league}</Tag>}</td>
-                  <td className="font-medium">{m.home_team}</td>
-                  <td className="font-medium">{m.away_team}</td>
-                  <td>
-                    <div>{m.venue.name}</div>
-                    <div className="text-xs text-zinc-500">
-                      {[m.venue.address, [m.venue.postal_code, m.venue.city].filter(Boolean).join(" ")].filter(Boolean).join(", ")}
-                    </div>
-                  </td>
-                  <td>
-                    {m.assignments.length ? (
-                      <div className="space-y-1">
-                        {m.assignments.map((a) => (
-                          <div key={a.id} className="flex items-center gap-2 whitespace-nowrap">
-                            <Avatar name={a.referee_name} size="sm" />
-                            {a.referee_name}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-zinc-400">—</span>
-                    )}
-                  </td>
-                  <td>
-                    <StatusBadge status={m.status} />
-                  </td>
-                  <td className="whitespace-nowrap">
-                    <RowActions onEdit={() => setEditing(m)} onDelete={() => remove(m)} />
-                  </td>
-                </tr>
+              {page.shown.map((m) => (
+                <MatchRow key={m.id} match={m} onEdit={setEditing} onDelete={remove} />
               ))}
-              {all.length > 0 && rows.length === 0 && (
+              {page.hasMore && <LoadMoreRow colSpan={9} rest={page.rest} onMore={page.more} />}
+              {all.length > 0 && filtered.length === 0 && (
                 <tr>
                   <td colSpan={9} className="py-10 text-center text-sm text-zinc-500">
                     Żaden mecz nie pasuje do filtra.
@@ -203,3 +171,51 @@ export default function MatchesPage() {
     </div>
   );
 }
+
+const MatchRow = memo(function MatchRow({ match: m, onEdit, onDelete }: {
+  match: Match;
+  onEdit: (m: Match) => void;
+  onDelete: (m: Match) => void;
+}) {
+  return (
+    <tr>
+      <td className="whitespace-nowrap">
+        <div className="font-medium tabular-nums">{formatDate(m.date)}</div>
+        <div className="text-xs text-zinc-500 capitalize">{dayName(m.date)}</div>
+      </td>
+      <td className="whitespace-nowrap tabular-nums">
+        <span className="font-medium">{hhmm(m.start_time)}</span>
+        <span className="text-zinc-400">–{hhmm(m.estimated_end_time)}</span>
+      </td>
+      <td>{m.league && <Tag tone="brand">{m.league}</Tag>}</td>
+      <td className="font-medium">{m.home_team}</td>
+      <td className="font-medium">{m.away_team}</td>
+      <td>
+        <div>{m.venue.name}</div>
+        <div className="text-xs text-zinc-500">
+          {[m.venue.address, [m.venue.postal_code, m.venue.city].filter(Boolean).join(" ")].filter(Boolean).join(", ")}
+        </div>
+      </td>
+      <td>
+        {m.assignments.length ? (
+          <div className="space-y-1">
+            {m.assignments.map((a) => (
+              <div key={a.id} className="flex items-center gap-2 whitespace-nowrap">
+                <Avatar name={a.referee_name} size="sm" />
+                {a.referee_name}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <span className="text-zinc-400">—</span>
+        )}
+      </td>
+      <td>
+        <StatusBadge status={m.status} />
+      </td>
+      <td className="whitespace-nowrap">
+        <RowActions onEdit={() => onEdit(m)} onDelete={() => onDelete(m)} />
+      </td>
+    </tr>
+  );
+});
