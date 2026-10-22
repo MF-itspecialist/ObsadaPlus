@@ -52,3 +52,11 @@ export function datesBetween(from: string, to: string): string[] {
   for (let d = from; d <= to; d = addDays(d, 1)) out.push(d);
   return out;
 }
+
+const DAY_SHORT = ["nd", "pon", "wt", "śr", "czw", "pt", "sob"];
+
+/** "sob 24.10" — dzień przy meczu, gdy lista nie jest pogrupowana po dniach. */
+export function shortDay(iso: string): string {
+  const d = fromIso(iso);
+  return `${DAY_SHORT[d.getDay()]} ${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
