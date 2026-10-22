@@ -1,3 +1,10 @@
+# Uruchomienie:
+#   bez Google Maps (trasy z własnego serwera OSRM):  docker compose --profile osrm up --build
+#   z kluczem Google Maps (GOOGLE_MAPS_API_KEY w .env): docker compose up --build
+# Gotowe skrypty: scripts/start-osrm.(ps1|sh) i scripts/start-google.(ps1|sh).
+# Gdy jest klucz Google, backend liczy trasy przez Google; bez klucza przez OSRM;
+# gdy żaden serwis nie odpowiada — szacunkowo (linia prosta × współczynnik).
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -22,6 +29,9 @@ services:
       CORS_ORIGINS: http://localhost:3000,http://localhost:5173
       AUTO_CREATE_TABLES: "true"
       SEED_ON_STARTUP: "true"
+      ROUTING_PROVIDER: ${ROUTING_PROVIDER:-auto}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
+      OSRM_URL: ${OSRM_URL:-http://osrm:5000}
     depends_on:
       postgres:
         condition: service_healthy
@@ -35,5 +45,32 @@ services:
     ports:
       - "3000:80"
 
+  # --- Trasy bez Google: OSRM na mapie OpenStreetMap (profil "osrm") ---------------
+  # Za pierwszym razem pobiera mapę regionu (domyślnie woj. mazowieckie, ~150 MB)
+  # i przygotowuje ją do liczenia tras (kilka–kilkanaście minut, ok. 2–4 GB RAM).
+  # Kolejne uruchomienia korzystają z gotowych plików w wolumenie osrmdata.
+  osrm-prepare:
+    profiles: ["osrm"]
+    image: ghcr.io/project-osrm/osrm-backend:v6.0.0
+    environment:
+      OSRM_PBF_URL: ${OSRM_PBF_URL:-https://download.geofabrik.de/europe/poland/mazowieckie-latest.osm.pbf}
+    volumes:
+      - osrmdata:/data
+      - ./osrm/prepare.sh:/prepare.sh:ro
+    entrypoint: ["/bin/sh", "/prepare.sh"]
+
+  osrm:
+    profiles: ["osrm"]
+    image: ghcr.io/project-osrm/osrm-backend:v6.0.0
+    command: ["osrm-routed", "--algorithm", "mld", "--max-table-size", "1000", "/data/region.osrm"]
+    volumes:
+      - osrmdata:/data
+    depends_on:
+      osrm-prepare:
+        condition: service_completed_successfully
+    ports:
+      - "5000:5000"
+
 volumes:
   pgdata:
+  osrmdata:

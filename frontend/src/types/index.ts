@@ -245,6 +245,7 @@ export interface SystemSettings {
   arrival_before_minutes: number;
   generator_max_matches_per_day: number;
   women_priority_penalty: number;
+  crew_route_weight: number;
   distance_weight: number;
   travel_time_weight: number;
   daily_match_weight: number;

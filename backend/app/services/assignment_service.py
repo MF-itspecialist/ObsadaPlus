@@ -108,7 +108,7 @@ def generate_preview(db: Session, req: GenerateRequest) -> GenerationRun:
         mode=req.mode,
         daily_cap=s.generator_max_matches_per_day,
     )
-    result = AssignmentGenerator(routing_for(s)).generate_assignments(built.problem)
+    result = AssignmentGenerator(routing_for(s, db)).generate_assignments(built.problem)
     run = GenerationRun(
         status=GenerationRunStatus.PREVIEW,
         params=req.model_dump(mode="json"),

@@ -10,7 +10,7 @@ from app.optimization.context import CandidateContext
 from app.optimization.domain import OptimizationSettings, RefereeProfile, Slot, fmt_time
 from app.optimization.scoring import DEFAULT_COMPONENTS, ScoreComponent, compute_score
 from app.optimization.state import ScheduleState
-from app.services.routing_service import RoutingService
+from app.services.routing_service import GeoPoint, RoutingService
 
 
 @dataclass
@@ -25,6 +25,8 @@ class CandidateEvaluation:
     breakdown: dict[str, float] = field(default_factory=dict)
     reasons: list[str] = field(default_factory=list)
     origin: str = ""
+    # Skąd sędzia wyrusza na mecz (dom albo obiekt poprzedniego meczu).
+    start_point: GeoPoint | None = None
 
     def explanation(self) -> dict[str, Any]:
         return {
@@ -112,6 +114,7 @@ class CandidateEvaluator:
             breakdown=breakdown,
             reasons=build_reasons(ctx),
             origin="previous_match" if ctx.previous else "home",
+            start_point=ctx.inbound.origin,
         )
 
     def evaluate_all(
