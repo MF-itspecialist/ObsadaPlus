@@ -22,6 +22,17 @@ services:
       timeout: 5s
       retries: 10
 
+  # Podgląd bazy w przeglądarce: http://localhost:8080
+  # (System: PostgreSQL, serwer: postgres, użytkownik/hasło/baza: obsada)
+  adminer:
+    image: adminer:4.8.1
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+    ports:
+      - "127.0.0.1:8080:8080"
+
   backend:
     build: ./backend
     environment:

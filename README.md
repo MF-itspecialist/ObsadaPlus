@@ -40,6 +40,7 @@ punktów Google płaci się tylko raz.
 |---|---|
 | Panel (frontend + proxy `/api`) | http://localhost:3000 |
 | API / Swagger | http://localhost:8000/docs |
+| Podgląd bazy (Adminer) | http://localhost:8080 (PostgreSQL, serwer `postgres`, obsada / obsada / baza obsada) |
 | PostgreSQL | localhost:5432 (obsada / obsada) |
 
 Przy pierwszym starcie backend wykonuje migracje i wczytuje dane testowe
