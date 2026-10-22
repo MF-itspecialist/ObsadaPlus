@@ -47,6 +47,9 @@ class RefereeRead(RefereeBase, ORMModel):
     id: int
     district: str
     location_label: str
+    region: str
+    license_class: str
+    license_class_rank: int
     latitude: float
     longitude: float
 

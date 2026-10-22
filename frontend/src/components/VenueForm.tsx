@@ -13,7 +13,9 @@ interface Props {
 
 export default function VenueForm({ initial, onSubmit, onCancel }: Props) {
   const [form, setForm] = useState<VenueInput>(
-    initial ? { name: initial.name, city: initial.city, address: initial.address } : { name: "", city: "Warszawa", address: "" },
+    initial
+      ? { name: initial.name, city: initial.city, address: initial.address, postal_code: initial.postal_code }
+      : { name: "", city: "Warszawa", address: "", postal_code: "" },
   );
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -44,6 +46,9 @@ export default function VenueForm({ initial, onSubmit, onCancel }: Props) {
           onChange={(address, city) => setForm((f) => ({ ...f, address, city }))}
         />
       </div>
+      <Field label="Kod pocztowy (puste = z mapy)">
+        <input className="input w-32" placeholder="00-000" pattern="\d{2}-\d{3}" value={form.postal_code} onChange={(e) => setForm({ ...form, postal_code: e.target.value })} />
+      </Field>
       <div className="flex justify-end gap-2">
         <button type="button" className="btn-secondary" onClick={onCancel}>
           Anuluj

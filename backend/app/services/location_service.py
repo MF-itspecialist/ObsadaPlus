@@ -41,3 +41,5 @@ def apply_location(obj: Referee | Venue, data: RefereeInput | VenueInput, geocod
     obj.latitude, obj.longitude = found.latitude, found.longitude
     if has_district:
         obj.district = found.district
+    elif not data.postal_code:
+        obj.postal_code = found.postal_code

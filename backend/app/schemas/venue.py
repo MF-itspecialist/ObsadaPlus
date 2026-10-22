@@ -7,6 +7,7 @@ class VenueBase(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     city: str = ""
     address: str = ""
+    postal_code: str = Field("", max_length=10)
 
 
 class VenueInput(VenueBase):
@@ -28,3 +29,4 @@ class VenueRead(VenueBase, ORMModel):
     id: int
     latitude: float
     longitude: float
+    region: str

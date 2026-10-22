@@ -31,6 +31,8 @@ class GeocodeResult:
     # Dzielnica — tylko dla miast podzielonych na dzielnice (np. Warszawa: "Mokotów").
     district: str
     formatted_address: str
+    postal_code: str = ""
+    street: str = ""  # ulica z numerem, np. "Puławska 100"
 
 
 class GeocodingError(RuntimeError):
@@ -43,6 +45,10 @@ class Geocoder(ABC):
     @abstractmethod
     def geocode(self, address: str, city: str) -> GeocodeResult | None:
         """Zwraca lokalizację adresu albo ``None``, gdy adresu nie znaleziono."""
+
+    def reverse(self, latitude: float, longitude: float) -> GeocodeResult | None:
+        """Adres (ulica, kod pocztowy) najbliższy podanemu punktowi; ``None`` = brak danych."""
+        return None
 
 
 _STREET_PREFIX = re.compile(r"^\s*(ul\.|ulica)\s*", re.IGNORECASE)
@@ -64,6 +70,7 @@ class NominatimGeocoder(Geocoder):
 
     name = "nominatim"
     URL = "https://nominatim.openstreetmap.org/search"
+    REVERSE_URL = "https://nominatim.openstreetmap.org/reverse"
 
     MIN_INTERVAL_S = 1.0
 
@@ -111,18 +118,38 @@ class NominatimGeocoder(Geocoder):
                 break
         if not hits:
             return None
-        hit = hits[0]
+        return self._result(hits[0], city)
+
+    def reverse(self, latitude: float, longitude: float) -> GeocodeResult | None:
+        self._throttle()
+        params = {"lat": str(latitude), "lon": str(longitude), "zoom": "18", "format": "jsonv2",
+                  "addressdetails": "1", "accept-language": "pl"}
+        try:
+            resp = httpx.get(self.REVERSE_URL, params=params, timeout=self.timeout, headers={"User-Agent": "ObsadaPlus/0.1"})
+            resp.raise_for_status()
+        except httpx.HTTPError as exc:
+            raise GeocodingError(f"Nominatim: {exc}") from exc
+        hit = resp.json()
+        if "error" in hit or "lat" not in hit:
+            return None
+        return self._result(hit, "")
+
+    @staticmethod
+    def _result(hit: dict, city: str) -> GeocodeResult:
         addr = hit.get("address", {})
         found_city = addr.get("city") or addr.get("town") or addr.get("village") or city
         # Dzielnice mają tylko miasta (klucz "city"); w mniejszych miejscowościach
         # "suburb" to zwykle osiedle, które adminowi nic nie mówi.
         district = (addr.get("city_district") or addr.get("borough") or addr.get("suburb") or "") if "city" in addr else ""
+        street = " ".join(p for p in (addr.get("road", ""), addr.get("house_number", "")) if p)
         return GeocodeResult(
             latitude=float(hit["lat"]),
             longitude=float(hit["lon"]),
             city=found_city,
             district=district,
             formatted_address=hit.get("display_name", ""),
+            postal_code=addr.get("postcode", ""),
+            street=street,
         )
 
 
@@ -141,6 +168,12 @@ class GoogleGeocoder(Geocoder):
         if self.viewbox:
             lon1, lat1, lon2, lat2 = self.viewbox.split(",")
             params["bounds"] = f"{min(lat1, lat2)},{min(lon1, lon2)}|{max(lat1, lat2)},{max(lon1, lon2)}"
+        return self._request(params, city)
+
+    def reverse(self, latitude: float, longitude: float) -> GeocodeResult | None:
+        return self._request({"latlng": f"{latitude},{longitude}", "key": self.api_key, "language": "pl"}, "")
+
+    def _request(self, params: dict[str, str], city: str) -> GeocodeResult | None:
         try:
             resp = httpx.get(
                 self.URL,
@@ -164,6 +197,8 @@ class GoogleGeocoder(Geocoder):
             city=parts.get("locality", city),
             district=parts.get("sublocality_level_1") or parts.get("sublocality", ""),
             formatted_address=hit.get("formatted_address", ""),
+            postal_code=parts.get("postal_code", ""),
+            street=" ".join(p for p in (parts.get("route", ""), parts.get("street_number", "")) if p),
         )
 
 
@@ -180,6 +215,9 @@ class CachedGeocoder(Geocoder):
         if key not in self._cache:
             self._cache[key] = self.inner.geocode(address, city)
         return self._cache[key]
+
+    def reverse(self, latitude: float, longitude: float) -> GeocodeResult | None:
+        return self.inner.reverse(latitude, longitude)
 
 
 @lru_cache

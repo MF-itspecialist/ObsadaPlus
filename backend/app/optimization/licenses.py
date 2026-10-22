@@ -175,6 +175,25 @@ def max_level(licenses: list[str] | tuple[str, ...], category: Category, role: R
     return best
 
 
+def license_class(licenses: list[str] | tuple[str, ...]) -> tuple[int, str]:
+    """Najwyższa klasa rozgrywkowa, którą sędzia może prowadzić jako główny: (pozycja, nazwa).
+
+    Pozycja rośnie w dół tabeli (0 = Ekstraklasa) — do sortowania listy w filtrach.
+    """
+    rules = [LICENSE_RULES[n] for n in licenses if n in LICENSE_RULES]
+    men = max((r.main.get(Category.MEN, 0) for r in rules), default=0)
+    if men:
+        name = LEVEL_NAMES[Category.MEN][men]
+        return EKSTRAKLASA - men, name[0].upper() + name[1:]
+    if any(Category.WOMEN in r.main for r in rules):
+        return 20, "Piłka kobiet"
+    if any(Category.FUTSAL in r.main for r in rules):
+        return 21, "Futsal i piłka plażowa"
+    if any(r.assistant for r in rules):
+        return 22, "Tylko asystent"
+    return 30, "Bez licencji"
+
+
 def has_women_license(licenses: list[str] | tuple[str, ...]) -> bool:
     return any(Category.WOMEN in LICENSE_RULES[n].main for n in licenses if n in LICENSE_RULES)
 

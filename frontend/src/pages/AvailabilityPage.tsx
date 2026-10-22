@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Avatar from "../components/Avatar";
 import { ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
+import RefereeFilters, { EMPTY_REFEREE_FILTER, matchesRefereeFilter } from "../components/RefereeFilters";
 import { usePeriod } from "../context/PeriodContext";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../services/api";
@@ -46,6 +47,7 @@ export default function AvailabilityPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [filter, setFilter] = useState(EMPTY_REFEREE_FILTER);
 
   useEffect(() => {
     if (!data.data) return;
@@ -80,7 +82,9 @@ export default function AvailabilityPage() {
     }
   };
 
-  const referees: Referee[] = data.data?.[0].filter((r) => r.active) ?? [];
+  const active: Referee[] = useMemo(() => data.data?.[0].filter((r) => r.active) ?? [], [data.data]);
+  // Filtr tylko ukrywa wiersze — „Zapisz zmiany” zapisuje dyspozycyjność wszystkich sędziów.
+  const referees = active.filter((r) => matchesRefereeFilter(r, filter));
 
   return (
     <div>
@@ -94,6 +98,7 @@ export default function AvailabilityPage() {
       <p className="mb-4 text-sm text-zinc-500">
         Puste pola oznaczają brak zgłoszenia — sędzia jest wtedy traktowany jako niedostępny (zmienisz to w Ustawieniach).
       </p>
+      <RefereeFilters referees={active} filter={filter} onChange={setFilter} shown={referees.length} withLicense={false} />
       <div className="card overflow-hidden"><div className="overflow-x-auto">
         {data.loading && !data.data ? (
           <Loading />
@@ -119,7 +124,9 @@ export default function AvailabilityPage() {
                         <div className="font-medium">
                           {r.first_name} {r.last_name}
                         </div>
-                        <div className="text-xs text-zinc-500">{r.city}</div>
+                        <div className="text-xs text-zinc-500">
+                          {r.location_label} · {r.license_class}
+                        </div>
                       </div>
                     </div>
                   </td>

@@ -1,7 +1,8 @@
-import { MapPin, Plus } from "lucide-react";
-import { useState } from "react";
+import { ExternalLink, MapPin, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
+import { FilterRow, SearchBox, SelectFilter, matchesText, regionOptions, uniqueSorted } from "../components/Filters";
 import Modal from "../components/Modal";
 import RowActions from "../components/RowActions";
 import VenueForm from "../components/VenueForm";
@@ -13,6 +14,17 @@ export default function VenuesPage() {
   const venues = useAsync(() => api.venues(), []);
   const [editing, setEditing] = useState<Venue | "new" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState({ query: "", region: "", city: "" });
+  const all = useMemo(() => venues.data ?? [], [venues.data]);
+  const rows = all.filter(
+    (v) =>
+      (!filter.region || v.region === filter.region) &&
+      (!filter.city || v.city === filter.city) &&
+      matchesText([v.name, v.city, v.address, v.postal_code], filter.query),
+  );
+  const regions = useMemo(() => regionOptions(all.map((v) => v.region)), [all]);
+  const cities = useMemo(() => uniqueSorted(all.filter((v) => !filter.region || v.region === filter.region).map((v) => v.city)), [all, filter.region]);
+  const missing = all.filter((v) => !v.postal_code).length;
 
   const save = async (data: VenueInput) => {
     if (editing === "new") await api.createVenue(data);
@@ -39,6 +51,12 @@ export default function VenuesPage() {
         </button>
       </PageHeader>
       <ErrorBanner message={error ?? venues.error} onClose={() => setError(null)} />
+      <FilterRow active={!!(filter.query || filter.region || filter.city)} onClear={() => setFilter({ query: "", region: "", city: "" })} shown={rows.length} total={all.length} noun="obiektów">
+        <SearchBox value={filter.query} onChange={(query) => setFilter({ ...filter, query })} placeholder="Szukaj: nazwa, ulica, kod pocztowy" />
+        <SelectFilter label="Podokręg" all="Wszystkie podokręgi" options={regions} value={filter.region} onChange={(region) => setFilter({ ...filter, region, city: "" })} />
+        <SelectFilter label="Miejscowość" all="Wszystkie miejscowości" options={cities} value={filter.city} onChange={(city) => setFilter({ ...filter, city })} />
+        {missing > 0 && <span className="text-sm text-amber-700">{missing} bez kodu pocztowego</span>}
+      </FilterRow>
       <div className="card overflow-hidden"><div className="overflow-x-auto">
         {venues.loading && !venues.data ? (
           <Loading />
@@ -47,13 +65,16 @@ export default function VenuesPage() {
             <thead>
               <tr>
                 <th>Nazwa</th>
-                <th>Miasto</th>
                 <th>Adres</th>
+                <th>Kod pocztowy</th>
+                <th>Miejscowość</th>
+                <th>Podokręg</th>
+                <th>Mapa</th>
                 <th className="text-right">Akcje</th>
               </tr>
             </thead>
             <tbody>
-              {venues.data?.map((v) => (
+              {rows.map((v) => (
                 <tr key={v.id}>
                   <td>
                     <div className="flex items-center gap-3 font-medium">
@@ -63,8 +84,20 @@ export default function VenuesPage() {
                       {v.name}
                     </div>
                   </td>
+                  <td>{v.address || <span className="text-zinc-400">—</span>}</td>
+                  <td className="tabular-nums whitespace-nowrap">{v.postal_code || <span className="text-zinc-400">—</span>}</td>
                   <td>{v.city}</td>
-                  <td>{v.address}</td>
+                  <td>{v.region}</td>
+                  <td>
+                    <a
+                      className="btn-link"
+                      href={`https://www.openstreetmap.org/?mlat=${v.latitude}&mlon=${v.longitude}#map=17/${v.latitude}/${v.longitude}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <ExternalLink className="size-3.5" /> pokaż
+                    </a>
+                  </td>
                   <td className="whitespace-nowrap">
                     <RowActions onEdit={() => setEditing(v)} onDelete={() => remove(v)} />
                   </td>

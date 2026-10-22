@@ -23,6 +23,12 @@ export interface Referee extends RefereeInput {
   district: string;
   /** "Warszawa, Mokotów" albo samo miasto. */
   location_label: string;
+  /** Podokręg MZPN, np. "Płock". */
+  region: string;
+  /** Najwyższa klasa rozgrywkowa jako sędzia główny, np. "IV liga". */
+  license_class: string;
+  /** Do sortowania klas: mniej = wyższa liga. */
+  license_class_rank: number;
   latitude: number;
   longitude: number;
 }
@@ -43,12 +49,15 @@ export interface VenueInput {
   name: string;
   city: string;
   address: string;
+  postal_code: string;
 }
 
 export interface Venue extends VenueInput {
   id: number;
   latitude: number;
   longitude: number;
+  /** Podokręg MZPN (najbliższa siedziba). */
+  region: string;
 }
 
 export interface GeocodeResult {
