@@ -237,7 +237,7 @@ Obsada+ nie pobiera go sama. Dane zbiera zakładka uruchamiana w Twojej przeglą
 
 Obiekty dopasowywane są po nazwie (bez nazwy boiska: boisko gospodarza). Nieznane obiekty
 import wypisuje raz na obiekt; dodaj je w zakładce Obiekty i zaimportuj plik ponownie.
-Liczba sędziów: IV liga, V liga i klasa okręgowa 3, pozostałe 1 (`REFEREES_BY_LEVEL`
+Liczba sędziów: IV liga, V liga, klasa okręgowa i klasa A 3 (główny + 2 asystentów), pozostałe 1 (`REFEREES_BY_LEVEL`
 w `importers/lnp_importer.py`).
 
 ## Testy

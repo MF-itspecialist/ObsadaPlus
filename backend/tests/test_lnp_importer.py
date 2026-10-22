@@ -58,7 +58,7 @@ def test_falls_back_to_home_ground_and_skips_unknown_time_and_cancelled():
         _match(3, "2026-10-12T16:00:00", "Wilga", "Pogoń", stateTranslation="Odwołany"),
     ]))
     records, warnings = _records(data)
-    assert len(records) == 1 and records[0].venue_name == "KS Wesoła" and records[0].required_referees == 1
+    assert len(records) == 1 and records[0].venue_name == "KS Wesoła" and records[0].required_referees == 3
     assert warnings == ["Pominięto 1 meczów bez ustalonej godziny rozpoczęcia"]
 
 
