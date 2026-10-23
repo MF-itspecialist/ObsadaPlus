@@ -1,5 +1,6 @@
-import { ChevronDown, Eye, Hand, RefreshCw, Search, Sparkles, Trash2, TriangleAlert, UserPlus, X } from "lucide-react";
+import { ChevronDown, Eye, FileSpreadsheet, FileText, Hand, Megaphone, RefreshCw, Search, Sparkles, Trash2, TriangleAlert, UserPlus, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import CandidatePicker from "../components/CandidatePicker";
 import Avatar from "../components/Avatar";
@@ -20,6 +21,7 @@ import {
   type GenerationStats,
   type MatchInfo,
   type ProposedAssignment,
+  type PublicationSummary,
   type RefereeRole,
   type UnassignedSlot,
 } from "../types";
@@ -43,6 +45,9 @@ export default function AssignmentsPage() {
   const [info, setInfo] = useState<string | null>(null);
   const [picker, setPicker] = useState<PickerState | null>(null);
   const [filter, setFilter] = useState<Filter>(EMPTY_FILTER);
+  // Ponowne pobranie po każdej zmianie obsady — liczba meczów zmienionych od publikacji.
+  const publication = useAsync(() => api.latestPublication(period), [period.date_from, board.data]);
+  const changed = useMemo(() => new Set(publication.data?.changed_matches ?? []), [publication.data]);
 
   // Niezatwierdzona propozycja jest zapisana na serwerze — po odświeżeniu strony wraca.
   useEffect(() => {
@@ -99,6 +104,24 @@ export default function AssignmentsPage() {
     }
   };
 
+  const publish = async () => {
+    const prev = publication.data;
+    const question = prev
+      ? `Opublikować nową wersję obsady (v${prev.version + 1})? Wersja ${prev.version} zostanie zastąpiona.`
+      : "Opublikować obsadę tego weekendu? Zostanie zapisana jako wersja 1.";
+    if (!confirm(question)) return;
+    setBusy(true);
+    try {
+      const pub = await api.publish(period);
+      publication.setData(pub);
+      setInfo(`Opublikowano wersję ${pub.version} (${pub.match_count} meczów).`);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const removeAssignment = async (a: Assignment) => {
     if (!confirm(`Usunąć obsadę: ${a.referee_name}?`)) return;
     try {
@@ -123,6 +146,15 @@ export default function AssignmentsPage() {
           </>
         ) : (
           <>
+            <a className="btn-secondary" href={api.exportUrl(period, "pdf")} download title="Bieżąca obsada jako PDF">
+              <FileText className="size-4" /> PDF
+            </a>
+            <a className="btn-secondary" href={api.exportUrl(period, "xlsx")} download title="Bieżąca obsada jako arkusz Excela">
+              <FileSpreadsheet className="size-4" /> Excel
+            </a>
+            <button className="btn-secondary" onClick={publish} disabled={busy || !board.data?.length}>
+              <Megaphone className="size-4" /> Opublikuj
+            </button>
             <button className="btn-secondary" onClick={() => generate("FULL")} disabled={busy}>
               <RefreshCw className="size-4" /> Generuj całość od nowa
             </button>
@@ -134,13 +166,14 @@ export default function AssignmentsPage() {
       </PageHeader>
       <ErrorBanner message={error ?? board.error} onClose={() => setError(null)} />
       <InfoBanner message={info} onClose={() => setInfo(null)} />
+      {!preview && publication.data && <PublicationBar pub={publication.data} />}
 
       {preview ? (
         <PreviewView preview={preview} filter={filter} onFilter={setFilter} />
       ) : board.loading && !board.data ? (
         <Loading />
       ) : (
-        <BoardView items={board.data ?? []} filter={filter} onFilter={setFilter} onPick={setPicker} onRemove={removeAssignment} />
+        <BoardView items={board.data ?? []} changed={changed} filter={filter} onFilter={setFilter} onPick={setPicker} onRemove={removeAssignment} />
       )}
 
       {picker && (
@@ -444,12 +477,14 @@ function boardRows(items: BoardItem[]): BoardRow[] {
 
 function BoardView({
   items,
+  changed,
   filter,
   onFilter,
   onPick,
   onRemove,
 }: {
   items: BoardItem[];
+  changed: Set<number>;
   filter: Filter;
   onFilter: (f: Filter) => void;
   onPick: (p: PickerState) => void;
@@ -473,7 +508,13 @@ function BoardView({
           const hasConflict = m.assignments.some((a) => a.conflict);
           const state = m.status === "CANCELLED" ? "cancelled" : unassigned ? "empty" : hasConflict ? "conflict" : "ok";
           return (
-            <MatchCard key={m.match_id} match={info} state={state} status={<StatusBadge status={m.status} />}>
+            <MatchCard key={m.match_id} match={info} state={state} status={
+                <>
+                  <StatusBadge status={m.status} />
+                  {changed.has(m.match_id) && <Tag tone="amber">zmiana po publikacji</Tag>}
+                </>
+              }
+            >
               {m.required_roles.map((role) => {
                 const a = m.assignments.find((x) => x.role === role);
                 if (!a) {
@@ -526,6 +567,35 @@ function BoardView({
           );
         }}
       />
+    </div>
+  );
+}
+
+// --- Publikacja ---------------------------------------------------------------------
+
+function PublicationBar({ pub }: { pub: PublicationSummary }) {
+  const n = pub.changed_matches.length;
+  const when = new Date(pub.published_at).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" });
+  return (
+    <div
+      className={`mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl px-4 py-3 text-sm ring-1 ${
+        n ? "bg-amber-50 text-amber-900 ring-amber-600/15" : "bg-emerald-50 text-emerald-900 ring-emerald-600/15"
+      }`}
+    >
+      <Megaphone className={`size-4 shrink-0 ${n ? "text-amber-500" : "text-emerald-500"}`} />
+      <span>
+        Opublikowano <strong>wersję {pub.version}</strong> ({when}).{" "}
+        {n ? (
+          <>
+            Od tego czasu zmieniono <strong>{n}</strong> {n === 1 ? "mecz" : n < 5 ? "mecze" : "meczów"} — opublikuj ponownie, żeby sędziowie dostali aktualną wersję.
+          </>
+        ) : (
+          "Obsada nie zmieniła się od publikacji."
+        )}
+      </span>
+      <Link className="btn-link ml-auto" to={`/publication/${pub.id}`}>
+        Otwórz opublikowaną wersję
+      </Link>
     </div>
   );
 }

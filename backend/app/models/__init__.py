@@ -5,6 +5,7 @@ from app.models.availability import Availability
 from app.models.enums import GenerationMode, GenerationRunStatus, MatchStatus, RefereeRole
 from app.models.generation_run import GenerationRun
 from app.models.match import Match
+from app.models.publication import Publication
 from app.models.referee import Referee
 from app.models.route_cache import RouteCacheEntry
 from app.models.system_setting import SystemSetting
@@ -18,6 +19,7 @@ __all__ = [
     "GenerationRunStatus",
     "Match",
     "MatchStatus",
+    "Publication",
     "Referee",
     "RefereeRole",
     "RouteCacheEntry",

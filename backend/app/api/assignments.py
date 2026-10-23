@@ -1,6 +1,6 @@
 import datetime as dt
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Response, status
 
 from app.api.deps import DbSession, PeriodParams, not_found
 from app.models import Match, RefereeRole
@@ -12,7 +12,7 @@ from app.schemas.assignment import (
     CandidateRead,
     ManualAssignmentResult,
 )
-from app.services import assignment_service, scoring_service
+from app.services import assignment_service, export_service, scoring_service
 from app.services.assignment_service import AssignmentError
 
 router = APIRouter(prefix="/api/assignments", tags=["assignments"])
@@ -32,6 +32,30 @@ def list_assignments(
 def assignment_board(db: DbSession, p: PeriodParams):
     """Widok obsady: mecze okresu z przypisaniami i bieżącymi konfliktami."""
     return assignment_service.board(db, *p)
+
+
+def _download(content: bytes, media_type: str, name: str) -> Response:
+    return Response(content, media_type=media_type, headers={"Content-Disposition": f'attachment; filename="{name}"'})
+
+
+@router.get("/export.xlsx")
+def export_xlsx(db: DbSession, p: PeriodParams):
+    """Obsada okresu jako arkusz Excela (lista meczów + rozpiska na sędziów)."""
+    rows = export_service.collect(db, *p)
+    content = export_service.to_xlsx(rows, export_service.period_title(*p))
+    return _download(
+        content,
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        export_service.filename("obsada", *p, "xlsx"),
+    )
+
+
+@router.get("/export.pdf")
+def export_pdf(db: DbSession, p: PeriodParams):
+    """Obsada okresu jako PDF do wydruku / rozesłania."""
+    rows = export_service.collect(db, *p)
+    content = export_service.to_pdf(rows, export_service.period_title(*p), "Stan bieżący (nieopublikowany)")
+    return _download(content, "application/pdf", export_service.filename("obsada", *p, "pdf"))
 
 
 @router.get("/candidates", response_model=list[CandidateRead])

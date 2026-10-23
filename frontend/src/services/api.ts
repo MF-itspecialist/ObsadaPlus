@@ -17,6 +17,8 @@ import type {
   Referee,
   RefereeInput,
   RefereeOverview,
+  Publication,
+  PublicationSummary,
   RefereeRole,
   SystemSettings,
   Venue,
@@ -71,6 +73,11 @@ async function request<T>(method: string, path: string, opts: { query?: Query; b
   return body as T;
 }
 
+/** Adres pliku do pobrania (eksport) — otwierany zwykłym linkiem, nie przez fetch. */
+export function fileUrl(path: string, query?: Query): string {
+  return buildUrl(path, query);
+}
+
 export interface Period {
   date_from: string;
   date_to: string;
@@ -119,6 +126,14 @@ export const api = {
   assign: (matchId: number, refereeId: number, role: RefereeRole = "MAIN") =>
     request<ManualAssignmentResult>("POST", "/api/assignments", { body: { match_id: matchId, referee_id: refereeId, role } }),
   deleteAssignment: (id: number) => request<void>("DELETE", `/api/assignments/${id}`),
+
+  exportUrl: (p: Period, format: "pdf" | "xlsx") => fileUrl(`/api/assignments/export.${format}`, { ...p }),
+
+  // Publikacja
+  publish: (p: Period) => request<PublicationSummary>("POST", "/api/publications", { body: p }),
+  latestPublication: (p: Period) => request<PublicationSummary | null>("GET", "/api/publications/latest", { query: { ...p } }),
+  publication: (id: number) => request<Publication>("GET", `/api/publications/${id}`),
+  publicationPdfUrl: (id: number) => fileUrl(`/api/publications/${id}/pdf`),
 
   // Generator
   generate: (p: Period, mode: GenerationMode) => request<GenerationPreview>("POST", "/api/optimization/generate", { body: { ...p, mode } }),

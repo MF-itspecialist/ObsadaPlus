@@ -287,6 +287,40 @@ export interface LicenseGroup {
   licenses: LicenseInfo[];
 }
 
+export interface PublicationSummary {
+  id: number;
+  date_from: string;
+  date_to: string;
+  version: number;
+  published_at: string;
+  match_count: number;
+  changed_matches: number[];
+}
+
+export interface PublishedCrewMember {
+  role: RefereeRole;
+  referee_id: number | null;
+  referee_name: string | null;
+  distance_km: number | null;
+}
+
+export interface PublishedRow {
+  match_id: number;
+  date: string;
+  start_time: string;
+  league: string;
+  home_team: string;
+  away_team: string;
+  venue_name: string;
+  venue_address: string;
+  cancelled: boolean;
+  crew: PublishedCrewMember[];
+}
+
+export interface Publication extends PublicationSummary {
+  rows: PublishedRow[];
+}
+
 export const ROLE_LABELS: Record<RefereeRole, string> = {
   MAIN: "Sędzia główny",
   ASSISTANT_1: "Asystent 1",
