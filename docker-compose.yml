@@ -15,7 +15,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"  # tylko z tego komputera (hasło jest domyślne)
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U obsada -d obsada"]
       interval: 5s
@@ -48,7 +48,7 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"  # API bez logowania — tylko z tego komputera
 
   frontend:
     build: ./frontend
