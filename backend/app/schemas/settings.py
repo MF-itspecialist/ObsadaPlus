@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -33,6 +35,9 @@ class SystemSettings(BaseModel):
         (100000, 300),
     ]
     assume_available_without_entry: bool = False
+    # Metoda obsady: „cpsat” rozważa cały okres naraz (OR-Tools), „greedy” mecz po meczu.
+    optimizer: Literal["greedy", "cpsat"] = "cpsat"
+    optimizer_time_limit_s: int = Field(15, ge=1, le=120)
     # Parametry HaversineRoutingService.
     routing_road_factor: float = Field(1.3, ge=1.0, le=3.0)
     routing_avg_speed_kmh: float = Field(40.0, gt=0, le=150)

@@ -62,6 +62,8 @@ class GenerationStatsRead(BaseModel):
     avg_distance_km: float
     total_distance_km: float
     conflicts: int
+    optimizer: str = "greedy"
+    optimizer_note: str = ""
 
 
 class GenerationPreview(BaseModel):
