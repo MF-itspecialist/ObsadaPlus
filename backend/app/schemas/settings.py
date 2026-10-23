@@ -36,5 +36,7 @@ class SystemSettings(BaseModel):
     # Parametry HaversineRoutingService.
     routing_road_factor: float = Field(1.3, ge=1.0, le=3.0)
     routing_avg_speed_kmh: float = Field(40.0, gt=0, le=150)
+    # Stawka kilometrówki (zł za km) — domyślnie samochód osobowy powyżej 900 cm³.
+    mileage_rate: float = Field(0.8358, ge=0, le=10)
     # Domyślny czas meczu przy imporcie bez godziny zakończenia.
     default_match_duration_minutes: int = Field(105, ge=30, le=300)
