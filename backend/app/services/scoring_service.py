@@ -16,7 +16,7 @@ from app.services.settings_service import get_settings, routing_for, to_optimiza
 
 def _generator_and_settings(db: Session):
     s = get_settings(db)
-    return AssignmentGenerator(routing_for(s)), to_optimization_settings(s)
+    return AssignmentGenerator(routing_for(s, db)), to_optimization_settings(s)
 
 
 def evaluate_current(db: Session, date_from: dt.date, date_to: dt.date) -> tuple[GenerationResult, BuiltProblem]:

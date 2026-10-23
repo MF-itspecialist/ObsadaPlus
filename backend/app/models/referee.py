@@ -6,6 +6,7 @@ from sqlalchemy import JSON, Boolean, Float, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.db import Base
+from app.regions import region_for
 
 if TYPE_CHECKING:
     from app.models.assignment import Assignment
@@ -45,6 +46,25 @@ class Referee(Base):
     @property
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    @property
+    def region(self) -> str:
+        """Podokręg MZPN (z notatek albo najbliższa siedziba)."""
+        return region_for(self.latitude, self.longitude, self.notes)
+
+    @property
+    def license_class(self) -> str:
+        """Najwyższa klasa rozgrywkowa, którą może prowadzić jako sędzia główny."""
+        return self._license_class()[1]
+
+    @property
+    def license_class_rank(self) -> int:
+        return self._license_class()[0]
+
+    def _license_class(self) -> tuple[int, str]:
+        from app.optimization.licenses import license_class  # licencje importują enumy z app.models
+
+        return license_class(self.licenses or [])
 
     @property
     def location_label(self) -> str:

@@ -123,6 +123,8 @@ export const api = {
   // Generator
   generate: (p: Period, mode: GenerationMode) => request<GenerationPreview>("POST", "/api/optimization/generate", { body: { ...p, mode } }),
   confirm: (runId: number) => request<ConfirmResponse>("POST", "/api/optimization/confirm", { body: { run_id: runId } }),
+  discard: (runId: number) => request<void>("POST", "/api/optimization/discard", { body: { run_id: runId } }),
+  pendingPreview: (p: Period) => request<GenerationPreview | null>("GET", "/api/optimization/pending", { query: { ...p } }),
 
   // Ustawienia i statystyki
   settings: () => request<SystemSettings>("GET", "/api/settings"),

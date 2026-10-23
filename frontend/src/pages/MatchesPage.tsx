@@ -1,8 +1,9 @@
 import { Plus, Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 
 import Avatar from "../components/Avatar";
 import { EmptyState, ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
+import { FilterRow, LoadMoreRow, SearchBox, SelectFilter, matchesText, regionOptions, uniqueSorted, useIncremental } from "../components/Filters";
 import MatchForm from "../components/MatchForm";
 import Modal from "../components/Modal";
 import RowActions from "../components/RowActions";
@@ -13,6 +14,25 @@ import { api } from "../services/api";
 import type { Match, MatchInput } from "../types";
 import { dayName, formatDate } from "../utils/dates";
 import { hhmm } from "../utils/format";
+import { leagueLevel } from "../utils/leagues";
+
+interface MatchFilter {
+  query: string;
+  level: string;
+  region: string;
+  city: string;
+}
+
+const EMPTY_FILTER: MatchFilter = { query: "", level: "", region: "", city: "" };
+
+function matchesFilter(m: Match, f: MatchFilter): boolean {
+  return (
+    (!f.level || leagueLevel(m.league).label === f.level) &&
+    (!f.region || m.venue.region === f.region) &&
+    (!f.city || m.venue.city === f.city) &&
+    matchesText([m.home_team, m.away_team, m.league, m.venue.name, m.venue.city, m.venue.address], f.query)
+  );
+}
 
 export default function MatchesPage() {
   const { period } = usePeriod();
@@ -23,6 +43,20 @@ export default function MatchesPage() {
   const [info, setInfo] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [includePast, setIncludePast] = useState(false);
+  const [filter, setFilter] = useState<MatchFilter>(EMPTY_FILTER);
+  const all = useMemo(() => matches.data ?? [], [matches.data]);
+  const filtered = useMemo(() => all.filter((m) => matchesFilter(m, filter)), [all, filter]);
+  const page = useIncremental(filtered, filtered);
+  const levels = useMemo(
+    () => [...new Map(all.map((m) => [leagueLevel(m.league).label, leagueLevel(m.league).rank])).entries()].sort((a, b) => a[1] - b[1]).map(([l]) => l),
+    [all],
+  );
+  const regions = useMemo(() => regionOptions(all.map((m) => m.venue.region)), [all]);
+  const cities = useMemo(
+    () => uniqueSorted(all.filter((m) => !filter.region || m.venue.region === filter.region).map((m) => m.venue.city)),
+    [all, filter.region],
+  );
+  const set = (patch: Partial<MatchFilter>) => setFilter((f) => ({ ...f, ...patch }));
 
   const save = async (data: MatchInput) => {
     if (editing === "new") await api.createMatch(data);
@@ -31,15 +65,19 @@ export default function MatchesPage() {
     matches.reload();
   };
 
-  const remove = async (m: Match) => {
-    if (!confirm(`Usunąć mecz ${m.home_team} – ${m.away_team}?`)) return;
-    try {
-      await api.deleteMatch(m.id);
-      matches.reload();
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
+  const { reload } = matches;
+  const remove = useCallback(
+    async (m: Match) => {
+      if (!confirm(`Usunąć mecz ${m.home_team} – ${m.away_team}?`)) return;
+      try {
+        await api.deleteMatch(m.id);
+        reload();
+      } catch (e) {
+        setError((e as Error).message);
+      }
+    },
+    [reload],
+  );
 
   const importFile = async (file: File | undefined) => {
     if (!file) return;
@@ -72,6 +110,12 @@ export default function MatchesPage() {
       </PageHeader>
       <ErrorBanner message={error ?? matches.error} onClose={() => setError(null)} />
       <InfoBanner message={info} onClose={() => setInfo(null)} />
+      <FilterRow active={Object.values(filter).some(Boolean)} onClear={() => setFilter(EMPTY_FILTER)} shown={filtered.length} total={all.length} noun="meczów">
+        <SearchBox value={filter.query} onChange={(query) => set({ query })} placeholder="Szukaj: drużyna, liga, obiekt, adres" />
+        <SelectFilter label="Klasa rozgrywkowa" all="Wszystkie klasy" options={levels} value={filter.level} onChange={(level) => set({ level })} />
+        <SelectFilter label="Podokręg" all="Wszystkie podokręgi" options={regions} value={filter.region} onChange={(region) => set({ region, city: "" })} />
+        <SelectFilter label="Miejscowość boiska" all="Wszystkie miejscowości" options={cities} value={filter.city} onChange={(city) => set({ city })} />
+      </FilterRow>
       <div className="card overflow-hidden"><div className="overflow-x-auto">
         {matches.loading && !matches.data ? (
           <Loading />
@@ -91,45 +135,17 @@ export default function MatchesPage() {
               </tr>
             </thead>
             <tbody>
-              {matches.data?.map((m) => (
-                <tr key={m.id}>
-                  <td className="whitespace-nowrap">
-                    <div className="font-medium tabular-nums">{formatDate(m.date)}</div>
-                    <div className="text-xs text-zinc-500 capitalize">{dayName(m.date)}</div>
-                  </td>
-                  <td className="whitespace-nowrap tabular-nums">
-                    <span className="font-medium">{hhmm(m.start_time)}</span>
-                    <span className="text-zinc-400">–{hhmm(m.estimated_end_time)}</span>
-                  </td>
-                  <td>{m.league && <Tag tone="brand">{m.league}</Tag>}</td>
-                  <td className="font-medium">{m.home_team}</td>
-                  <td className="font-medium">{m.away_team}</td>
-                  <td>
-                    <div>{m.venue.name}</div>
-                    <div className="text-xs text-zinc-500">{m.venue.city}</div>
-                  </td>
-                  <td>
-                    {m.assignments.length ? (
-                      <div className="space-y-1">
-                        {m.assignments.map((a) => (
-                          <div key={a.id} className="flex items-center gap-2 whitespace-nowrap">
-                            <Avatar name={a.referee_name} size="sm" />
-                            {a.referee_name}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-zinc-400">—</span>
-                    )}
-                  </td>
-                  <td>
-                    <StatusBadge status={m.status} />
-                  </td>
-                  <td className="whitespace-nowrap">
-                    <RowActions onEdit={() => setEditing(m)} onDelete={() => remove(m)} />
+              {page.shown.map((m) => (
+                <MatchRow key={m.id} match={m} onEdit={setEditing} onDelete={remove} />
+              ))}
+              {page.hasMore && <LoadMoreRow colSpan={9} rest={page.rest} onMore={page.more} />}
+              {all.length > 0 && filtered.length === 0 && (
+                <tr>
+                  <td colSpan={9} className="py-10 text-center text-sm text-zinc-500">
+                    Żaden mecz nie pasuje do filtra.
                   </td>
                 </tr>
-              ))}
+              )}
               {matches.data?.length === 0 && (
                 <tr>
                   <td colSpan={9}>
@@ -155,3 +171,51 @@ export default function MatchesPage() {
     </div>
   );
 }
+
+const MatchRow = memo(function MatchRow({ match: m, onEdit, onDelete }: {
+  match: Match;
+  onEdit: (m: Match) => void;
+  onDelete: (m: Match) => void;
+}) {
+  return (
+    <tr>
+      <td className="whitespace-nowrap">
+        <div className="font-medium tabular-nums">{formatDate(m.date)}</div>
+        <div className="text-xs text-zinc-500 capitalize">{dayName(m.date)}</div>
+      </td>
+      <td className="whitespace-nowrap tabular-nums">
+        <span className="font-medium">{hhmm(m.start_time)}</span>
+        <span className="text-zinc-400">–{hhmm(m.estimated_end_time)}</span>
+      </td>
+      <td>{m.league && <Tag tone="brand">{m.league}</Tag>}</td>
+      <td className="font-medium">{m.home_team}</td>
+      <td className="font-medium">{m.away_team}</td>
+      <td>
+        <div>{m.venue.name}</div>
+        <div className="text-xs text-zinc-500">
+          {[m.venue.address, [m.venue.postal_code, m.venue.city].filter(Boolean).join(" ")].filter(Boolean).join(", ")}
+        </div>
+      </td>
+      <td>
+        {m.assignments.length ? (
+          <div className="space-y-1">
+            {m.assignments.map((a) => (
+              <div key={a.id} className="flex items-center gap-2 whitespace-nowrap">
+                <Avatar name={a.referee_name} size="sm" />
+                {a.referee_name}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <span className="text-zinc-400">—</span>
+        )}
+      </td>
+      <td>
+        <StatusBadge status={m.status} />
+      </td>
+      <td className="whitespace-nowrap">
+        <RowActions onEdit={() => onEdit(m)} onDelete={() => onDelete(m)} />
+      </td>
+    </tr>
+  );
+});

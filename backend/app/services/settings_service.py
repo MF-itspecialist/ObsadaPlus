@@ -48,12 +48,20 @@ def to_optimization_settings(s: SystemSettings) -> OptimizationSettings:
         assume_available_without_entry=s.assume_available_without_entry,
         arrival_before_minutes=s.arrival_before_minutes,
         women_priority_penalty=s.women_priority_penalty,
+        crew_route_weight=s.crew_route_weight,
     )
 
 
-def routing_for(s: SystemSettings) -> RoutingService:
+def routing_for(s: SystemSettings, db: Session | None = None) -> RoutingService:
+    """Serwis tras wg konfiguracji; z ``db`` trasy z Google/OSRM są zapamiętywane w bazie."""
+    from app.services.route_cache_store import DbRouteStore
+
+    cfg = get_config()
     return get_routing_service(
-        get_config().routing_provider,
+        cfg.routing_provider,
         road_factor=s.routing_road_factor,
         avg_speed_kmh=s.routing_avg_speed_kmh,
+        google_api_key=cfg.google_maps_api_key,
+        osrm_url=cfg.osrm_url,
+        store=DbRouteStore(db) if db is not None else None,
     )

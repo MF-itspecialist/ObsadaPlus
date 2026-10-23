@@ -66,6 +66,8 @@ class OptimizationSettings:
     arrival_before_minutes: int = 45
     # Kara za mecz męski dla sędzi z licencją kobiecą — tylko gdy w okresie są mecze kobiet.
     women_priority_penalty: float = 30.0
+    # Zespół kilkuosobowy: waga km wspólnego dojazdu (kierowca zabiera pozostałych po drodze).
+    crew_route_weight: float = 1.0
     women_matches_in_period: bool = False
 
 

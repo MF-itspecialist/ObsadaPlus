@@ -108,7 +108,8 @@ def generate_preview(db: Session, req: GenerateRequest) -> GenerationRun:
         mode=req.mode,
         daily_cap=s.generator_max_matches_per_day,
     )
-    result = AssignmentGenerator(routing_for(s)).generate_assignments(built.problem)
+    result = AssignmentGenerator(routing_for(s, db)).generate_assignments(built.problem)
+    _discard_previews(db, req.date_from, req.date_to)
     run = GenerationRun(
         status=GenerationRunStatus.PREVIEW,
         params=req.model_dump(mode="json"),
@@ -119,6 +120,36 @@ def generate_preview(db: Session, req: GenerateRequest) -> GenerationRun:
     db.commit()
     db.refresh(run)
     return run
+
+
+def _same_period(run: GenerationRun, date_from: dt.date, date_to: dt.date) -> bool:
+    return run.params.get("date_from") == date_from.isoformat() and run.params.get("date_to") == date_to.isoformat()
+
+
+def _discard_previews(db: Session, date_from: dt.date, date_to: dt.date) -> None:
+    """Starsze niezatwierdzone podglądy tego okresu przestają być aktualne."""
+    for run in db.scalars(select(GenerationRun).where(GenerationRun.status == GenerationRunStatus.PREVIEW)):
+        if _same_period(run, date_from, date_to):
+            run.status = GenerationRunStatus.DISCARDED
+
+
+def pending_preview(db: Session, date_from: dt.date, date_to: dt.date) -> GenerationRun | None:
+    """Ostatni niezatwierdzony podgląd okresu — żeby przetrwał odświeżenie strony."""
+    runs = db.scalars(
+        select(GenerationRun)
+        .where(GenerationRun.status == GenerationRunStatus.PREVIEW)
+        .order_by(GenerationRun.id.desc())
+    )
+    return next((r for r in runs if _same_period(r, date_from, date_to)), None)
+
+
+def discard(db: Session, run_id: int) -> None:
+    run = db.get(GenerationRun, run_id)
+    if run is None:
+        raise AssignmentError(f"Brak generowania o id {run_id}")
+    if run.status == GenerationRunStatus.PREVIEW:
+        run.status = GenerationRunStatus.DISCARDED
+        db.commit()
 
 
 def confirm(db: Session, run_id: int) -> dict[str, Any]:

@@ -9,7 +9,7 @@ równomierne rozłożenie spotkań. Logistyka ma największy wpływ na wybór.
 * **Baza:** PostgreSQL (docker) / SQLite (dev, testy)
 * **Frontend:** React 19, TypeScript, Tailwind CSS 4, Vite, ikony lucide-react, font Inter
 * **Optymalizacja:** własny algorytm scoringowy (strategia wymienna na OR-Tools / CP-SAT)
-* **Routing:** `RoutingService` → `HaversineRoutingService` (wymienny na OSRM / Google Maps)
+* **Routing:** `RoutingService` → Google Maps (Routes API, z kluczem) albo OSRM w Dockerze (bez klucza); szacunek, gdy serwis nie odpowiada
 
 Szczegóły architektury, modele i punkty rozbudowy: [ARCHITECTURE.md](ARCHITECTURE.md).
 Zrzuty ekranu: [docs/screenshots](docs/screenshots).
@@ -18,14 +18,29 @@ Zrzuty ekranu: [docs/screenshots](docs/screenshots).
 
 ## Szybki start (Docker)
 
-```bash
-docker compose up --build
-```
+Dwie wersje — różnią się tylko źródłem tras:
+
+| Wersja | Polecenie (Windows) | Polecenie (Linux/macOS) |
+|---|---|---|
+| **bez Google** — własny serwer OSRM na mapie OpenStreetMap | `powershell -ExecutionPolicy Bypass -File scripts\start-osrm.ps1` | `scripts/start-osrm.sh` |
+| **z Google Maps** — klucz `GOOGLE_MAPS_API_KEY` w `.env` | `powershell -ExecutionPolicy Bypass -File scripts\start-google.ps1` | `scripts/start-google.sh` |
+
+Bez skryptów: `docker compose --profile osrm up --build` (OSRM) lub `docker compose up --build`.
+Przy `ROUTING_PROVIDER=auto` (domyślnie) backend wybiera sam: **Google, gdy jest klucz → OSRM →
+szacunek** (linia prosta × 1,3). Wzór pliku `.env`: [.env.example](.env.example).
+
+OSRM przy pierwszym starcie pobiera mapę województwa mazowieckiego (~150 MB, Geofabrik)
+i przygotowuje ją do liczenia tras (kilka–kilkanaście minut, ok. 2–4 GB RAM dla Dockera).
+Do tego czasu generator liczy trasy szacunkowo. Inny region: `OSRM_PBF_URL` w `.env`.
+Klucz Google musi mieć włączone **Routes API** (trasy) i **Geocoding API** (adresy).
+Każda trasa z Google/OSRM jest zapisywana w tabeli `route_cache`, więc za tę samą parę
+punktów Google płaci się tylko raz.
 
 | Usługa | Adres |
 |---|---|
 | Panel (frontend + proxy `/api`) | http://localhost:3000 |
 | API / Swagger | http://localhost:8000/docs |
+| Podgląd bazy (Adminer) | http://localhost:8080 (PostgreSQL, serwer `postgres`, obsada / obsada / baza obsada) |
 | PostgreSQL | localhost:5432 (obsada / obsada) |
 
 Przy pierwszym starcie backend wykonuje migracje i wczytuje dane testowe
@@ -68,7 +83,9 @@ Zmienne środowiskowe backendu (`backend/.env`):
 |---|---|---|
 | `DATABASE_URL` | `sqlite:///./obsada.db` | np. `postgresql+psycopg2://obsada:obsada@localhost:5432/obsada` |
 | `CORS_ORIGINS` | `http://localhost:5173,…` | originy frontendu |
-| `ROUTING_PROVIDER` | `haversine` | implementacja `RoutingService` |
+| `ROUTING_PROVIDER` | `auto` | `auto` (Google → OSRM → szacunek), `google`, `osrm`, `haversine` |
+| `GOOGLE_MAPS_API_KEY` | pusty | klucz Google (Routes API + Geocoding API); ma pierwszeństwo |
+| `OSRM_URL` | pusty (`http://osrm:5000` w Dockerze) | serwer OSRM |
 | `AUTO_CREATE_TABLES` | `true` | migracje Alembic przy starcie |
 | `SEED_ON_STARTUP` | `false` | dane testowe przy starcie, gdy baza pusta |
 
@@ -130,6 +147,12 @@ Schemat tworzy migracja `backend/alembic/versions/0001_initial_schema.py` (Postg
    dnia: `początek_dyspozycyjności + przejazd + bufor ≤ wymagany przyjazd`. Sprawdzany jest
    też przejazd na **następny** już przydzielony mecz (np. ręczny).
 5. Wybierany jest sędzia o najniższym SCORE; zapisywane jest uzasadnienie (✓ …) i rozbicie SCORE.
+   Mecz z **jednym** sędzią: decyduje dojazd tego sędziego z jego lokalizacji.
+   Mecz z **zespołem** (G + A1 + A2): generator wybiera cały skład naraz — najwięcej
+   obsadzonych ról, potem najniższy koszt zespołu = suma SCORE trzech sędziów (każdy ze
+   swoim dojazdem i limitami) + `crew_route_weight × km wspólnego dojazdu` (kierowca zabiera
+   pozostałych po drodze; liczona najkrótsza kolejność). Wygrywają sędziowie mieszkający
+   blisko obiektu i blisko siebie. Sędzia główny musi mieć licencję na ligę meczu.
 6. Gdy nikt nie spełnia ograniczeń: mecz `UNASSIGNED` z policzonymi przyczynami
    („konflikty czasowe: 4 sędz.”, „brak możliwości transportu: 2 sędz.” …).
 7. Statystyki: mecze, obsadzone, nieobsadzone, aktywni sędziowie, średnio meczów / sędziego,
@@ -155,8 +178,8 @@ Przykład z wymagań: sędzia A 5 km od meczu z 2 meczami tego dnia (trzeci mecz
 za obciążenie) wygrywa z sędzią B 55 km dalej bez meczów (sama odległość ≈ 150 + 110).
 Logistyka wygrywa z idealną równością, a równość rozstrzyga przy podobnej logistyce.
 
-Odległość w MVP: linia prosta × 1,3 (krętość dróg), czas: km / 40 km/h + 5 min
-(0 min, gdy to ten sam obiekt). Parametry w Ustawieniach.
+Odległość i czas: z Google Maps lub OSRM (trasy drogowe). Bez nich szacunek: linia prosta × 1,3
+(krętość dróg), czas: km / 40 km/h + 5 min (0 min, gdy to ten sam obiekt). Parametry w Ustawieniach.
 
 ## Przykładowe API
 
@@ -214,12 +237,12 @@ Obsada+ nie pobiera go sama. Dane zbiera zakładka uruchamiana w Twojej przeglą
 
 Obiekty dopasowywane są po nazwie (bez nazwy boiska: boisko gospodarza). Nieznane obiekty
 import wypisuje raz na obiekt; dodaj je w zakładce Obiekty i zaimportuj plik ponownie.
-Liczba sędziów: IV liga, V liga i klasa okręgowa 3, pozostałe 1 (`REFEREES_BY_LEVEL`
+Liczba sędziów: IV liga, V liga, klasa okręgowa i klasa A 3 (główny + 2 asystentów), pozostałe 1 (`REFEREES_BY_LEVEL`
 w `importers/lnp_importer.py`).
 
 ## Testy
 
-`pytest` w katalogu `backend` (38 testów). Scenariusze generatora: sędzia niedostępny,
+`pytest` w katalogu `backend` (testy generatora, zespołów, tras i API). Scenariusze generatora: sędzia niedostępny,
 konflikt dwóch meczów, brak czasu na transport (przykład 11:45 + 35 + 15 > 12:15),
 konfigurowalny bufor, blokada dojazdu na późniejszy ręczny mecz, `max_matches_per_day`
 i 4. mecz przy max 3, limit weekendowy, wybór bliższego sędziego, poprzedni mecz jako punkt

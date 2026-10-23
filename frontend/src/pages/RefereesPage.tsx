@@ -1,5 +1,5 @@
-import { Plus, Search, X } from "lucide-react";
-import { useState } from "react";
+import { Plus } from "lucide-react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 import Avatar from "../components/Avatar";
 import { ErrorBanner, Loading, PageHeader } from "../components/Feedback";
@@ -7,21 +7,25 @@ import { LicenseList } from "../components/Licenses";
 import Modal from "../components/Modal";
 import RowActions from "../components/RowActions";
 import RefereeForm from "../components/RefereeForm";
+import { LoadMoreRow, useIncremental } from "../components/Filters";
+import RefereeFilters, { EMPTY_REFEREE_FILTER, matchesRefereeFilter } from "../components/RefereeFilters";
 import { Tag } from "../components/StatusBadge";
 import { usePeriod } from "../context/PeriodContext";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../services/api";
-import type { Referee, RefereeInput } from "../types";
-import { dayName } from "../utils/dates";
+import type { Referee, RefereeInput, RefereeOverview } from "../types";
+import { shortDay } from "../utils/dates";
 
 export default function RefereesPage() {
   const { period } = usePeriod();
   const overview = useAsync(() => api.refereesOverview(period), [period.date_from]);
   const [editing, setEditing] = useState<Referee | "new" | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState(EMPTY_REFEREE_FILTER);
   const days = overview.data?.[0]?.days.map((d) => d.date) ?? [period.date_from, period.date_to];
-  const rows = overview.data?.filter(({ referee: r }) => matchesQuery(r, query)) ?? [];
+  const referees = useMemo(() => overview.data?.map((o) => o.referee) ?? [], [overview.data]);
+  const filtered = useMemo(() => overview.data?.filter((o) => matchesRefereeFilter(o.referee, filter)) ?? [], [overview.data, filter]);
+  const page = useIncremental(filtered, filtered);
 
   const save = async (data: RefereeInput) => {
     if (editing === "new") await api.createReferee(data);
@@ -30,15 +34,19 @@ export default function RefereesPage() {
     overview.reload();
   };
 
-  const remove = async (r: Referee) => {
-    if (!confirm(`Usunąć sędziego ${r.first_name} ${r.last_name}? Usunięte zostaną też jego przypisania.`)) return;
-    try {
-      await api.deleteReferee(r.id);
-      overview.reload();
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
+  const { reload } = overview;
+  const remove = useCallback(
+    async (r: Referee) => {
+      if (!confirm(`Usunąć sędziego ${r.first_name} ${r.last_name}? Usunięte zostaną też jego przypisania.`)) return;
+      try {
+        await api.deleteReferee(r.id);
+        reload();
+      } catch (e) {
+        setError((e as Error).message);
+      }
+    },
+    [reload],
+  );
 
   return (
     <div>
@@ -48,29 +56,7 @@ export default function RefereesPage() {
         </button>
       </PageHeader>
       <ErrorBanner message={error ?? overview.error} onClose={() => setError(null)} />
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="relative w-full max-w-md">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
-          <input
-            className="input pr-9 pl-9"
-            type="search"
-            placeholder="Szukaj: imię, nazwisko, miejscowość, dzielnica lub licencja"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            aria-label="Szukaj sędziego"
-          />
-          {query && (
-            <button className="absolute top-1/2 right-2 -translate-y-1/2 icon-btn" onClick={() => setQuery("")} aria-label="Wyczyść" title="Wyczyść">
-              <X className="size-4" />
-            </button>
-          )}
-        </div>
-        {overview.data && (
-          <span className="text-sm text-zinc-500">
-            {query ? `${rows.length} z ${overview.data.length} sędziów` : `${overview.data.length} sędziów`}
-          </span>
-        )}
-      </div>
+      <RefereeFilters referees={referees} filter={filter} onChange={setFilter} shown={filtered.length} />
       <div className="card overflow-hidden"><div className="overflow-x-auto">
         {overview.loading && !overview.data ? (
           <Loading />
@@ -81,52 +67,23 @@ export default function RefereesPage() {
                 <th>Sędzia</th>
                 <th>Licencje</th>
                 {days.map((d) => (
-                  <th key={d} className="text-center capitalize">
-                    {dayName(d)}
+                  <th key={d} className="px-2 text-center capitalize">
+                    {shortDay(d)}
                   </th>
                 ))}
-                <th>Mecze weekend</th>
+                <th>Weekend</th>
                 <th className="text-right">Akcje</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map(({ referee: r, days: load, matches_in_period }) => (
-                <tr key={r.id} className={r.active ? "" : "text-zinc-400"}>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <Avatar name={`${r.first_name} ${r.last_name}`} muted={!r.active} />
-                      <div>
-                        <div className="font-medium whitespace-nowrap">
-                          {r.first_name} {r.last_name} {!r.active && <Tag>nieaktywny</Tag>}
-                        </div>
-                        <div className="text-xs text-zinc-500">{r.location_label}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="min-w-52 max-w-72">
-                    <LicenseList licenses={r.licenses} />
-                  </td>
-                  {load.map((d) => (
-                    <td key={d.date} className="text-center">
-                      <div className="text-base font-semibold tabular-nums">{d.matches}</div>
-                      <div className="mt-0.5 inline-flex items-center gap-1 text-[11px] whitespace-nowrap text-zinc-500">
-                        <span className={`size-1.5 rounded-full ${availabilityDot(d.availability)}`} />
-                        {shortAvailability(d.availability)}
-                      </div>
-                    </td>
-                  ))}
-                  <td>
-                    <LoadBar value={matches_in_period} max={r.max_matches_per_weekend} />
-                  </td>
-                  <td className="whitespace-nowrap">
-                    <RowActions onEdit={() => setEditing(r)} onDelete={() => remove(r)} />
-                  </td>
-                </tr>
+              {page.shown.map((item) => (
+                <RefereeRow key={item.referee.id} item={item} onEdit={setEditing} onDelete={remove} />
               ))}
-              {overview.data && rows.length === 0 && (
+              {page.hasMore && <LoadMoreRow colSpan={days.length + 4} rest={page.rest} onMore={page.more} />}
+              {overview.data && filtered.length === 0 && (
                 <tr>
                   <td colSpan={days.length + 4} className="py-10 text-center text-sm text-zinc-500">
-                    Nie znaleziono sędziów pasujących do „{query}”.
+                    Żaden sędzia nie pasuje do filtra.
                   </td>
                 </tr>
               )}
@@ -143,16 +100,46 @@ export default function RefereesPage() {
   );
 }
 
-/** Bez wielkości liter i polskich znaków: „lodz” znajdzie „Łódź”. */
-function normalize(text: string): string {
-  return text.toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/\p{Diacritic}/gu, "");
-}
-
-/** Każde słowo zapytania musi wystąpić w imieniu, nazwisku, miejscowości/dzielnicy lub licencjach. */
-function matchesQuery(r: Referee, query: string): boolean {
-  const haystack = normalize([r.first_name, r.last_name, r.location_label, ...r.licenses].join(" "));
-  return normalize(query).split(/\s+/).filter(Boolean).every((word) => haystack.includes(word));
-}
+const RefereeRow = memo(function RefereeRow({ item, onEdit, onDelete }: {
+  item: RefereeOverview;
+  onEdit: (r: Referee) => void;
+  onDelete: (r: Referee) => void;
+}) {
+  const { referee: r, days: load, matches_in_period } = item;
+  return (
+    <tr className={r.active ? "" : "text-zinc-400"}>
+      <td>
+        <div className="flex items-center gap-3">
+          <Avatar name={`${r.first_name} ${r.last_name}`} muted={!r.active} />
+          <div>
+            <div className="font-medium whitespace-nowrap">
+              {r.first_name} {r.last_name} {!r.active && <Tag>nieaktywny</Tag>}
+            </div>
+            <div className="text-xs whitespace-nowrap text-zinc-500">{r.location_label}</div>
+          </div>
+        </div>
+      </td>
+      <td className="min-w-48 max-w-60">
+        <LicenseList licenses={r.licenses} />
+      </td>
+      {load.map((d) => (
+        <td key={d.date} className="px-2 text-center">
+          <div className="text-base font-semibold tabular-nums">{d.matches}</div>
+          <div className="mt-0.5 inline-flex items-center gap-1 text-[11px] whitespace-nowrap text-zinc-500">
+            <span className={`size-1.5 rounded-full ${availabilityDot(d.availability)}`} />
+            {shortAvailability(d.availability)}
+          </div>
+        </td>
+      ))}
+      <td>
+        <LoadBar value={matches_in_period} max={r.max_matches_per_weekend} />
+      </td>
+      <td className="whitespace-nowrap">
+        <RowActions onEdit={() => onEdit(r)} onDelete={() => onDelete(r)} />
+      </td>
+    </tr>
+  );
+});
 
 function shortAvailability(text: string): string {
   if (text === "dostępny cały dzień") return "cały dzień";
@@ -173,7 +160,7 @@ function LoadBar({ value, max }: { value: number; max: number }) {
   const pct = max ? Math.min(100, (value / max) * 100) : 0;
   const color = pct >= 100 ? "bg-red-500" : pct >= 60 ? "bg-amber-400" : "bg-brand-500";
   return (
-    <div className="flex min-w-28 items-center gap-2">
+    <div className="flex min-w-24 items-center gap-2">
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-100">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>

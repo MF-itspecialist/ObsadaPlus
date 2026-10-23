@@ -36,7 +36,7 @@ EXCLUDED = re.compile(
 )
 # Liczba sędziów wg szczebla: pierwsze dopasowanie wygrywa, reszta dostaje DEFAULT_REFEREES.
 REFEREES_BY_LEVEL: list[tuple[re.Pattern[str], int]] = [
-    (re.compile(r"\b(IV|V)\s*lig|okręgow", re.IGNORECASE), 3),
+    (re.compile(r"\b(IV|V)\s*lig|okręgow|\bklas[ay]\s*A\b", re.IGNORECASE), 3),
 ]
 DEFAULT_REFEREES = 1
 

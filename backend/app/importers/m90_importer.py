@@ -99,6 +99,14 @@ def town_from_team(team: str) -> str:
     return words[-1] if words else ""
 
 
+def club_name(team: str) -> str:
+    """Drużyna bez numeru zespołu: 'Agape II Białołęka (Warszawa)' → 'Agape Białołęka (Warszawa)'.
+
+    Rezerwy grają na boisku pierwszej drużyny, więc dzielą z nią obiekt.
+    """
+    return " ".join(w for w in team.split() if not _ROMAN.match(w)) or team
+
+
 def _venue(note: str, home: str) -> tuple[str, str, str]:
     """(nazwa, miasto, adres) obiektu."""
     m = re.match(r"^na (stadionie|boisku|obiekcie|terenie)\s+(.+)$", note, re.I)
@@ -107,7 +115,7 @@ def _venue(note: str, home: str) -> tuple[str, str, str]:
         label = f"{m[1].capitalize()} {name}".replace("Stadionie", "Stadion").replace("Boisku", "Boisko")
         # Bez ulicy szukamy po nazwie obiektu (np. „Strefy Sportu”); gdy mapa nie zna — środek miejscowości.
         return label[:200], town_from_team(home), street.strip() or name.strip()
-    return f"Boisko: {home}"[:200], town_from_team(home), ""
+    return f"Boisko: {club_name(home)}"[:200], town_from_team(home), ""
 
 
 def parse_league(page: str, league: League, season_start_year: int) -> tuple[list[MatchImportRecord], int]:

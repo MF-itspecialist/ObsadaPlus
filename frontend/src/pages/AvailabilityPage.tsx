@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import Avatar from "../components/Avatar";
 import { ErrorBanner, InfoBanner, Loading, PageHeader } from "../components/Feedback";
+import { LoadMoreRow, useIncremental } from "../components/Filters";
+import RefereeFilters, { EMPTY_REFEREE_FILTER, matchesRefereeFilter } from "../components/RefereeFilters";
 import { usePeriod } from "../context/PeriodContext";
 import { useAsync } from "../hooks/useAsync";
 import { api } from "../services/api";
@@ -46,6 +48,7 @@ export default function AvailabilityPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [filter, setFilter] = useState(EMPTY_REFEREE_FILTER);
 
   useEffect(() => {
     if (!data.data) return;
@@ -60,8 +63,11 @@ export default function AvailabilityPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.data]);
 
-  const update = (refereeId: number, date: string, patch: Partial<DayForm>) =>
-    setForm((f) => ({ ...f, [key(refereeId, date)]: { ...(f[key(refereeId, date)] ?? EMPTY_DAY), ...patch } }));
+  const update = useCallback(
+    (refereeId: number, date: string, patch: Partial<DayForm>) =>
+      setForm((f) => ({ ...f, [key(refereeId, date)]: { ...(f[key(refereeId, date)] ?? EMPTY_DAY), ...patch } })),
+    [],
+  );
 
   const save = async () => {
     if (!data.data) return;
@@ -80,7 +86,10 @@ export default function AvailabilityPage() {
     }
   };
 
-  const referees: Referee[] = data.data?.[0].filter((r) => r.active) ?? [];
+  const active: Referee[] = useMemo(() => data.data?.[0].filter((r) => r.active) ?? [], [data.data]);
+  // Filtr tylko zawęża widok — „Zapisz zmiany” zapisuje dyspozycyjność wszystkich sędziów.
+  const filtered = useMemo(() => active.filter((r) => matchesRefereeFilter(r, filter)), [active, filter]);
+  const page = useIncremental(filtered, filtered);
 
   return (
     <div>
@@ -94,6 +103,7 @@ export default function AvailabilityPage() {
       <p className="mb-4 text-sm text-zinc-500">
         Puste pola oznaczają brak zgłoszenia — sędzia jest wtedy traktowany jako niedostępny (zmienisz to w Ustawieniach).
       </p>
+      <RefereeFilters referees={active} filter={filter} onChange={setFilter} shown={filtered.length} withLicense={false} />
       <div className="card overflow-hidden"><div className="overflow-x-auto">
         {data.loading && !data.data ? (
           <Loading />
@@ -110,44 +120,10 @@ export default function AvailabilityPage() {
               </tr>
             </thead>
             <tbody>
-              {referees.map((r) => (
-                <tr key={r.id}>
-                  <td className="sticky left-0 z-[1] bg-white whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={`${r.first_name} ${r.last_name}`} />
-                      <div>
-                        <div className="font-medium">
-                          {r.first_name} {r.last_name}
-                        </div>
-                        <div className="text-xs text-zinc-500">{r.city}</div>
-                      </div>
-                    </div>
-                  </td>
-                  {days.map((d) => {
-                    const v = form[key(r.id, d)] ?? EMPTY_DAY;
-                    const timesDisabled = v.allDay || v.unavailable;
-                    return (
-                      <td key={d} className="min-w-56">
-                        <div className="flex items-center gap-1.5">
-                          <input type="time" aria-label="od" className="input w-[6.5rem] px-2 py-1.5" disabled={timesDisabled} value={v.from} onChange={(e) => update(r.id, d, { from: e.target.value })} />
-                          <span className="text-zinc-400">–</span>
-                          <input type="time" aria-label="do" className="input w-[6.5rem] px-2 py-1.5" disabled={timesDisabled} value={v.to} onChange={(e) => update(r.id, d, { to: e.target.value })} />
-                        </div>
-                        <div className="mt-2 flex gap-1.5 text-xs whitespace-nowrap">
-                          <label className={`flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ring-inset transition ${v.allDay ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20" : "text-zinc-500 ring-zinc-200 hover:bg-zinc-50"}`}>
-                            <input type="checkbox" className="accent-emerald-600" checked={v.allDay} onChange={(e) => update(r.id, d, { allDay: e.target.checked, unavailable: false })} />
-                            cały dzień
-                          </label>
-                          <label className={`flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ring-inset transition ${v.unavailable ? "bg-red-50 text-red-700 ring-red-600/20" : "text-zinc-500 ring-zinc-200 hover:bg-zinc-50"}`}>
-                            <input type="checkbox" className="accent-red-600" checked={v.unavailable} onChange={(e) => update(r.id, d, { unavailable: e.target.checked, allDay: false })} />
-                            niedostępny
-                          </label>
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
+              {page.shown.map((r) => (
+                <AvailabilityRow key={r.id} referee={r} days={days} values={days.map((d) => form[key(r.id, d)] ?? EMPTY_DAY)} onChange={update} />
               ))}
+              {page.hasMore && <LoadMoreRow colSpan={days.length + 1} rest={page.rest} onMore={page.more} />}
             </tbody>
           </table>
         )}
@@ -155,3 +131,61 @@ export default function AvailabilityPage() {
     </div>
   );
 }
+
+interface RowProps {
+  referee: Referee;
+  days: string[];
+  values: DayForm[];
+  onChange: (refereeId: number, date: string, patch: Partial<DayForm>) => void;
+}
+
+// Kilkaset wierszy po kilka pól godziny: wiersz przerysowuje się tylko, gdy zmieni się jego zawartość.
+const AvailabilityRow = memo(
+  function AvailabilityRow({ referee: r, days, values, onChange }: RowProps) {
+    return (
+      <tr>
+        <td className="sticky left-0 z-[1] bg-white whitespace-nowrap">
+          <div className="flex items-center gap-3">
+            <Avatar name={`${r.first_name} ${r.last_name}`} />
+            <div>
+              <div className="font-medium">
+                {r.first_name} {r.last_name}
+              </div>
+              <div className="text-xs text-zinc-500">
+                {r.location_label} · {r.license_class}
+              </div>
+            </div>
+          </div>
+        </td>
+        {days.map((d, i) => {
+          const v = values[i];
+          const timesDisabled = v.allDay || v.unavailable;
+          return (
+            <td key={d} className="min-w-56">
+              <div className="flex items-center gap-1.5">
+                <input type="time" aria-label="od" className="input w-[6.5rem] px-2 py-1.5" disabled={timesDisabled} value={v.from} onChange={(e) => onChange(r.id, d, { from: e.target.value })} />
+                <span className="text-zinc-400">–</span>
+                <input type="time" aria-label="do" className="input w-[6.5rem] px-2 py-1.5" disabled={timesDisabled} value={v.to} onChange={(e) => onChange(r.id, d, { to: e.target.value })} />
+              </div>
+              <div className="mt-2 flex gap-1.5 text-xs whitespace-nowrap">
+                <label className={`flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ring-inset transition ${v.allDay ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20" : "text-zinc-500 ring-zinc-200 hover:bg-zinc-50"}`}>
+                  <input type="checkbox" className="accent-emerald-600" checked={v.allDay} onChange={(e) => onChange(r.id, d, { allDay: e.target.checked, unavailable: false })} />
+                  cały dzień
+                </label>
+                <label className={`flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ring-inset transition ${v.unavailable ? "bg-red-50 text-red-700 ring-red-600/20" : "text-zinc-500 ring-zinc-200 hover:bg-zinc-50"}`}>
+                  <input type="checkbox" className="accent-red-600" checked={v.unavailable} onChange={(e) => onChange(r.id, d, { unavailable: e.target.checked, allDay: false })} />
+                  niedostępny
+                </label>
+              </div>
+            </td>
+          );
+        })}
+      </tr>
+    );
+  },
+  (a, b) =>
+    a.referee === b.referee &&
+    a.onChange === b.onChange &&
+    a.days.length === b.days.length &&
+    a.days.every((d, i) => d === b.days[i] && a.values[i] === b.values[i]),
+);

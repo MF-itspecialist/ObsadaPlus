@@ -33,6 +33,7 @@ const PRIORITIES: Section = {
     { key: "daily_match_weight", label: "Jak mocno unikać wielu meczów jednego dnia" },
     { key: "weekend_match_weight", label: "Jak mocno unikać wielu meczów w weekend" },
     { key: "workload_balance_weight", label: "Jak mocno wyrównywać liczbę meczów między sędziami" },
+    { key: "crew_route_weight", label: "Jak mocno dobierać zespół G + A1 + A2, który dojedzie razem (km wspólnej trasy)", step: 0.1 },
     { key: "women_priority_penalty", label: "Jak mocno kierować sędzie z licencją kobiecą najpierw na mecze kobiet" },
     { key: "within_preferred_factor", label: "Mnożnik w granicach preferencji sędziego", step: 0.05 },
     { key: "over_preferred_factor", label: "Mnożnik powyżej preferencji sędziego", step: 0.1 },

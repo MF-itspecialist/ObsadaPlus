@@ -38,6 +38,8 @@ def update_venue(venue_id: int, data: VenueUpdate, db: DbSession, geocoder: Geoc
         raise not_found("Obiekt", venue_id)
     apply_location(venue, data, geocoder)
     for key, value in data.model_dump(exclude=LOCATION_FIELDS).items():
+        if key == "postal_code" and not value:
+            continue  # pusty kod w formularzu nie kasuje kodu uzupełnionego z mapy
         setattr(venue, key, value)
     db.commit()
     db.refresh(venue)

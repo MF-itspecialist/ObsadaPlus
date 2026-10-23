@@ -1,5 +1,5 @@
-import { ChevronDown, Eye, Hand, RefreshCw, Sparkles, Trash2, TriangleAlert, UserPlus, X } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, Eye, Hand, RefreshCw, Search, Sparkles, Trash2, TriangleAlert, UserPlus, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 import CandidatePicker from "../components/CandidatePicker";
 import Avatar from "../components/Avatar";
@@ -23,8 +23,9 @@ import {
   type RefereeRole,
   type UnassignedSlot,
 } from "../types";
-import { dayName, formatDate } from "../utils/dates";
+import { dayName, formatDate, shortDay } from "../utils/dates";
 import { groupBy, hhmm } from "../utils/format";
+import { leagueLevel, normalize } from "../utils/leagues";
 
 interface PickerState {
   matchId: number;
@@ -41,6 +42,20 @@ export default function AssignmentsPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [picker, setPicker] = useState<PickerState | null>(null);
+  const [filter, setFilter] = useState<Filter>(EMPTY_FILTER);
+
+  // Niezatwierdzona propozycja jest zapisana na serwerze — po odświeżeniu strony wraca.
+  useEffect(() => {
+    let active = true;
+    setPreview(null);
+    api
+      .pendingPreview(period)
+      .then((p) => active && setPreview(p))
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [period.date_from]);
 
   const generate = async (mode: GenerationMode) => {
     if (mode === "FULL" && !confirm("Wygenerować całą obsadę od nowa? Ręczne zmiany zostaną nadpisane po zatwierdzeniu.")) return;
@@ -71,6 +86,19 @@ export default function AssignmentsPage() {
     }
   };
 
+  const discardPreview = async () => {
+    if (!preview) return;
+    setBusy(true);
+    try {
+      await api.discard(preview.run_id);
+      setPreview(null);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const removeAssignment = async (a: Assignment) => {
     if (!confirm(`Usunąć obsadę: ${a.referee_name}?`)) return;
     try {
@@ -86,7 +114,7 @@ export default function AssignmentsPage() {
       <PageHeader title="Obsada" subtitle={preview ? "Podgląd propozycji generatora — sprawdź i zatwierdź" : "Aktualna obsada weekendu, ręczne zmiany i generowanie"}>
         {preview ? (
           <>
-            <button className="btn-secondary" onClick={() => setPreview(null)} disabled={busy}>
+            <button className="btn-secondary" onClick={discardPreview} disabled={busy}>
               <X className="size-4" /> Odrzuć propozycję
             </button>
             <button className="btn-primary" onClick={confirmPreview} disabled={busy}>
@@ -108,11 +136,11 @@ export default function AssignmentsPage() {
       <InfoBanner message={info} onClose={() => setInfo(null)} />
 
       {preview ? (
-        <PreviewView preview={preview} />
+        <PreviewView preview={preview} filter={filter} onFilter={setFilter} />
       ) : board.loading && !board.data ? (
         <Loading />
       ) : (
-        <BoardView items={board.data ?? []} onPick={setPicker} onRemove={removeAssignment} />
+        <BoardView items={board.data ?? []} filter={filter} onFilter={setFilter} onPick={setPicker} onRemove={removeAssignment} />
       )}
 
       {picker && (
@@ -127,6 +155,125 @@ export default function AssignmentsPage() {
         />
       )}
     </div>
+  );
+}
+
+// --- Filtr i układ listy: najpierw nieobsadzone, potem poziomy rozgrywkowe ----------------
+
+interface Filter {
+  query: string;
+  level: string;
+  day: string;
+}
+
+const EMPTY_FILTER: Filter = { query: "", level: "", day: "" };
+
+interface Row {
+  key: number;
+  match: MatchInfo;
+  unassigned: boolean;
+  search: string; // znormalizowany tekst: drużyny, obiekt, liga, sędziowie
+}
+
+interface Section<T extends Row> {
+  key: string;
+  title: string;
+  hint?: string;
+  urgent?: boolean;
+  rows: T[];
+}
+
+const byKickoff = (a: Row, b: Row) => (a.match.date + a.match.start_time).localeCompare(b.match.date + b.match.start_time);
+
+function applyFilter<T extends Row>(rows: T[], f: Filter): T[] {
+  const words = normalize(f.query).split(/\s+/).filter(Boolean);
+  return rows.filter(
+    (r) =>
+      words.every((w) => r.search.includes(w)) &&
+      (!f.level || leagueLevel(r.match.league).label === f.level) &&
+      (!f.day || r.match.date === f.day),
+  );
+}
+
+function arrange<T extends Row>(rows: T[]): Section<T>[] {
+  const open = rows.filter((r) => r.unassigned).sort(byKickoff);
+  const done = rows.filter((r) => !r.unassigned);
+  const levels = groupBy(done, (r) => leagueLevel(r.match.league).label).sort(
+    ([, a], [, b]) => leagueLevel(a[0].match.league).rank - leagueLevel(b[0].match.league).rank,
+  );
+  return [
+    ...(open.length ? [{ key: "open", title: "Do obsadzenia", hint: "mecze z brakującym sędzią", urgent: true, rows: open }] : []),
+    ...levels.map(([label, list]) => ({ key: label, title: label, rows: list.sort(byKickoff) })),
+  ];
+}
+
+function searchText(...parts: (string | null | undefined)[]): string {
+  return normalize(parts.filter(Boolean).join(" "));
+}
+
+function FilterBar({ rows, filter, onChange, shown }: { rows: Row[]; filter: Filter; onChange: (f: Filter) => void; shown: number }) {
+  const levels = useMemo(
+    () =>
+      [...new Map(rows.map((r) => [leagueLevel(r.match.league).label, leagueLevel(r.match.league).rank])).entries()].sort((a, b) => a[1] - b[1]),
+    [rows],
+  );
+  const days = useMemo(() => [...new Set(rows.map((r) => r.match.date))].sort(), [rows]);
+  const active = filter.query || filter.level || filter.day;
+  return (
+    <div className="mb-6 flex flex-wrap items-center gap-3">
+      <div className="relative w-full max-w-md">
+        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+        <input
+          className="input pr-9 pl-9"
+          type="search"
+          placeholder="Szukaj: drużyna, obiekt, liga lub sędzia"
+          value={filter.query}
+          onChange={(e) => onChange({ ...filter, query: e.target.value })}
+          aria-label="Szukaj meczu"
+        />
+      </div>
+      <select className="input w-auto" value={filter.level} onChange={(e) => onChange({ ...filter, level: e.target.value })} aria-label="Poziom rozgrywek">
+        <option value="">Wszystkie poziomy</option>
+        {levels.map(([label]) => (
+          <option key={label} value={label}>
+            {label}
+          </option>
+        ))}
+      </select>
+      <select className="input w-auto" value={filter.day} onChange={(e) => onChange({ ...filter, day: e.target.value })} aria-label="Dzień">
+        <option value="">Wszystkie dni</option>
+        {days.map((d) => (
+          <option key={d} value={d}>
+            {dayName(d)} {formatDate(d)}
+          </option>
+        ))}
+      </select>
+      {active && (
+        <button className="btn-link" onClick={() => onChange(EMPTY_FILTER)}>
+          <X className="size-3.5" /> Wyczyść filtr
+        </button>
+      )}
+      <span className="text-sm text-zinc-500">{active ? `${shown} z ${rows.length} meczów` : `${rows.length} meczów`}</span>
+    </div>
+  );
+}
+
+function SectionList<T extends Row>({ rows, render }: { rows: T[]; render: (row: T) => React.ReactNode }) {
+  const sections = arrange(rows);
+  if (sections.length === 0)
+    return (
+      <div className="card">
+        <EmptyState title="Żaden mecz nie pasuje do filtra" hint="Zmień wyszukiwanie albo wyczyść filtr." />
+      </div>
+    );
+  return (
+    <>
+      {sections.map((sec) => (
+        <GroupSection key={sec.key} title={sec.title} hint={sec.hint} urgent={sec.urgent} count={sec.rows.length}>
+          {sec.rows.map(render)}
+        </GroupSection>
+      ))}
+    </>
   );
 }
 
@@ -155,50 +302,80 @@ function StatsPanel({ stats }: { stats: GenerationStats }) {
   );
 }
 
-type PreviewEntry = { kind: "assigned"; match: MatchInfo; item: ProposedAssignment } | { kind: "unassigned"; match: MatchInfo; item: UnassignedSlot };
+const ROLE_ORDER = Object.keys(ROLE_LABELS) as RefereeRole[];
 
-function PreviewView({ preview }: { preview: GenerationPreview }) {
-  const entries: PreviewEntry[] = [
-    ...preview.assignments.map((item) => ({ kind: "assigned" as const, match: item.match, item })),
-    ...preview.unassigned.map((item) => ({ kind: "unassigned" as const, match: item.match, item })),
-  ].sort((a, b) => (a.match.date + a.match.start_time).localeCompare(b.match.date + b.match.start_time));
+interface PreviewRow extends Row {
+  assigned: ProposedAssignment[];
+  open: UnassignedSlot[];
+}
+
+function previewRows(preview: GenerationPreview): PreviewRow[] {
+  const rows = new Map<number, PreviewRow>();
+  const rowFor = (match: MatchInfo) => {
+    let row = rows.get(match.match_id);
+    if (!row) {
+      row = { key: match.match_id, match, unassigned: false, search: "", assigned: [], open: [] };
+      rows.set(match.match_id, row);
+    }
+    return row;
+  };
+  preview.assignments.forEach((a) => rowFor(a.match).assigned.push(a));
+  preview.unassigned.forEach((u) => rowFor(u.match).open.push(u));
+  return [...rows.values()].map((r) => ({
+    ...r,
+    unassigned: r.open.length > 0,
+    search: searchText(r.match.home_team, r.match.away_team, r.match.venue_name, r.match.league, ...r.assigned.map((a) => a.referee_name)),
+  }));
+}
+
+function PreviewView({ preview, filter, onFilter }: { preview: GenerationPreview; filter: Filter; onFilter: (f: Filter) => void }) {
+  const rows = useMemo(() => previewRows(preview), [preview]);
+  const visible = applyFilter(rows, filter);
+  const byRole = (a: { role: RefereeRole }, b: { role: RefereeRole }) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role);
 
   return (
     <div>
       <div className="mb-5 flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-600/15">
         <Eye className="mt-0.5 size-4 shrink-0 text-amber-500" />
         <span>
-          To jest <strong>podgląd</strong> — obsada nie została jeszcze zapisana.{" "}
+          To jest <strong>podgląd</strong> — obsada nie została jeszcze zapisana. Kliknij <strong>ZATWIERDŹ OBSADĘ</strong>, aby ją zapisać.{" "}
           {preview.params.mode === "FULL" ? "Tryb: generowanie całości od nowa." : "Ręczne przypisania zostały zachowane."}
         </span>
       </div>
       <StatsPanel stats={preview.stats} />
-      {groupBy(entries, (e) => e.match.date).map(([date, dayEntries]) => (
-        <DaySection key={date} date={date} count={dayEntries.length}>
-          {dayEntries.map((e) =>
-            e.kind === "assigned" ? (
-              <MatchCard key={`${e.match.match_id}-${e.item.role}`} match={e.match} state={e.item.conflict ? "conflict" : "ok"}>
-                <RefereeLine
-                  role={e.item.role}
-                  name={e.item.referee_name}
-                  licenses={e.item.referee_licenses}
-                  location={e.item.referee_location}
-                  distance={e.item.distance_km}
-                  travel={e.item.travel_minutes}
-                  manual={e.item.manually_modified}
-                  conflict={e.item.conflict}
-                  explanation={<Explanation data={e.item.explanation} />}
-                />
-              </MatchCard>
-            ) : (
-              <MatchCard key={`${e.match.match_id}-${e.item.role}`} match={e.match} state="empty">
-                <UnassignedReasons slot={e.item} />
-              </MatchCard>
-            ),
-          )}
-        </DaySection>
-      ))}
+      <FilterBar rows={rows} filter={filter} onChange={onFilter} shown={visible.length} />
+      <SectionList
+        rows={visible}
+        render={(r) => {
+          const lines = [
+            ...r.assigned.map((a) => ({ role: a.role, node: <PreviewLine key={a.role} a={a} /> })),
+            ...r.open.map((u) => ({ role: u.role, node: <UnassignedReasons key={u.role} slot={u} /> })),
+          ].sort(byRole);
+          const state = r.unassigned ? "empty" : r.assigned.some((a) => a.conflict) ? "conflict" : "ok";
+          return (
+            <MatchCard key={r.key} match={r.match} state={state}>
+              {lines.map((l) => l.node)}
+            </MatchCard>
+          );
+        }}
+      />
     </div>
+  );
+}
+
+function PreviewLine({ a }: { a: ProposedAssignment }) {
+  return (
+    <RefereeLine
+      role={a.role}
+      name={a.referee_name}
+      licenses={a.referee_licenses}
+      location={a.referee_location}
+      distance={a.distance_km}
+      travel={a.travel_minutes}
+      manual={a.manually_modified}
+      conflict={a.conflict}
+      explanation={<Explanation data={a.explanation} />}
+    />
   );
 }
 
@@ -242,15 +419,44 @@ function UnassignedReasons({ slot }: { slot: UnassignedSlot }) {
 
 // --- Zapisana obsada ----------------------------------------------------------------
 
+interface BoardRow extends Row {
+  item: BoardItem;
+}
+
+function boardRows(items: BoardItem[]): BoardRow[] {
+  return items.map((m) => ({
+    key: m.match_id,
+    item: m,
+    match: {
+      match_id: m.match_id,
+      date: m.date,
+      start_time: hhmm(m.start_time),
+      end_time: hhmm(m.estimated_end_time),
+      league: m.league,
+      home_team: m.home_team,
+      away_team: m.away_team,
+      venue_name: m.venue_name,
+    },
+    unassigned: m.status !== "CANCELLED" && m.required_roles.some((role) => !m.assignments.some((a) => a.role === role)),
+    search: searchText(m.home_team, m.away_team, m.venue_name, m.league, ...m.assignments.map((a) => a.referee_name)),
+  }));
+}
+
 function BoardView({
   items,
+  filter,
+  onFilter,
   onPick,
   onRemove,
 }: {
   items: BoardItem[];
+  filter: Filter;
+  onFilter: (f: Filter) => void;
   onPick: (p: PickerState) => void;
   onRemove: (a: Assignment) => void;
 }) {
+  const rows = useMemo(() => boardRows(items), [items]);
+  const visible = applyFilter(rows, filter);
   if (items.length === 0)
     return (
       <div className="card">
@@ -259,89 +465,92 @@ function BoardView({
     );
   return (
     <div>
-      {groupBy(items, (m) => m.date).map(([date, matches]) => (
-        <DaySection key={date} date={date} count={matches.length}>
-          {matches.map((m) => {
-            const info: MatchInfo = {
-              match_id: m.match_id,
-              date: m.date,
-              start_time: hhmm(m.start_time),
-              end_time: hhmm(m.estimated_end_time),
-              league: m.league,
-              home_team: m.home_team,
-              away_team: m.away_team,
-              venue_name: m.venue_name,
-            };
-            const title = `${hhmm(m.start_time)} ${m.home_team} – ${m.away_team}`;
-            const hasConflict = m.assignments.some((a) => a.conflict);
-            const state = hasConflict ? "conflict" : m.status === "ASSIGNED" ? "ok" : m.status === "CANCELLED" ? "cancelled" : "empty";
-            return (
-              <MatchCard key={m.match_id} match={info} state={state} status={<StatusBadge status={m.status} />}>
-                {m.required_roles.map((role) => {
-                  const a = m.assignments.find((x) => x.role === role);
-                  if (!a) {
-                    return (
-                      <div key={role} className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                          <span className="flex size-9 items-center justify-center rounded-full border-2 border-dashed border-red-200 text-red-400">
-                            <UserPlus className="size-4" />
-                          </span>
-                          <div>
-                            <div className="text-xs text-zinc-500">{ROLE_LABELS[role]}</div>
-                            <div className="text-sm font-semibold text-red-600">Brak obsady</div>
-                          </div>
-                        </div>
-                        <button className="btn-secondary" onClick={() => onPick({ matchId: m.match_id, role, title: `Przypisz: ${title}` })}>
-                          <UserPlus className="size-4" /> Przypisz / pokaż powody
-                        </button>
-                      </div>
-                    );
-                  }
+      <FilterBar rows={rows} filter={filter} onChange={onFilter} shown={visible.length} />
+      <SectionList
+        rows={visible}
+        render={({ item: m, match: info, unassigned }) => {
+          const title = `${hhmm(m.start_time)} ${m.home_team} – ${m.away_team}`;
+          const hasConflict = m.assignments.some((a) => a.conflict);
+          const state = m.status === "CANCELLED" ? "cancelled" : unassigned ? "empty" : hasConflict ? "conflict" : "ok";
+          return (
+            <MatchCard key={m.match_id} match={info} state={state} status={<StatusBadge status={m.status} />}>
+              {m.required_roles.map((role) => {
+                const a = m.assignments.find((x) => x.role === role);
+                if (!a) {
                   return (
-                    <RefereeLine
-                      key={role}
-                      role={role}
-                      name={a.referee_name}
-                      licenses={a.referee_licenses}
-                      location={a.referee_location}
-                      distance={a.distance_km}
-                      travel={a.travel_minutes}
-                      manual={a.manually_modified}
-                      conflict={a.conflict}
-                      explanation={<Explanation data={a.explanation} />}
-                      actions={
-                        <>
-                          <button
-                            className="btn-link"
-                            onClick={() => onPick({ matchId: m.match_id, role, title: `Zmień sędziego: ${title}`, currentRefereeId: a.referee_id })}
-                          >
-                            Zmień sędziego
-                          </button>
-                          <button className="icon-btn hover:bg-red-50 hover:text-red-600" onClick={() => onRemove(a)} aria-label="Usuń obsadę" title="Usuń obsadę">
-                            <Trash2 className="size-4" />
-                          </button>
-                        </>
-                      }
-                    />
+                    <div key={role} className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <span className="flex size-9 items-center justify-center rounded-full border-2 border-dashed border-red-200 text-red-400">
+                          <UserPlus className="size-4" />
+                        </span>
+                        <div>
+                          <div className="text-xs text-zinc-500">{ROLE_LABELS[role]}</div>
+                          <div className="text-sm font-semibold text-red-600">Brak obsady</div>
+                        </div>
+                      </div>
+                      <button className="btn-secondary" onClick={() => onPick({ matchId: m.match_id, role, title: `Przypisz: ${title}` })}>
+                        <UserPlus className="size-4" /> Przypisz / pokaż powody
+                      </button>
+                    </div>
                   );
-                })}
-              </MatchCard>
-            );
-          })}
-        </DaySection>
-      ))}
+                }
+                return (
+                  <RefereeLine
+                    key={role}
+                    role={role}
+                    name={a.referee_name}
+                    licenses={a.referee_licenses}
+                    location={a.referee_location}
+                    distance={a.distance_km}
+                    travel={a.travel_minutes}
+                    manual={a.manually_modified}
+                    conflict={a.conflict}
+                    explanation={<Explanation data={a.explanation} />}
+                    actions={
+                      <>
+                        <button
+                          className="btn-link"
+                          onClick={() => onPick({ matchId: m.match_id, role, title: `Zmień sędziego: ${title}`, currentRefereeId: a.referee_id })}
+                        >
+                          Zmień sędziego
+                        </button>
+                        <button className="icon-btn hover:bg-red-50 hover:text-red-600" onClick={() => onRemove(a)} aria-label="Usuń obsadę" title="Usuń obsadę">
+                          <Trash2 className="size-4" />
+                        </button>
+                      </>
+                    }
+                  />
+                );
+              })}
+            </MatchCard>
+          );
+        }}
+      />
     </div>
   );
 }
 
 // --- Wspólne elementy ---------------------------------------------------------------
 
-function DaySection({ date, count, children }: { date: string; count: number; children: React.ReactNode }) {
+function GroupSection({
+  title,
+  hint,
+  urgent,
+  count,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  urgent?: boolean;
+  count: number;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mb-8">
       <div className="sticky top-[61px] z-10 -mx-1 mb-3 flex items-center gap-3 bg-zinc-50/90 px-1 py-2 backdrop-blur">
-        <h2 className="text-sm font-semibold tracking-wide text-zinc-900 uppercase">{dayName(date)}</h2>
-        <span className="text-sm text-zinc-500 tabular-nums">{formatDate(date)}</span>
+        {urgent && <TriangleAlert className="size-4 text-red-500" />}
+        <h2 className={`text-sm font-semibold tracking-wide uppercase ${urgent ? "text-red-600" : "text-zinc-900"}`}>{title}</h2>
+        {hint && <span className="text-sm text-zinc-500">{hint}</span>}
         <span className="h-px flex-1 bg-zinc-200" />
         <span className="text-xs text-zinc-500">{count} mecz.</span>
       </div>
@@ -373,6 +582,7 @@ function MatchCard({
       <span className={`absolute inset-y-0 left-0 w-1 ${STATE_ACCENT[state]}`} />
       <div className="flex gap-4 border-zinc-100 p-5 pl-6 md:w-80 md:shrink-0 md:border-r">
         <div className="text-center">
+          <div className="text-xs font-medium whitespace-nowrap text-zinc-500">{shortDay(match.date)}</div>
           <div className="text-xl font-semibold tracking-tight tabular-nums">{match.start_time}</div>
           <div className="text-xs text-zinc-400 tabular-nums">{match.end_time}</div>
         </div>

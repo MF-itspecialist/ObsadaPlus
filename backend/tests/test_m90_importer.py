@@ -56,6 +56,8 @@ def test_league_matches_dates_venues_and_referee_counts():
 
     b_records, _ = parse_league(LEAGUE, League(14939, "Klasa B – Warszawa I"), 2026)
     assert b_records[0].required_referees == 1
+    a_records, _ = parse_league(LEAGUE, League(14900, "Klasa A – Radom II"), 2026)
+    assert a_records[0].required_referees == 3
 
 
 def test_town_from_team_name():
