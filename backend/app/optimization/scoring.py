@@ -10,9 +10,10 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
+from app.optimization.clubs import matching_club
 from app.optimization.context import CandidateContext
 from app.optimization.domain import OptimizationSettings
-from app.optimization.licenses import has_women_license, is_women_match
+from app.optimization.licenses import has_women_license, is_women_match, level_name
 
 
 def distance_bracket_penalty(distance_km: float, settings: OptimizationSettings) -> float:
@@ -122,6 +123,31 @@ class WomenPriorityPenalty(ScoreComponent):
         return 0.0
 
 
+class PreferredLeaguePenalty(ScoreComponent):
+    """Sędzia podał preferowane ligi, a mecz jest z innej."""
+
+    key = "preferred_league_penalty"
+    label = "liga spoza preferencji"
+
+    def compute(self, ctx: CandidateContext) -> float:
+        prefs = ctx.referee.preferred_leagues
+        if not prefs:
+            return 0.0
+        level = level_name(ctx.slot.league)
+        return 0.0 if level is None or level in prefs else ctx.settings.preferred_league_penalty
+
+
+class AvoidedClubPenalty(ScoreComponent):
+    """Mecz klubu, którego sędzia woli unikać — tylko gdy nie ma lepszego kandydata."""
+
+    key = "avoided_club_penalty"
+    label = "unikany klub"
+
+    def compute(self, ctx: CandidateContext) -> float:
+        s = ctx.slot
+        return ctx.settings.avoided_club_penalty if matching_club(ctx.referee.avoided_clubs, s.home_team, s.away_team) else 0.0
+
+
 DEFAULT_COMPONENTS: tuple[ScoreComponent, ...] = (
     DistancePenalty(),
     TravelTimePenalty(),
@@ -129,6 +155,8 @@ DEFAULT_COMPONENTS: tuple[ScoreComponent, ...] = (
     WeekendMatchesPenalty(),
     WorkloadBalancePenalty(),
     WomenPriorityPenalty(),
+    PreferredLeaguePenalty(),
+    AvoidedClubPenalty(),
 )
 
 

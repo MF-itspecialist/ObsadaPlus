@@ -152,6 +152,17 @@ def classify_league(league: str) -> tuple[Category, int] | None:
     return None
 
 
+def level_name(league: str) -> str | None:
+    """Nazwa poziomu rozgrywek meczu (np. 'IV liga', 'rozgrywki młodzieżowe'); None = nieznany."""
+    c = classify_league(league)
+    return LEVEL_NAMES[c[0]][c[1]] if c else None
+
+
+def level_options() -> list[str]:
+    """Poziomy do wyboru jako preferowane ligi sędziego (od najwyższego)."""
+    return [name for cat in Category for _, name in sorted(LEVEL_NAMES[cat].items(), reverse=True)]
+
+
 # --- sprawdzenie uprawnień ---------------------------------------------------------
 def _is_assistant(role: RefereeRole) -> bool:
     return role in (RefereeRole.ASSISTANT_1, RefereeRole.ASSISTANT_2)

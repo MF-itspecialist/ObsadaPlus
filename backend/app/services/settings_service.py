@@ -49,6 +49,8 @@ def to_optimization_settings(s: SystemSettings) -> OptimizationSettings:
         arrival_before_minutes=s.arrival_before_minutes,
         women_priority_penalty=s.women_priority_penalty,
         crew_route_weight=s.crew_route_weight,
+        preferred_league_penalty=s.preferred_league_penalty,
+        avoided_club_penalty=s.avoided_club_penalty,
     )
 
 

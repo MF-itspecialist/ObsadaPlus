@@ -35,6 +35,8 @@ const PRIORITIES: Section = {
     { key: "workload_balance_weight", label: "Jak mocno wyrównywać liczbę meczów między sędziami" },
     { key: "crew_route_weight", label: "Jak mocno dobierać zespół G + A1 + A2, który dojedzie razem (km wspólnej trasy)", step: 0.1 },
     { key: "women_priority_penalty", label: "Jak mocno kierować sędzie z licencją kobiecą najpierw na mecze kobiet" },
+    { key: "preferred_league_penalty", label: "Kara za mecz spoza preferowanych lig sędziego" },
+    { key: "avoided_club_penalty", label: "Kara za mecz klubu, którego sędzia woli unikać" },
     { key: "within_preferred_factor", label: "Mnożnik w granicach preferencji sędziego", step: 0.05 },
     { key: "over_preferred_factor", label: "Mnożnik powyżej preferencji sędziego", step: 0.1 },
   ],

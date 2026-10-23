@@ -17,6 +17,10 @@ class RefereeBase(BaseModel):
     preferred_matches_per_weekend: int = Field(4, ge=0, le=20)
     max_matches_per_weekend: int = Field(5, ge=0, le=20)
     notes: str | None = None
+    preferred_leagues: list[str] = []
+    avoided_clubs: list[str] = []
+    conflict_clubs: list[str] = []
+    own_region_only: bool = False
 
     @model_validator(mode="after")
     def _limits(self) -> "RefereeBase":
@@ -24,6 +28,13 @@ class RefereeBase(BaseModel):
             raise ValueError("preferred_matches_per_day nie może przekraczać max_matches_per_day")
         if self.preferred_matches_per_weekend > self.max_matches_per_weekend:
             raise ValueError("preferred_matches_per_weekend nie może przekraczać max_matches_per_weekend")
+        from app.optimization.licenses import level_options
+
+        unknown = set(self.preferred_leagues) - set(level_options())
+        if unknown:
+            raise ValueError(f"Nieznane poziomy rozgrywek: {', '.join(sorted(unknown))}")
+        clean = lambda xs: list(dict.fromkeys(x.strip() for x in xs if x.strip()))  # noqa: E731
+        self.avoided_clubs, self.conflict_clubs = clean(self.avoided_clubs), clean(self.conflict_clubs)
         return self
 
 
