@@ -3,7 +3,7 @@
 Każde ograniczenie to osobna klasa. Kolejność w ``DEFAULT_CONSTRAINTS`` ma
 znaczenie: ewaluacja kończy się na pierwszym niespełnionym warunku, a jego kod
 trafia do statystyki przyczyn braku obsady. Nowe ograniczenia (konflikt
-interesów, region) dodaje się jako kolejne klasy.
+interesów, region) to kolejne klasy na tej liście.
 """
 
 from __future__ import annotations
@@ -12,6 +12,7 @@ import datetime as dt
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from app.optimization.clubs import matching_club
 from app.optimization.context import CandidateContext
 from app.optimization.domain import fmt_time
 from app.optimization.licenses import check_license
@@ -27,6 +28,8 @@ class Rejection:
 REJECTION_LABELS: dict[str, str] = {
     "INACTIVE": "sędzia nieaktywny",
     "NO_LICENSE": "brak wymaganej licencji",
+    "CONFLICT_OF_INTEREST": "konflikt interesów (klub sędziego)",
+    "OUTSIDE_REGION": "sędziowie tylko ze swojego podokręgu",
     "NOT_AVAILABLE_DAY": "brak dostępnych sędziów (dyspozycyjność w tym dniu)",
     "OUTSIDE_TIME_WINDOW": "mecz poza godzinami dyspozycyjności",
     "TIME_CONFLICT": "konflikty czasowe",
@@ -62,6 +65,28 @@ class LicenseConstraint(HardConstraint):
     def check(self, ctx: CandidateContext) -> Rejection | None:
         reason = check_license(ctx.referee.licenses, ctx.slot.league, ctx.slot.role)
         return self.reject(reason) if reason else None
+
+
+class ConflictOfInterestConstraint(HardConstraint):
+    """Sędzia nie prowadzi meczów klubów, z którymi jest związany (gra, trenuje, rodzina)."""
+
+    code = "CONFLICT_OF_INTEREST"
+
+    def check(self, ctx: CandidateContext) -> Rejection | None:
+        club = matching_club(ctx.referee.conflict_clubs, ctx.slot.home_team, ctx.slot.away_team)
+        return self.reject(f"konflikt interesów: związany z klubem {club}") if club else None
+
+
+class RegionConstraint(HardConstraint):
+    """Sędzia z ograniczeniem „tylko mój podokręg” nie dostaje meczów w innych podokręgach."""
+
+    code = "OUTSIDE_REGION"
+
+    def check(self, ctx: CandidateContext) -> Rejection | None:
+        r, s = ctx.referee, ctx.slot
+        if r.own_region_only and r.region and s.venue_region and r.region != s.venue_region:
+            return self.reject(f"sędziuje tylko w podokręgu {r.region}, mecz w podokręgu {s.venue_region}")
+        return None
 
 
 class DayAvailabilityConstraint(HardConstraint):
@@ -166,6 +191,8 @@ class TravelFeasibilityConstraint(HardConstraint):
 DEFAULT_CONSTRAINTS: tuple[HardConstraint, ...] = (
     ActiveConstraint(),
     LicenseConstraint(),
+    ConflictOfInterestConstraint(),
+    RegionConstraint(),
     DayAvailabilityConstraint(),
     TimeWindowConstraint(),
     NoOverlapConstraint(),

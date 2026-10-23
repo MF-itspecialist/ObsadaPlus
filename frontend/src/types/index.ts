@@ -16,6 +16,13 @@ export interface RefereeInput {
   preferred_matches_per_weekend: number;
   max_matches_per_weekend: number;
   notes: string | null;
+  /** Preferowane poziomy rozgrywek, np. ["IV liga"]; puste = bez preferencji. */
+  preferred_leagues: string[];
+  /** Kluby, których mecze sędzia woli omijać (kara w generatorze). */
+  avoided_clubs: string[];
+  /** Kluby, z którymi sędzia jest związany — nigdy ich nie sędziuje. */
+  conflict_clubs: string[];
+  own_region_only: boolean;
 }
 
 export interface Referee extends RefereeInput {
@@ -280,6 +287,8 @@ export interface SystemSettings {
   generator_max_matches_per_day: number;
   women_priority_penalty: number;
   crew_route_weight: number;
+  preferred_league_penalty: number;
+  avoided_club_penalty: number;
   distance_weight: number;
   travel_time_weight: number;
   daily_match_weight: number;

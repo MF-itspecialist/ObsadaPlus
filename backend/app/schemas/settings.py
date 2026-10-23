@@ -13,6 +13,9 @@ class SystemSettings(BaseModel):
     women_priority_penalty: float = Field(30.0, ge=0)
     # Zespół G + A1 + A2: jak mocno dobierać sędziów, którzy mogą dojechać razem (km wspólnej trasy).
     crew_route_weight: float = Field(1.0, ge=0)
+    # Kara za mecz spoza preferowanych lig sędziego i za mecz klubu, którego sędzia unika.
+    preferred_league_penalty: float = Field(25.0, ge=0)
+    avoided_club_penalty: float = Field(150.0, ge=0)
     distance_weight: float = Field(2.0, ge=0)
     travel_time_weight: float = Field(0.5, ge=0)
     daily_match_weight: float = Field(20.0, ge=0)

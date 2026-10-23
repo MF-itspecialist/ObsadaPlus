@@ -77,6 +77,15 @@ def list_matches(
     return [_to_read(m) for m in db.scalars(q)]
 
 
+@router.get("/clubs")
+def list_clubs(db: DbSession) -> list[str]:
+    """Kluby z terminarza (bez numeru drużyny: Agape II → Agape) — podpowiedzi w formularzu sędziego."""
+    from app.importers.m90_importer import club_name
+
+    teams = db.execute(select(Match.home_team, Match.away_team)).all()
+    return sorted({club_name(t) for row in teams for t in row if t}, key=str.casefold)
+
+
 @router.get("/{match_id}", response_model=MatchRead)
 def get_match(match_id: int, db: DbSession):
     return _to_read(_load(db, match_id))

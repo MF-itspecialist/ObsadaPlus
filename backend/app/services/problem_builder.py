@@ -35,6 +35,9 @@ def make_slot(m: Match, role, arrival_before_minutes: int) -> Slot:
         venue=GeoPoint(m.venue.latitude, m.venue.longitude, m.venue.name),
         label=match_label(m),
         league=m.league,
+        home_team=m.home_team,
+        away_team=m.away_team,
+        venue_region=m.venue.region,
     )
 
 
@@ -50,6 +53,11 @@ def referee_profile(r: Referee, availability: list[Availability], daily_cap: int
         max_matches_per_weekend=r.max_matches_per_weekend,
         availability={a.date: to_entry(a) for a in availability},
         licenses=tuple(r.licenses or ()),
+        preferred_leagues=tuple(r.preferred_leagues or ()),
+        avoided_clubs=tuple(r.avoided_clubs or ()),
+        conflict_clubs=tuple(r.conflict_clubs or ()),
+        region=r.region,
+        own_region_only=bool(r.own_region_only),
     )
 
 

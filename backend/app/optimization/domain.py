@@ -69,6 +69,10 @@ class OptimizationSettings:
     # Zespół kilkuosobowy: waga km wspólnego dojazdu (kierowca zabiera pozostałych po drodze).
     crew_route_weight: float = 1.0
     women_matches_in_period: bool = False
+    # Mecz spoza preferowanych lig sędziego (gdy je podał).
+    preferred_league_penalty: float = 25.0
+    # Mecz klubu, którego sędzia woli unikać (konflikt interesów to twardy zakaz).
+    avoided_club_penalty: float = 150.0
 
 
 @dataclass(frozen=True)
@@ -101,7 +105,15 @@ class RefereeProfile:
     availability: dict[dt.date, AvailabilityEntry] = field(default_factory=dict)
     # Przydzielone licencje (nazwy z app.optimization.licenses.LICENSE_RULES).
     licenses: tuple[str, ...] = ()
-    # Rozbudowa: preferred_leagues, avoided_clubs, region…
+    # Poziomy rozgrywek, które sędzia woli (nazwy z licenses.LEVEL_NAMES); puste = bez preferencji.
+    preferred_leagues: tuple[str, ...] = ()
+    # Kluby, których mecze sędzia woli omijać (kara w SCORE).
+    avoided_clubs: tuple[str, ...] = ()
+    # Kluby, z którymi sędzia jest związany — nigdy nie sędziuje ich meczów.
+    conflict_clubs: tuple[str, ...] = ()
+    # Podokręg MZPN sędziego i czy może sędziować tylko w nim.
+    region: str = ""
+    own_region_only: bool = False
 
 
 @dataclass(frozen=True)
@@ -117,6 +129,9 @@ class Slot:
     venue: GeoPoint
     label: str = ""
     league: str = ""
+    home_team: str = ""
+    away_team: str = ""
+    venue_region: str = ""
 
     @property
     def key(self) -> tuple[int, RefereeRole]:

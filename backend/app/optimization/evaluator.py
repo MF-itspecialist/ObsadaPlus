@@ -5,9 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from app.optimization.clubs import matching_club
 from app.optimization.constraints import DEFAULT_CONSTRAINTS, HardConstraint, Rejection
 from app.optimization.context import CandidateContext
 from app.optimization.domain import OptimizationSettings, RefereeProfile, Slot, fmt_time
+from app.optimization.licenses import level_name
 from app.optimization.scoring import DEFAULT_COMPONENTS, ScoreComponent, compute_score
 from app.optimization.state import ScheduleState
 from app.services.routing_service import GeoPoint, RoutingService
@@ -68,6 +70,16 @@ def build_reasons(ctx: CandidateContext) -> list[str]:
         )
     else:
         reasons.append(f"zdąży na wymagany przyjazd {fmt_time(ctx.slot.required_arrival)}")
+    r, s = ctx.referee, ctx.slot
+    if r.preferred_leagues:
+        level = level_name(s.league)
+        if level in r.preferred_leagues:
+            reasons.append(f"preferuje mecze: {level}")
+        elif level:
+            reasons.append(f"{level} spoza preferowanych lig ({', '.join(r.preferred_leagues)})")
+    club = matching_club(r.avoided_clubs, s.home_team, s.away_team)
+    if club:
+        reasons.append(f"woli unikać klubu {club} — brak lepszego kandydata")
     return reasons
 
 
