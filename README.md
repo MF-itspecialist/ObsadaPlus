@@ -181,6 +181,18 @@ Logistyka wygrywa z idealną równością, a równość rozstrzyga przy podobnej
 Odległość i czas: z Google Maps lub OSRM (trasy drogowe). Bez nich szacunek: linia prosta × 1,3
 (krętość dróg), czas: km / 40 km/h + 5 min (0 min, gdy to ten sam obiekt). Parametry w Ustawieniach.
 
+## Logowanie i role
+
+Całe API (poza `/api/health` i `/api/auth/*`) wymaga zalogowania. Role:
+
+- **Obsadzający** (`ADMIN`) — pełny dostęp, zarządza kontami w zakładce *Użytkownicy*.
+- **Sędzia** (`REFEREE`) — konto powiązane z sędzią z listy; widzi tylko swoje dane (panel sędziego).
+
+Hasła są przechowywane jako skrót scrypt, sesja to losowy token w ciasteczku HttpOnly
+(w bazie tylko jego SHA-256), ważny 30 dni (`SESSION_DAYS`). Po 5 błędnych hasłach login
+jest blokowany na 5 minut. Pierwsze konto: zmienne `ADMIN_LOGIN` / `ADMIN_PASSWORD`
+(tworzone przy starcie, gdy w bazie nie ma żadnego konta).
+
 ## Przykładowe API
 
 Pełna dokumentacja: http://localhost:8000/docs.
@@ -206,6 +218,9 @@ Pełna dokumentacja: http://localhost:8000/docs.
 | POST | `/api/publications` | publikacja obsady okresu jako kolejnej wersji (zamrożona kopia) |
 | GET | `/api/publications/latest?date_from&date_to` | ostatnia wersja i mecze zmienione od publikacji |
 | GET | `/api/publications/{id}[/pdf]` | opublikowana wersja (JSON / PDF) |
+| POST | `/api/auth/login` · `/api/auth/logout` | logowanie (ciasteczko `obsada_session`, HttpOnly) / wylogowanie |
+| GET / POST | `/api/auth/me` · `/api/auth/password` | zalogowany użytkownik / zmiana własnego hasła |
+| GET / POST / PUT / DELETE | `/api/users[/{id}]` | konta (tylko obsadzający); `POST /api/users/{id}/reset-password` |
 | POST | `/api/optimization/generate` | propozycja obsady (podgląd) |
 | POST | `/api/optimization/confirm` | zatwierdzenie podglądu |
 | GET | `/api/optimization/runs[/{id}]` | historia generowań |
@@ -213,12 +228,15 @@ Pełna dokumentacja: http://localhost:8000/docs.
 | GET | `/api/dashboard?date_from&date_to` | statystyki weekendu |
 
 ```bash
-curl -X POST localhost:8000/api/optimization/generate \
+curl -c sesja.txt -X POST localhost:8000/api/auth/login \
+  -H 'Content-Type: application/json' -d '{"login": "admin", "password": "…"}'
+
+curl -b sesja.txt -X POST localhost:8000/api/optimization/generate \
   -H 'Content-Type: application/json' \
   -d '{"date_from": "2026-10-10", "date_to": "2026-10-11", "mode": "KEEP_MANUAL"}'
 # → {"run_id": 1, "stats": {...}, "assignments": [...], "unassigned": [...]}
 
-curl -X POST localhost:8000/api/optimization/confirm \
+curl -b sesja.txt -X POST localhost:8000/api/optimization/confirm \
   -H 'Content-Type: application/json' -d '{"run_id": 1}'
 ```
 

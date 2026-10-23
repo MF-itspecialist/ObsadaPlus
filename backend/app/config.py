@@ -32,6 +32,12 @@ class AppConfig(BaseSettings):
     # Czy przy starcie aplikacji tworzyć tabele / wypełniać danymi testowymi.
     auto_create_tables: bool = True
     seed_on_startup: bool = False
+    # Logowanie: ważność sesji i ciasteczko. COOKIE_SECURE=true, gdy aplikacja działa po HTTPS.
+    session_days: int = 30
+    cookie_secure: bool = False
+    # Pierwsze konto obsadzającego — tworzone przy starcie, gdy w bazie nie ma żadnego użytkownika.
+    admin_login: str = "admin"
+    admin_password: str = ""
 
     @property
     def cors_origin_list(self) -> list[str]:
