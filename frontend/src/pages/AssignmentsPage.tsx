@@ -324,13 +324,21 @@ function StatsPanel({ stats }: { stats: GenerationStats }) {
     ["Konflikty", stats.conflicts, stats.conflicts ? "text-red-600" : undefined],
   ];
   return (
-    <div className="card mb-6 grid grid-cols-2 overflow-hidden sm:grid-cols-4">
-      {rows.map(([label, value, tone], i) => (
-        <div key={label} className={`px-5 py-4 ${i % 4 !== 0 ? "sm:border-l" : ""} ${i >= 4 ? "border-t" : ""} border-zinc-100`}>
-          <div className="text-xs font-medium text-zinc-500">{label}</div>
-          <div className={`mt-1 text-2xl font-semibold tracking-tight tabular-nums ${tone ?? ""}`}>{value}</div>
-        </div>
-      ))}
+    <div className="mb-6">
+      <div className="card grid grid-cols-2 overflow-hidden sm:grid-cols-4">
+        {rows.map(([label, value, tone], i) => (
+          <div key={label} className={`px-5 py-4 ${i % 4 !== 0 ? "sm:border-l" : ""} ${i >= 4 ? "border-t" : ""} border-zinc-100`}>
+            <div className="text-xs font-medium text-zinc-500">{label}</div>
+            <div className={`mt-1 text-2xl font-semibold tracking-tight tabular-nums ${tone ?? ""}`}>{value}</div>
+          </div>
+        ))}
+      </div>
+      {stats.optimizer && (
+        <p className="mt-2 text-xs text-zinc-500">
+          {stats.optimizer === "cpsat" ? "Obsada ułożona dla całego okresu naraz" : "Obsada ułożona mecz po meczu"}
+          {stats.optimizer_note ? ` · ${stats.optimizer_note}` : ""}
+        </p>
+      )}
     </div>
   );
 }

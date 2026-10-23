@@ -19,6 +19,7 @@ from app.models import (
     Referee,
     RefereeRole,
 )
+from app.optimization.cpsat import CpSatStrategy
 from app.optimization.generator import AssignmentGenerator, GenerationResult
 from app.optimization.domain import Slot, fmt_time
 from app.schemas.optimization import GenerateRequest
@@ -108,7 +109,8 @@ def generate_preview(db: Session, req: GenerateRequest) -> GenerationRun:
         mode=req.mode,
         daily_cap=s.generator_max_matches_per_day,
     )
-    result = AssignmentGenerator(routing_for(s, db)).generate_assignments(built.problem)
+    strategy = CpSatStrategy(time_limit_s=s.optimizer_time_limit_s) if s.optimizer == "cpsat" else None
+    result = AssignmentGenerator(routing_for(s, db), strategy).generate_assignments(built.problem)
     _discard_previews(db, req.date_from, req.date_to)
     run = GenerationRun(
         status=GenerationRunStatus.PREVIEW,

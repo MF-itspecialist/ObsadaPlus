@@ -91,6 +91,30 @@ export default function SettingsPage() {
             Brak zgłoszenia dyspozycyjności = dostępny cały dzień
           </label>
         </SectionCard>
+        <div className="card p-6">
+          <h2 className="mb-4 text-sm font-semibold">Metoda automatycznej obsady</h2>
+          <div className="space-y-3">
+            {(
+              [
+                ["cpsat", "Cały weekend naraz (zalecane)", "Rozważa wszystkie mecze jednocześnie, więc zwykle obsadza więcej miejsc albo krótszymi dojazdami. Nigdy nie daje gorszego wyniku niż metoda szybka."],
+                ["greedy", "Szybka, mecz po meczu", "Wybiera najlepszego sędziego dla kolejnych meczów, od najważniejszych lig."],
+              ] as const
+            ).map(([value, label, hint]) => (
+              <label key={value} className="flex items-start gap-2 text-sm">
+                <input type="radio" name="optimizer" className="mt-1" checked={form.optimizer === value} onChange={() => setForm({ ...form, optimizer: value })} />
+                <span>
+                  <span className="font-medium">{label}</span>
+                  <span className="block text-zinc-500">{hint}</span>
+                </span>
+              </label>
+            ))}
+            {form.optimizer === "cpsat" && (
+              <Field label="Maks. czas układania obsady (s)">
+                <input type="number" className="input" min={1} max={120} value={form.optimizer_time_limit_s} onChange={(e) => setForm({ ...form, optimizer_time_limit_s: Number(e.target.value) })} />
+              </Field>
+            )}
+          </div>
+        </div>
       </div>
       <details className="mt-6">
         <summary className="cursor-pointer text-sm font-semibold text-zinc-700">Ustawienia zaawansowane (algorytm obsady)</summary>

@@ -248,6 +248,8 @@ export interface GenerationStats {
   avg_distance_km: number;
   total_distance_km: number;
   conflicts: number;
+  optimizer?: "greedy" | "cpsat";
+  optimizer_note?: string;
 }
 
 export interface GenerationPreview {
@@ -299,6 +301,8 @@ export interface SystemSettings {
   over_preferred_factor: number;
   distance_brackets: [number, number][];
   assume_available_without_entry: boolean;
+  optimizer: "greedy" | "cpsat";
+  optimizer_time_limit_s: number;
   routing_road_factor: number;
   routing_avg_speed_kmh: number;
   default_match_duration_minutes: number;
