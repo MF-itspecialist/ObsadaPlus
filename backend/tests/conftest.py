@@ -34,8 +34,15 @@ def db_session():
     engine.dispose()
 
 
+ADMIN_LOGIN, ADMIN_PASSWORD = "admin", "haslo-testowe-123"
+
+
 @pytest.fixture()
-def client(db_session):
+def anon_client(db_session):
+    """Klient bez logowania (konto obsadzającego istnieje w bazie)."""
+    from app.models import UserRole
+    from app.services import auth_service
+
     def _get_db():
         db = db_session()
         try:
@@ -43,11 +50,22 @@ def client(db_session):
         finally:
             db.close()
 
+    with db_session() as db:
+        auth_service.create_user(db, ADMIN_LOGIN, ADMIN_PASSWORD, UserRole.ADMIN, "Obsadzający")
+    auth_service.throttle = auth_service.LoginThrottle()
     app.dependency_overrides[get_db] = _get_db
     app.dependency_overrides[get_geocoder] = OfflineGeocoder
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def client(anon_client):
+    """Klient zalogowany jako obsadzający."""
+    r = anon_client.post("/api/auth/login", json={"login": ADMIN_LOGIN, "password": ADMIN_PASSWORD})
+    assert r.status_code == 200, r.text
+    return anon_client
 
 
 @pytest.fixture()

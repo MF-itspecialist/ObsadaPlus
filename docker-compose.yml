@@ -44,11 +44,15 @@ services:
       GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
       GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY:-}
       OSRM_URL: ${OSRM_URL:-http://osrm:5000}
+      # Pierwsze konto obsadzającego (tylko gdy w bazie nie ma kont); zwykle tworzy je zadanie z kolejki.
+      ADMIN_LOGIN: ${ADMIN_LOGIN:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
     depends_on:
       postgres:
         condition: service_healthy
     ports:
-      - "127.0.0.1:8000:8000"  # API bez logowania — tylko z tego komputera
+      - "127.0.0.1:8000:8000"  # API (wymaga logowania) — tylko z tego komputera
 
   frontend:
     build: ./frontend

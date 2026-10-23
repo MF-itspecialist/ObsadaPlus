@@ -287,6 +287,36 @@ export interface LicenseGroup {
   licenses: LicenseInfo[];
 }
 
+export type UserRole = "ADMIN" | "REFEREE";
+
+export const USER_ROLE_LABELS: Record<UserRole, string> = {
+  ADMIN: "Obsadzający",
+  REFEREE: "Sędzia",
+};
+
+export interface User {
+  id: number;
+  login: string;
+  display_name: string;
+  role: UserRole;
+  referee_id: number | null;
+  referee_name: string | null;
+  active: boolean;
+  last_login_at: string | null;
+}
+
+export interface UserInput {
+  display_name: string;
+  role: UserRole;
+  referee_id: number | null;
+  active: boolean;
+}
+
+export interface UserWithPassword {
+  user: User;
+  password: string | null;
+}
+
 export interface PublicationSummary {
   id: number;
   date_from: string;

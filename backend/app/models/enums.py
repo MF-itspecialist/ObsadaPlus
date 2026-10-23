@@ -46,3 +46,10 @@ class GenerationMode(str, Enum):
 
     KEEP_MANUAL = "KEEP_MANUAL"
     FULL = "FULL"
+
+
+class UserRole(str, Enum):
+    """ADMIN — obsadzający (pełny dostęp). REFEREE — sędzia (tylko własne dane)."""
+
+    ADMIN = "ADMIN"
+    REFEREE = "REFEREE"

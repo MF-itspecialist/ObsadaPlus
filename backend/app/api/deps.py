@@ -1,14 +1,37 @@
-"""Wspólne zależności FastAPI. Tu w przyszłości trafi uwierzytelnianie i role użytkowników."""
+"""Wspólne zależności FastAPI: sesja bazy, okres, zalogowany użytkownik i jego rola."""
 
 import datetime as dt
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Query
+from fastapi import Cookie, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database.db import get_db
 
+from app.models import User, UserRole
+from app.services import auth_service
+
 DbSession = Annotated[Session, Depends(get_db)]
+SessionToken = Annotated[str | None, Cookie(alias=auth_service.SESSION_COOKIE)]
+
+
+def current_user(db: DbSession, token: SessionToken = None) -> User:
+    user = auth_service.user_for_token(db, token)
+    if user is None:
+        raise HTTPException(401, "Zaloguj się")
+    return user
+
+
+CurrentUser = Annotated[User, Depends(current_user)]
+
+
+def require_admin(user: CurrentUser) -> User:
+    if user.role != UserRole.ADMIN:
+        raise HTTPException(403, "Ta część jest dostępna tylko dla obsadzającego")
+    return user
+
+
+AdminUser = Annotated[User, Depends(require_admin)]
 
 
 def period(

@@ -21,11 +21,16 @@ import type {
   PublicationSummary,
   RefereeRole,
   SystemSettings,
+  User,
+  UserInput,
+  UserWithPassword,
   Venue,
   VenueInput,
 } from "../types";
 
 const BASE_URL: string = import.meta.env.VITE_API_URL ?? "";
+
+export const UNAUTHORIZED_EVENT = "obsada:unauthorized";
 
 export class ApiError extends Error {
   constructor(
@@ -59,7 +64,7 @@ function errorMessage(body: unknown, fallback: string): string {
 }
 
 async function request<T>(method: string, path: string, opts: { query?: Query; body?: unknown; form?: FormData } = {}): Promise<T> {
-  const init: RequestInit = { method, headers: {} };
+  const init: RequestInit = { method, headers: {}, credentials: "include" };
   if (opts.form) {
     init.body = opts.form;
   } else if (opts.body !== undefined) {
@@ -69,6 +74,8 @@ async function request<T>(method: string, path: string, opts: { query?: Query; b
   const res = await fetch(buildUrl(path, opts.query), init);
   if (res.status === 204) return undefined as T;
   const body = await res.json().catch(() => null);
+  // Sesja wygasła / wylogowano w innej karcie — AuthContext pokaże ekran logowania.
+  if (res.status === 401 && !path.startsWith("/api/auth/")) window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
   if (!res.ok) throw new ApiError(res.status, errorMessage(body, `Błąd ${res.status}`));
   return body as T;
 }
@@ -84,6 +91,18 @@ export interface Period {
 }
 
 export const api = {
+  // Logowanie i konta
+  me: () => request<User>("GET", "/api/auth/me"),
+  login: (login: string, password: string) => request<User>("POST", "/api/auth/login", { body: { login, password } }),
+  logout: () => request<void>("POST", "/api/auth/logout"),
+  changePassword: (current_password: string, new_password: string) =>
+    request<void>("POST", "/api/auth/password", { body: { current_password, new_password } }),
+  users: () => request<User[]>("GET", "/api/users"),
+  createUser: (data: UserInput & { login: string; password?: string | null }) => request<UserWithPassword>("POST", "/api/users", { body: data }),
+  updateUser: (id: number, data: UserInput) => request<User>("PUT", `/api/users/${id}`, { body: data }),
+  resetPassword: (id: number) => request<UserWithPassword>("POST", `/api/users/${id}/reset-password`),
+  deleteUser: (id: number) => request<void>("DELETE", `/api/users/${id}`),
+
   // Sędziowie
   referees: () => request<Referee[]>("GET", "/api/referees"),
   refereesOverview: (p: Period) => request<RefereeOverview[]>("GET", "/api/referees/overview", { query: { ...p } }),

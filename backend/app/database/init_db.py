@@ -43,6 +43,11 @@ def reset() -> None:
 
 def init_db(seed: bool = False) -> None:
     migrate()
+    from app.services.auth_service import ensure_admin
+
+    with SessionLocal() as db:
+        if ensure_admin(db):
+            log.info("Utworzono konto obsadzającego z ADMIN_LOGIN / ADMIN_PASSWORD")
     if seed:
         from app.database.seed import seed_database
 
