@@ -221,6 +221,8 @@ Pełna dokumentacja: http://localhost:8000/docs.
 | POST | `/api/auth/login` · `/api/auth/logout` | logowanie (ciasteczko `obsada_session`, HttpOnly) / wylogowanie |
 | GET / POST | `/api/auth/me` · `/api/auth/password` | zalogowany użytkownik / zmiana własnego hasła |
 | GET / POST / PUT / DELETE | `/api/users[/{id}]` | konta (tylko obsadzający); `POST /api/users/{id}/reset-password` |
+| GET | `/api/me/matches` | panel sędziego: jego mecze z opublikowanej obsady |
+| GET / PUT | `/api/me/availability` | panel sędziego: własna dyspozycyjność (od jutra, do 120 dni) |
 | POST | `/api/optimization/generate` | propozycja obsady (podgląd) |
 | POST | `/api/optimization/confirm` | zatwierdzenie podglądu |
 | GET | `/api/optimization/runs[/{id}]` | historia generowań |

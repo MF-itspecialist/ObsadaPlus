@@ -32,7 +32,7 @@ def list_availability(
     return list(db.scalars(q))
 
 
-def upsert(db: Session, data: AvailabilityUpsert, commit: bool = True) -> Availability:
+def upsert(db: Session, data: AvailabilityUpsert, commit: bool = True, by_referee: bool = False) -> Availability:
     if db.get(Referee, data.referee_id) is None:
         raise AvailabilityError(f"Sędzia {data.referee_id} nie istnieje")
     row = db.scalar(
@@ -43,10 +43,19 @@ def upsert(db: Session, data: AvailabilityUpsert, commit: bool = True) -> Availa
     if row is None:
         row = Availability(referee_id=data.referee_id, date=data.date)
         db.add(row)
-    row.available = data.available
-    # Niedostępny → godziny bez znaczenia.
-    row.available_from = data.available_from if data.available else None
-    row.available_to = data.available_to if data.available else None
+    values = (
+        data.available,
+        # Niedostępny → godziny bez znaczenia.
+        data.available_from if data.available else None,
+        data.available_to if data.available else None,
+    )
+    if by_referee:
+        row.declared_by_referee = True
+        row.declared_at = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None, microsecond=0)
+    elif (row.available, row.available_from, row.available_to) != values:
+        # Obsadzający zmienił zgłoszenie sędziego — od teraz to jego wpis.
+        row.declared_by_referee = False
+    row.available, row.available_from, row.available_to = values
     if commit:
         db.commit()
         db.refresh(row)
