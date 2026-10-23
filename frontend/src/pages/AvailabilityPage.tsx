@@ -90,6 +90,12 @@ export default function AvailabilityPage() {
   // Filtr tylko zawęża widok — „Zapisz zmiany” zapisuje dyspozycyjność wszystkich sędziów.
   const filtered = useMemo(() => active.filter((r) => matchesRefereeFilter(r, filter)), [active, filter]);
   const page = useIncremental(filtered, filtered);
+  // Wpisy zgłoszone przez sędziów w ich panelu (klucz jak w formularzu).
+  const declared = useMemo(
+    () => new Set((data.data?.[1] ?? []).filter((a) => a.declared_by_referee).map((a) => key(a.referee_id, a.date))),
+    [data.data],
+  );
+  const declaredReferees = useMemo(() => new Set((data.data?.[1] ?? []).filter((a) => a.declared_by_referee).map((a) => a.referee_id)).size, [data.data]);
 
   return (
     <div>
@@ -102,6 +108,7 @@ export default function AvailabilityPage() {
       <InfoBanner message={info} onClose={() => setInfo(null)} />
       <p className="mb-4 text-sm text-zinc-500">
         Puste pola oznaczają brak zgłoszenia — sędzia jest wtedy traktowany jako niedostępny (zmienisz to w Ustawieniach).
+        {declaredReferees > 0 && ` Sami zgłosili się (panel sędziego): ${declaredReferees} sędziów — oznaczeni „zgłosił sam”.`}
       </p>
       <RefereeFilters referees={active} filter={filter} onChange={setFilter} shown={filtered.length} withLicense={false} />
       <div className="card overflow-hidden"><div className="overflow-x-auto">
@@ -121,7 +128,14 @@ export default function AvailabilityPage() {
             </thead>
             <tbody>
               {page.shown.map((r) => (
-                <AvailabilityRow key={r.id} referee={r} days={days} values={days.map((d) => form[key(r.id, d)] ?? EMPTY_DAY)} onChange={update} />
+                <AvailabilityRow
+                  key={r.id}
+                  referee={r}
+                  days={days}
+                  values={days.map((d) => form[key(r.id, d)] ?? EMPTY_DAY)}
+                  declared={days.map((d) => declared.has(key(r.id, d)))}
+                  onChange={update}
+                />
               ))}
               {page.hasMore && <LoadMoreRow colSpan={days.length + 1} rest={page.rest} onMore={page.more} />}
             </tbody>
@@ -136,12 +150,13 @@ interface RowProps {
   referee: Referee;
   days: string[];
   values: DayForm[];
+  declared: boolean[];
   onChange: (refereeId: number, date: string, patch: Partial<DayForm>) => void;
 }
 
 // Kilkaset wierszy po kilka pól godziny: wiersz przerysowuje się tylko, gdy zmieni się jego zawartość.
 const AvailabilityRow = memo(
-  function AvailabilityRow({ referee: r, days, values, onChange }: RowProps) {
+  function AvailabilityRow({ referee: r, days, values, declared, onChange }: RowProps) {
     return (
       <tr>
         <td className="sticky left-0 z-[1] bg-white whitespace-nowrap">
@@ -177,6 +192,7 @@ const AvailabilityRow = memo(
                   niedostępny
                 </label>
               </div>
+              {declared[i] && <div className="mt-1.5 text-[11px] font-medium text-brand-600">zgłosił sam</div>}
             </td>
           );
         })}
@@ -187,5 +203,5 @@ const AvailabilityRow = memo(
     a.referee === b.referee &&
     a.onChange === b.onChange &&
     a.days.length === b.days.length &&
-    a.days.every((d, i) => d === b.days[i] && a.values[i] === b.values[i]),
+    a.days.every((d, i) => d === b.days[i] && a.values[i] === b.values[i] && a.declared[i] === b.declared[i]),
 );

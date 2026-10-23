@@ -106,6 +106,31 @@ export interface Availability {
   available_from: string | null;
   available_to: string | null;
   available: boolean;
+  declared_by_referee?: boolean;
+  declared_at?: string | null;
+}
+
+export interface OwnAvailabilitySave {
+  items: { date: string; available: boolean; available_from: string | null; available_to: string | null }[];
+  cleared: string[];
+}
+
+export interface MyMatch {
+  match_id: number;
+  date: string;
+  start_time: string;
+  league: string;
+  home_team: string;
+  away_team: string;
+  venue_name: string;
+  venue_address: string;
+  cancelled: boolean;
+  role: RefereeRole;
+  role_label: string;
+  distance_km: number | null;
+  crew: { role: RefereeRole; role_label: string; referee_name: string | null }[];
+  version: number;
+  published_at: string;
 }
 
 export interface Explanation {

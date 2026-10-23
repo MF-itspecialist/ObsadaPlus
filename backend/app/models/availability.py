@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, Date, ForeignKey, Integer, Time, UniqueConstraint
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Time, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.db import Base
@@ -29,5 +29,9 @@ class Availability(Base):
     available_from: Mapped[dt.time | None] = mapped_column(Time, nullable=True)
     available_to: Mapped[dt.time | None] = mapped_column(Time, nullable=True)
     available: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Zgłoszone przez sędziego w jego panelu (a nie wpisane przez obsadzającego / dane testowe).
+    declared_by_referee: Mapped[bool] = mapped_column(Boolean, default=False)
+    # UTC
+    declared_at: Mapped[dt.datetime | None] = mapped_column(DateTime, nullable=True)
 
     referee: Mapped[Referee] = relationship(back_populates="availability")

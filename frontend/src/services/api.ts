@@ -14,6 +14,8 @@ import type {
   ManualAssignmentResult,
   Match,
   MatchInput,
+  MyMatch,
+  OwnAvailabilitySave,
   Referee,
   RefereeInput,
   RefereeOverview,
@@ -109,6 +111,12 @@ export const api = {
   createReferee: (data: RefereeInput) => request<Referee>("POST", "/api/referees", { body: data }),
   updateReferee: (id: number, data: RefereeInput) => request<Referee>("PUT", `/api/referees/${id}`, { body: data }),
   deleteReferee: (id: number) => request<void>("DELETE", `/api/referees/${id}`),
+
+  // Panel sędziego (konto sędziego)
+  myMatches: () => request<MyMatch[]>("GET", "/api/me/matches"),
+  myAvailability: (p: Period) => request<Availability[]>("GET", "/api/me/availability", { query: { ...p } }),
+  saveMyAvailability: (data: OwnAvailabilitySave) => request<Availability[]>("PUT", "/api/me/availability", { body: data }),
+  serverToday: () => request<{ today: string }>("GET", "/api/me/today"),
 
   // Obiekty
   venues: () => request<Venue[]>("GET", "/api/venues"),

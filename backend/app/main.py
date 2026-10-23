@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import assignments, auth, availability, dashboard, geocode, licenses, matches, optimization, publications, referees, settings, users, venues
+from app.api import assignments, auth, availability, dashboard, geocode, licenses, matches, optimization, publications, referee_panel, referees, settings, users, venues
 from app.api.deps import require_admin
 from app.config import get_config
 
@@ -36,6 +36,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(auth.router)
+    app.include_router(referee_panel.router)
     # Cała reszta API tylko dla zalogowanego obsadzającego.
     admin_only = [Depends(require_admin)]
     for module in (referees, venues, geocode, licenses, matches, availability, assignments, optimization, publications,
