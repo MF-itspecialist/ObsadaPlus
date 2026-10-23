@@ -201,6 +201,11 @@ Pełna dokumentacja: http://localhost:8000/docs.
 | GET | `/api/assignments/board?date_from&date_to` | widok obsady z bieżącymi konfliktami |
 | GET | `/api/assignments/candidates?match_id&role` | ranking sędziów dla meczu |
 | POST / PUT / DELETE | `/api/assignments[/{id}]` | ręczne przypisanie / zmiana / usunięcie |
+| GET | `/api/assignments/export.pdf?date_from&date_to` | bieżąca obsada jako PDF (A4 poziomo) |
+| GET | `/api/assignments/export.xlsx?date_from&date_to` | obsada w Excelu: arkusz meczów + rozpiska na sędziów z km |
+| POST | `/api/publications` | publikacja obsady okresu jako kolejnej wersji (zamrożona kopia) |
+| GET | `/api/publications/latest?date_from&date_to` | ostatnia wersja i mecze zmienione od publikacji |
+| GET | `/api/publications/{id}[/pdf]` | opublikowana wersja (JSON / PDF) |
 | POST | `/api/optimization/generate` | propozycja obsady (podgląd) |
 | POST | `/api/optimization/confirm` | zatwierdzenie podglądu |
 | GET | `/api/optimization/runs[/{id}]` | historia generowań |
