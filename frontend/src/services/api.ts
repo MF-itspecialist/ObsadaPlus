@@ -16,6 +16,7 @@ import type {
   MatchInput,
   MyMatch,
   OwnAvailabilitySave,
+  PeriodStatistics,
   Referee,
   RefereeInput,
   RefereeOverview,
@@ -174,4 +175,6 @@ export const api = {
   settings: () => request<SystemSettings>("GET", "/api/settings"),
   saveSettings: (s: SystemSettings) => request<SystemSettings>("PUT", "/api/settings", { body: s }),
   dashboard: (p: Period) => request<DashboardStats>("GET", "/api/dashboard", { query: { ...p } }),
+  statistics: (p: Period) => request<PeriodStatistics>("GET", "/api/statistics", { query: { ...p } }),
+  mileageXlsxUrl: (p: Period) => fileUrl("/api/statistics/mileage.xlsx", { ...p }),
 };

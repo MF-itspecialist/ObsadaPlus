@@ -289,6 +289,7 @@ export interface SystemSettings {
   crew_route_weight: number;
   preferred_league_penalty: number;
   avoided_club_penalty: number;
+  mileage_rate: number;
   distance_weight: number;
   travel_time_weight: number;
   daily_match_weight: number;
@@ -319,6 +320,38 @@ export interface LicenseInfo {
 export interface LicenseGroup {
   title: string;
   licenses: LicenseInfo[];
+}
+
+export interface RefereeStats {
+  referee_id: number;
+  name: string;
+  location: string;
+  matches: number;
+  as_main: number;
+  as_assistant: number;
+  days: number;
+  km: number;
+  amount: number;
+  levels: Record<string, number>;
+  trips: { date: string; matches: string[]; route: string; km: number; amount: number }[];
+}
+
+export interface PeriodStatistics {
+  date_from: string;
+  date_to: string;
+  mileage_rate: number;
+  summary: {
+    matches: number;
+    matches_fully_assigned: number;
+    slots_total: number;
+    slots_filled: number;
+    referees_used: number;
+    km_total: number;
+    amount_total: number;
+  };
+  by_month: { month: string; matches: number; slots_filled: number; km: number }[];
+  by_level: { level: string; matches: number }[];
+  referees: RefereeStats[];
 }
 
 export type UserRole = "ADMIN" | "REFEREE";

@@ -21,6 +21,7 @@ const LOGISTICS: Section = {
     { key: "routing_avg_speed_kmh", label: "Średnia prędkość przejazdu (km/h)" },
     { key: "routing_road_factor", label: "Współczynnik krętości dróg", step: 0.05 },
     { key: "default_match_duration_minutes", label: "Domyślny czas meczu przy imporcie (min)" },
+    { key: "mileage_rate", label: "Stawka kilometrówki (zł za km)", step: 0.0001 },
   ],
 };
 
