@@ -6,6 +6,7 @@ from app.models.enums import GenerationMode, GenerationRunStatus, MatchStatus, R
 from app.models.generation_run import GenerationRun
 from app.models.import_run import ImportRun
 from app.models.match import Match
+from app.models.outbox import OutboxMessage
 from app.models.publication import Publication
 from app.models.referee import Referee
 from app.models.route_cache import RouteCacheEntry
@@ -22,6 +23,7 @@ __all__ = [
     "ImportRun",
     "Match",
     "MatchStatus",
+    "OutboxMessage",
     "Publication",
     "Referee",
     "RefereeRole",

@@ -12,6 +12,8 @@ class PublicationSummary(BaseModel):
     published_at: dt.datetime
     match_count: int
     changed_matches: list[int]
+    # Tylko w odpowiedzi na publikację: {"queued": n, "without_email": [nazwiska]}.
+    notifications: dict[str, Any] | None = None
 
 
 class PublicationRead(PublicationSummary):

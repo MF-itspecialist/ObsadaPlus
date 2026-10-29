@@ -114,7 +114,12 @@ export default function AssignmentsPage() {
     try {
       const pub = await api.publish(period);
       publication.setData(pub);
-      setInfo(`Opublikowano wersję ${pub.version} (${pub.match_count} meczów).`);
+      const n = pub.notifications;
+      const mails = !n
+        ? ""
+        : ` Powiadomienia e-mail: ${n.queued}` +
+          (n.without_email.length ? `; bez adresu e-mail: ${n.without_email.slice(0, 5).join(", ")}${n.without_email.length > 5 ? ` i ${n.without_email.length - 5} innych` : ""}.` : ".");
+      setInfo(`Opublikowano wersję ${pub.version} (${pub.match_count} meczów).${mails}`);
     } catch (e) {
       setError((e as Error).message);
     } finally {

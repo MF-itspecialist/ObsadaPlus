@@ -1,4 +1,4 @@
-import { CalendarCheck, ExternalLink, MapPin, Users } from "lucide-react";
+import { CalendarCheck, ExternalLink, Mail, MapPin, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { ErrorBanner, InfoBanner, Loading } from "../components/Feedback";
@@ -30,7 +30,60 @@ export default function RefereeHomePage() {
       </div>
       <MyMatches />
       <MyAvailability />
+      <MyContact />
     </div>
+  );
+}
+
+// --- Powiadomienia -------------------------------------------------------------------
+
+function MyContact() {
+  const contact = useAsync(() => api.myContact(), []);
+  const [email, setEmail] = useState("");
+  const [notify, setNotify] = useState(true);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (contact.data) {
+      setEmail(contact.data.email);
+      setNotify(contact.data.notify_email);
+    }
+  }, [contact.data]);
+
+  const save = async () => {
+    try {
+      const c = await api.saveMyContact({ email, notify_email: notify });
+      setEmail(c.email);
+      setError(null);
+      setMsg("Zapisano.");
+    } catch (e) {
+      setMsg(null);
+      setError((e as Error).message);
+    }
+  };
+
+  return (
+    <section className="mt-10">
+      <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-zinc-900 uppercase">
+        <Mail className="size-4 text-brand-600" /> Powiadomienia e-mail
+      </h2>
+      <div className="card p-5">
+        <ErrorBanner message={error} />
+        <InfoBanner message={msg} onClose={() => setMsg(null)} />
+        <p className="mb-3 text-sm text-zinc-600">Na ten adres wyślemy obsadę po publikacji (i jej zmiany) oraz przypomnienie o zgłoszeniu dyspozycyjności.</p>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <input className="input" type="email" placeholder="twój adres e-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <button className="btn-primary whitespace-nowrap" onClick={save}>
+            Zapisz
+          </button>
+        </div>
+        <label className="mt-3 flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
+          Chcę dostawać powiadomienia
+        </label>
+      </div>
+    </section>
   );
 }
 

@@ -35,6 +35,15 @@ class AppConfig(BaseSettings):
     # Logowanie: ważność sesji i ciasteczko. COOKIE_SECURE=true, gdy aplikacja działa po HTTPS.
     session_days: int = 30
     cookie_secure: bool = False
+    # Wysyłka powiadomień e-mail (SMTP). Pusty SMTP_HOST = wiadomości czekają w skrzynce nadawczej.
+    # Gmail: smtp.gmail.com, port 587, login = adres, hasło = „hasło aplikacji” z konta Google.
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""
+    # Adres aplikacji w linku w wiadomościach (np. http://192.168.1.10:8080).
+    app_url: str = ""
     # Harmonogram w tle (automatyczny import meczów). W testach wyłączony.
     scheduler_enabled: bool = True
     # Pierwsze konto obsadzającego — tworzone przy starcie, gdy w bazie nie ma żadnego użytkownika.
