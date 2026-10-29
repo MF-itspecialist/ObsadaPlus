@@ -308,6 +308,10 @@ export interface SystemSettings {
   optimizer: "greedy" | "cpsat";
   optimizer_time_limit_s: number;
   observer_levels: string[];
+  auto_import_enabled: boolean;
+  auto_import_hour: number;
+  m90_season_id: number;
+  m90_region_id: number;
   routing_road_factor: number;
   routing_avg_speed_kmh: number;
   default_match_duration_minutes: number;
@@ -425,6 +429,27 @@ export interface PublishedRow {
 
 export interface Publication extends PublicationSummary {
   rows: PublishedRow[];
+}
+
+export interface ImportChange {
+  match_id: number;
+  date: string;
+  label: string;
+  what: string;
+  referees: string[];
+}
+
+export interface ImportRun {
+  id: number;
+  source: string;
+  trigger: "auto" | "manual";
+  status: "running" | "ok" | "error";
+  started_at: string;
+  finished_at: string | null;
+  created: number;
+  updated: number;
+  changes: ImportChange[];
+  messages: string[];
 }
 
 export type LatLng = [number, number];

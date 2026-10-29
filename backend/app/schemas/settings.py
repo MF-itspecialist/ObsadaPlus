@@ -35,6 +35,12 @@ class SystemSettings(BaseModel):
         (100000, 300),
     ]
     assume_available_without_entry: bool = False
+    # Codzienna aktualizacja meczów z 90minut.pl (czas polski) i adres terminarza:
+    # ligireg.php?id_sezon=<m90_season_id>&id_okreg=<m90_region_id> (109 = 2026/27, 6 = Mazowsze).
+    auto_import_enabled: bool = True
+    auto_import_hour: int = Field(3, ge=0, le=23)
+    m90_season_id: int = Field(109, ge=1)
+    m90_region_id: int = Field(6, ge=1)
     # Poziomy rozgrywek, na które generator wyznacza obserwatora (np. ["IV liga"]); pusto = tylko ręcznie.
     observer_levels: list[str] = []
     # Metoda obsady: „cpsat” rozważa cały okres naraz (OR-Tools), „greedy” mecz po meczu.

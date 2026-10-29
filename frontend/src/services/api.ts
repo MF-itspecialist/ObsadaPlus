@@ -9,6 +9,7 @@ import type {
   GenerationMode,
   GenerationPreview,
   GeocodeResult,
+  ImportRun,
   LatLng,
   PeriodMap,
   LicenseGroup,
@@ -179,6 +180,8 @@ export const api = {
   dashboard: (p: Period) => request<DashboardStats>("GET", "/api/dashboard", { query: { ...p } }),
   statistics: (p: Period) => request<PeriodStatistics>("GET", "/api/statistics", { query: { ...p } }),
   mileageXlsxUrl: (p: Period) => fileUrl("/api/statistics/mileage.xlsx", { ...p }),
+  importRuns: () => request<ImportRun[]>("GET", "/api/imports"),
+  runImport: () => request<{ run_id: number }>("POST", "/api/imports/run"),
   periodMap: (p: Period) => request<PeriodMap>("GET", "/api/map", { query: { ...p } }),
   routeShape: (points: LatLng[]) =>
     request<{ path: LatLng[]; exact: boolean }>("GET", "/api/map/route", { query: { points: points.map((p) => p.join(",")).join(";") } }),

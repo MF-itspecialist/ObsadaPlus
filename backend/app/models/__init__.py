@@ -4,6 +4,7 @@ from app.models.assignment import Assignment
 from app.models.availability import Availability
 from app.models.enums import GenerationMode, GenerationRunStatus, MatchStatus, RefereeRole, UserRole
 from app.models.generation_run import GenerationRun
+from app.models.import_run import ImportRun
 from app.models.match import Match
 from app.models.publication import Publication
 from app.models.referee import Referee
@@ -18,6 +19,7 @@ __all__ = [
     "GenerationMode",
     "GenerationRun",
     "GenerationRunStatus",
+    "ImportRun",
     "Match",
     "MatchStatus",
     "Publication",

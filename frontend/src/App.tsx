@@ -12,6 +12,7 @@ import PublicationPage from "./pages/PublicationPage";
 import RefereeHomePage from "./pages/RefereeHomePage";
 import RefereesPage from "./pages/RefereesPage";
 import SettingsPage from "./pages/SettingsPage";
+import ImportsPage from "./pages/ImportsPage";
 import MapPage from "./pages/MapPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import UsersPage from "./pages/UsersPage";
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="users" element={<UsersPage />} />
         <Route path="statistics" element={<StatisticsPage />} />
         <Route path="map" element={<MapPage />} />
+        <Route path="imports" element={<ImportsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
