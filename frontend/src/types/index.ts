@@ -422,6 +422,52 @@ export interface Publication extends PublicationSummary {
   rows: PublishedRow[];
 }
 
+export type LatLng = [number, number];
+
+export interface MapMatch {
+  id: number;
+  date: string;
+  time: string;
+  league: string;
+  home_team: string;
+  away_team: string;
+  required: number;
+  filled: number;
+}
+
+export interface MapVenue {
+  id: number;
+  name: string;
+  city: string;
+  point: LatLng;
+  matches: MapMatch[];
+}
+
+export interface MapStop {
+  match_id: number;
+  venue_id: number;
+  venue: string;
+  point: LatLng;
+  time: string;
+  role: RefereeRole;
+  label: string;
+}
+
+export interface MapReferee {
+  referee_id: number;
+  name: string;
+  location: string;
+  home: LatLng;
+  days: { date: string; km: number; stops: MapStop[] }[];
+}
+
+export interface PeriodMap {
+  date_from: string;
+  date_to: string;
+  venues: MapVenue[];
+  referees: MapReferee[];
+}
+
 export const ROLE_LABELS: Record<RefereeRole, string> = {
   MAIN: "Sędzia główny",
   ASSISTANT_1: "Asystent 1",

@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import assignments, auth, availability, dashboard, geocode, licenses, matches, optimization, publications, referee_panel, referees, settings, statistics, users, venues
+from app.api import assignments, auth, availability, dashboard, geocode, licenses, map, matches, optimization, publications, referee_panel, referees, settings, statistics, users, venues
 from app.api.deps import require_admin
 from app.config import get_config
 
@@ -40,7 +40,7 @@ def create_app() -> FastAPI:
     # Cała reszta API tylko dla zalogowanego obsadzającego.
     admin_only = [Depends(require_admin)]
     for module in (referees, venues, geocode, licenses, matches, availability, assignments, optimization, publications,
-                   settings, dashboard, users, statistics):
+                   settings, dashboard, users, statistics, map):
         app.include_router(module.router, dependencies=admin_only)
 
     @app.get("/api/health", tags=["system"])
