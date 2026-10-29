@@ -35,6 +35,13 @@ class Referee(Base):
     preferred_matches_per_weekend: Mapped[int] = mapped_column(Integer, default=4)
     max_matches_per_weekend: Mapped[int] = mapped_column(Integer, default=5)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Preferowane poziomy rozgrywek (nazwy z licenses.LEVEL_NAMES), np. ["IV liga", "V liga"].
+    preferred_leagues: Mapped[list[str]] = mapped_column(JSON, default=list)
+    # Kluby, których mecze sędzia woli omijać (miękko) i z którymi jest związany (twardy zakaz).
+    avoided_clubs: Mapped[list[str]] = mapped_column(JSON, default=list)
+    conflict_clubs: Mapped[list[str]] = mapped_column(JSON, default=list)
+    # Tylko mecze w podokręgu sędziego.
+    own_region_only: Mapped[bool] = mapped_column(Boolean, default=False)
 
     availability: Mapped[list[Availability]] = relationship(
         back_populates="referee", cascade="all, delete-orphan"

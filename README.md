@@ -173,6 +173,12 @@ daily_matches_penalty + weekend_matches_penalty + workload_balance_penalty`.
 | mecze w dniu | każdy kolejny mecz w granicach `preferred`: `20 × 0.25 = 5`; powyżej `preferred`: `20 × 1.5 = 30`; `max` — twardy limit |
 | mecze w weekend | analogicznie z wagą 10 |
 | wyrównanie | `10 × max(0, mecze_sędziego − średnia)` |
+| liga spoza preferencji | `25`, gdy sędzia podał preferowane ligi, a mecz jest z innej |
+| unikany klub | `150`, gdy gospodarz lub gość jest na liście „woli unikać” sędziego |
+
+Twarde ograniczenia sędziego: **konflikt interesów** (kluby, z którymi jest związany — także
+rezerwy II/III) i **tylko własny podokręg**. Kluby porównywane są po słowach nazwy bez polskich
+znaków i numeru drużyny („Agape Białołęka” pasuje do „Agape II Białołęka (Warszawa)”).
 
 Przykład z wymagań: sędzia A 5 km od meczu z 2 meczami tego dnia (trzeci mecz ≈ 5 + 30 kary
 za obciążenie) wygrywa z sędzią B 55 km dalej bez meczów (sama odległość ≈ 150 + 110).
@@ -223,6 +229,7 @@ Pełna dokumentacja: http://localhost:8000/docs.
 | GET / POST / PUT / DELETE | `/api/users[/{id}]` | konta (tylko obsadzający); `POST /api/users/{id}/reset-password` |
 | GET | `/api/me/matches` | panel sędziego: jego mecze z opublikowanej obsady |
 | GET / PUT | `/api/me/availability` | panel sędziego: własna dyspozycyjność (od jutra, do 120 dni) |
+| GET | `/api/licenses/levels` · `/api/matches/clubs` | poziomy rozgrywek i kluby do preferencji sędziego |
 | POST | `/api/optimization/generate` | propozycja obsady (podgląd) |
 | POST | `/api/optimization/confirm` | zatwierdzenie podglądu |
 | GET | `/api/optimization/runs[/{id}]` | historia generowań |

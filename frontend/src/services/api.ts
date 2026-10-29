@@ -126,6 +126,8 @@ export const api = {
 
   // Katalog licencji (nazwy i uprawnienia)
   licenses: () => request<LicenseGroup[]>("GET", "/api/licenses"),
+  leagueLevels: () => request<string[]>("GET", "/api/licenses/levels"),
+  clubs: () => request<string[]>("GET", "/api/matches/clubs"),
 
   // Lokalizacja adresu (podgląd w formularzach)
   geocode: (address: string, city: string) => request<GeocodeResult>("GET", "/api/geocode", { query: { address, city } }),
