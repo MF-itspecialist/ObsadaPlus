@@ -116,6 +116,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      <ObserverLevels value={form.observer_levels} onChange={(observer_levels) => setForm({ ...form, observer_levels })} />
       <details className="mt-6">
         <summary className="cursor-pointer text-sm font-semibold text-zinc-700">Ustawienia zaawansowane (algorytm obsady)</summary>
         <p className="mt-2 text-sm text-zinc-500">Zwykle nie trzeba ich zmieniać. Wyższa wartość = algorytm bardziej unika danej sytuacji.</p>
@@ -177,6 +178,31 @@ function SectionCard({
         </Field>
       ))}
       {children}
+    </div>
+  );
+}
+
+function ObserverLevels({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+  const levels = useAsync(() => api.leagueLevels(), []);
+  const toggle = (l: string) => onChange(value.includes(l) ? value.filter((x) => x !== l) : [...value, l]);
+  return (
+    <div className="card mt-4 p-6">
+      <h2 className="mb-1 text-sm font-semibold">Obserwatorzy</h2>
+      <p className="mb-3 text-sm text-zinc-500">
+        Mecze zaznaczonych lig dostają obserwatora z automatu (osoba z licencją „Obserwator”). Pojedynczy mecz można zmienić w jego edycji.
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {(levels.data ?? []).map((l) => (
+          <button
+            key={l}
+            type="button"
+            onClick={() => toggle(l)}
+            className={`rounded-full border px-3 py-1 text-xs font-medium ${value.includes(l) ? "border-brand-600 bg-brand-600 text-white" : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300"}`}
+          >
+            {l}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

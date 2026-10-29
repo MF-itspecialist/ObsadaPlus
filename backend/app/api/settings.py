@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from app.api.deps import DbSession
 from app.schemas.settings import SystemSettings
-from app.services import settings_service
+from app.services import observer_service, settings_service
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
 
@@ -14,4 +14,6 @@ def get_settings(db: DbSession):
 
 @router.put("", response_model=SystemSettings)
 def update_settings(data: SystemSettings, db: DbSession):
-    return settings_service.update_settings(db, data)
+    saved = settings_service.update_settings(db, data)
+    observer_service.apply_levels(db, saved.observer_levels)
+    return saved

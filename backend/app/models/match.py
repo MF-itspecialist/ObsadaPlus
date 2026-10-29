@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Date, Enum, ForeignKey, Integer, String, Time
+from sqlalchemy import Boolean, Date, Enum, ForeignKey, Integer, String, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.db import Base
@@ -30,6 +30,9 @@ class Match(Base):
     away_team: Mapped[str] = mapped_column(String(200))
     venue_id: Mapped[int] = mapped_column(ForeignKey("venues.id", ondelete="RESTRICT"))
     required_referees: Mapped[int] = mapped_column(Integer, default=1)
+    # Obserwator na meczu: z automatu wg lig w Ustawieniach, chyba że obsadzający ustawił ręcznie.
+    observer_required: Mapped[bool] = mapped_column(Boolean, default=False)
+    observer_manual: Mapped[bool] = mapped_column(Boolean, default=False)
     # Nieużywane przez generator — przyjazd przed meczem to globalne ustawienie (system_settings).
     arrival_before_minutes: Mapped[int] = mapped_column(Integer, default=45)
     status: Mapped[MatchStatus] = mapped_column(
@@ -43,7 +46,8 @@ class Match(Base):
 
     @property
     def required_roles(self) -> list[RefereeRole]:
-        return roles_for(self.required_referees)
+        roles = roles_for(self.required_referees)
+        return [*roles, RefereeRole.OBSERVER] if self.observer_required else roles
 
     def refresh_status(self) -> None:
         """Przelicza status na podstawie liczby przypisań (nie rusza meczów odwołanych)."""

@@ -15,6 +15,7 @@ from app.importers.lnp_importer import LNPMatchImporter
 from app.models import Assignment, Match, MatchStatus, Venue
 from app.schemas.match import ImportResult, MatchCreate, MatchRead, MatchUpdate
 from app.services.geocoding_service import Geocoder, get_geocoder
+from app.services import observer_service
 from app.services.settings_service import get_settings
 
 router = APIRouter(prefix="/api/matches", tags=["matches"])
@@ -94,7 +95,10 @@ def get_match(match_id: int, db: DbSession):
 @router.post("", response_model=MatchRead, status_code=status.HTTP_201_CREATED)
 def create_match(data: MatchCreate, db: DbSession):
     _check_venue(db, data.venue_id)
-    m = Match(**data.model_dump(), status=MatchStatus.UNASSIGNED)
+    auto = observer_service.auto_observer(data.league, get_settings(db).observer_levels)
+    m = Match(**data.model_dump(exclude={"observer_required"}), status=MatchStatus.UNASSIGNED)
+    m.observer_required = auto if data.observer_required is None else data.observer_required
+    m.observer_manual = data.observer_required is not None and data.observer_required != auto
     db.add(m)
     db.commit()
     return _to_read(_load(db, m.id))
@@ -104,9 +108,12 @@ def create_match(data: MatchCreate, db: DbSession):
 def update_match(match_id: int, data: MatchUpdate, db: DbSession):
     _check_venue(db, data.venue_id)
     m = _load(db, match_id)
-    payload = data.model_dump(exclude={"status"})
+    payload = data.model_dump(exclude={"status", "observer_required"})
     for key, value in payload.items():
         setattr(m, key, value)
+    if data.observer_required is not None and data.observer_required != m.observer_required:
+        m.observer_manual = True
+        observer_service.set_observer(m, data.observer_required)
     # Zmniejszenie liczby sędziów usuwa przypisania ról, które przestały być wymagane.
     for a in [a for a in m.assignments if a.role not in m.required_roles]:
         m.assignments.remove(a)

@@ -74,7 +74,10 @@ def test_best_license_wins_and_unknown_league_is_not_checked():
     assert check_license(["Sędzia klasa B", "Asystent III/IV/V liga (w tym asystenci mazowieccy)"], "IV liga", AS1) is None
     assert check_license([], "Puchar Polski", MAIN) is None
     assert check_license([], "Klasa B", MAIN).startswith("brak przydzielonej licencji")
-    assert check_license([], "Klasa B", RefereeRole.OBSERVER) is None
+    # obserwator: osobna licencja, niezależna od ligi; licencja sędziego nie wystarcza
+    assert check_license(["Obserwator"], "IV liga", RefereeRole.OBSERVER) is None
+    assert check_license(["Sędzia IV liga"], "Klasa B", RefereeRole.OBSERVER) == "brak uprawnień obserwatora"
+    assert check_license(["Obserwator"], "Klasa B", MAIN) is not None
 
 
 def test_women_referees_may_also_take_mens_matches():
@@ -91,7 +94,7 @@ def test_futsal_requires_futsal_license():
 
 def test_catalog_lists_every_license_once_with_single_trial_type():
     names = [lic["name"] for g in license_catalog() for lic in g["licenses"]]
-    assert sorted(names) == sorted(LICENSE_RULES)
+    assert sorted(names) == sorted([*LICENSE_RULES, "Obserwator"])
     assert [n for n in names if "próbny" in n] == ["Sędzia próbny (C)"]
 
 
@@ -117,7 +120,7 @@ def test_generator_skips_unlicensed_referee_and_manual_assignment_warns(client):
 
 def test_licenses_endpoint(client):
     groups = client.get("/api/licenses").json()
-    assert [g["title"] for g in groups] == ["Sędziowie", "Asystenci", "Piłka kobiet", "Futsal i piłka plażowa"]
+    assert [g["title"] for g in groups] == ["Sędziowie", "Asystenci", "Piłka kobiet", "Futsal i piłka plażowa", "Obserwatorzy"]
 
 
 def test_working_referees_use_known_licenses_and_load(db_session):

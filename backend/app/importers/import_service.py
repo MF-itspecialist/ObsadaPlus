@@ -10,6 +10,8 @@ from sqlalchemy.orm import Session
 from app.importers.base import MatchImporter, MatchImportRecord
 from app.models import Match, Venue
 from app.services.geocoding_service import Geocoder, GeocodingError
+from app.services.observer_service import auto_observer, set_observer
+from app.services.settings_service import get_settings
 
 
 class UnknownVenueError(ValueError):
@@ -61,6 +63,7 @@ def import_matches(
 ) -> dict:
     created = updated = 0
     errors: list[str] = []
+    observer_levels = get_settings(db).observer_levels
     # Nieznane obiekty zgłaszamy raz na obiekt (import z LNP potrafi mieć wiele meczów na tym samym boisku).
     unknown_venues: dict[str, int] = {}
     for i, r in enumerate(importer.fetch_matches(), start=1):
@@ -92,6 +95,9 @@ def import_matches(
         match.venue_id = venue.id
         match.required_referees = r.required_referees
         match.arrival_before_minutes = r.arrival_before_minutes
+        want_observer = auto_observer(r.league, observer_levels)
+        if not match.observer_manual and bool(match.observer_required) != want_observer:
+            set_observer(match, want_observer)
     db.commit()
     errors += [
         f"Nie znaleziono adresu obiektu '{name}' ({count} mecz.): dodaj go w zakładce Obiekty i zaimportuj plik ponownie"

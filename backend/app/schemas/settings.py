@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class SystemSettings(BaseModel):
@@ -35,6 +35,8 @@ class SystemSettings(BaseModel):
         (100000, 300),
     ]
     assume_available_without_entry: bool = False
+    # Poziomy rozgrywek, na które generator wyznacza obserwatora (np. ["IV liga"]); pusto = tylko ręcznie.
+    observer_levels: list[str] = []
     # Metoda obsady: „cpsat” rozważa cały okres naraz (OR-Tools), „greedy” mecz po meczu.
     optimizer: Literal["greedy", "cpsat"] = "cpsat"
     optimizer_time_limit_s: int = Field(15, ge=1, le=120)
@@ -45,3 +47,13 @@ class SystemSettings(BaseModel):
     mileage_rate: float = Field(0.8358, ge=0, le=10)
     # Domyślny czas meczu przy imporcie bez godziny zakończenia.
     default_match_duration_minutes: int = Field(105, ge=30, le=300)
+
+    @field_validator("observer_levels")
+    @classmethod
+    def _known_levels(cls, v: list[str]) -> list[str]:
+        from app.optimization.licenses import level_options
+
+        unknown = set(v) - set(level_options())
+        if unknown:
+            raise ValueError(f"Nieznane poziomy rozgrywek: {', '.join(sorted(unknown))}")
+        return list(dict.fromkeys(v))

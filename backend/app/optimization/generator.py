@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from itertools import groupby, permutations
 from typing import Any
 
-from app.models.enums import ROLE_ORDER
+from app.models.enums import ROLE_ORDER, RefereeRole
 from app.optimization.constraints import REJECTION_LABELS
 from app.optimization.evaluator import CandidateEvaluation, CandidateEvaluator
 from app.optimization.domain import Problem, RefereeProfile, Slot
@@ -127,7 +127,8 @@ class GreedyScoringStrategy(AssignmentStrategy):
 
         open_slots = [s for s in sorted(problem.slots, key=priority_sort_key) if s.key not in fixed_keys]
         rides: dict[tuple, SharedRide] = {}
-        for _, group in groupby(open_slots, key=lambda s: (s.start, s.match_id)):
+        # Zespół (G + A1 + A2) wybierany razem; obserwator dojeżdża sam, więc osobno.
+        for _, group in groupby(open_slots, key=lambda s: (s.start, s.match_id, s.role == RefereeRole.OBSERVER)):
             slots = list(group)
             average_load = len(state.all_bookings()) / len(active) if active else 0.0
             evaluations = {s.key: evaluator.evaluate_all(problem.referees, s, state, average_load) for s in slots}
