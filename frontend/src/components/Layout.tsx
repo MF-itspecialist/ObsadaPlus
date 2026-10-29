@@ -1,6 +1,9 @@
-import { CalendarCheck, CalendarDays, ClipboardList, LayoutDashboard, MapPin, Settings, Users, type LucideIcon } from "lucide-react";
+import { CalendarCheck, CalendarDays, ClipboardList, KeyRound, LayoutDashboard, LogOut, MapPin, Settings, UserCog, Users, type LucideIcon } from "lucide-react";
+import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+import PasswordModal from "./PasswordModal";
 import PeriodPicker from "./PeriodPicker";
 
 interface MenuItem {
@@ -17,6 +20,7 @@ const MENU: MenuItem[] = [
   { to: "/availability", label: "Dyspozycyjność", icon: CalendarCheck },
   { to: "/assignments", label: "Obsada", icon: ClipboardList },
   { to: "/venues", label: "Obiekty", icon: MapPin },
+  { to: "/users", label: "Użytkownicy", icon: UserCog },
   { to: "/settings", label: "Ustawienia", icon: Settings },
 ];
 
@@ -64,6 +68,7 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
+        <AccountBox className="lg:absolute lg:inset-x-0 lg:bottom-0 lg:block lg:space-y-2" />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex flex-wrap items-center justify-end gap-3 border-b border-zinc-200/70 bg-zinc-50/80 px-4 py-3 backdrop-blur md:px-8">
@@ -73,6 +78,39 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
+    </div>
+  );
+}
+
+/** Zalogowany użytkownik, zmiana hasła i wylogowanie (dół menu). */
+export function AccountBox({ className = "" }: { className?: string }) {
+  const { user, logout } = useAuth();
+  const [changing, setChanging] = useState(false);
+  const [done, setDone] = useState(false);
+  if (!user) return null;
+  return (
+    <div className={`flex items-center gap-2 border-t border-zinc-200/70 px-4 py-3 ${className}`}>
+      <div className="min-w-0 flex-1 text-sm">
+        <div className="truncate font-medium">{user.display_name}</div>
+        <div className="truncate text-xs text-zinc-500">{done ? "Hasło zmienione" : user.login}</div>
+      </div>
+      <div className="flex gap-1">
+        <button className="btn-ghost px-2 py-1 text-xs" onClick={() => setChanging(true)} title="Zmień hasło">
+          <KeyRound className="size-3.5" /> <span className="hidden lg:inline">Zmień hasło</span>
+        </button>
+        <button className="btn-ghost px-2 py-1 text-xs" onClick={logout} title="Wyloguj">
+          <LogOut className="size-3.5" /> <span className="hidden lg:inline">Wyloguj</span>
+        </button>
+      </div>
+      {changing && (
+        <PasswordModal
+          onClose={() => setChanging(false)}
+          onDone={() => {
+            setChanging(false);
+            setDone(true);
+          }}
+        />
+      )}
     </div>
   );
 }
