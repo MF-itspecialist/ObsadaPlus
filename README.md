@@ -230,6 +230,8 @@ Pełna dokumentacja: http://localhost:8000/docs.
 | GET | `/api/me/matches` | panel sędziego: jego mecze z opublikowanej obsady |
 | GET / PUT | `/api/me/availability` | panel sędziego: własna dyspozycyjność (od jutra, do 120 dni) |
 | GET | `/api/licenses/levels` · `/api/matches/clubs` | poziomy rozgrywek i kluby do preferencji sędziego |
+| GET | `/api/statistics?date_from&date_to` | statystyki okresu i kilometrówka na sędziego (dom → mecze → dom) |
+| GET | `/api/statistics/mileage.xlsx?date_from&date_to` | kilometrówka w Excelu |
 | POST | `/api/optimization/generate` | propozycja obsady (podgląd) |
 | POST | `/api/optimization/confirm` | zatwierdzenie podglądu |
 | GET | `/api/optimization/runs[/{id}]` | historia generowań |
