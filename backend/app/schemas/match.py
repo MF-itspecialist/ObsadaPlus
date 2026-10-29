@@ -58,3 +58,5 @@ class ImportResult(BaseModel):
     created: int
     updated: int
     errors: list[str] = []
+    # Obsadzone mecze, którym import zmienił termin, godzinę albo obiekt.
+    changes: list[dict] = []

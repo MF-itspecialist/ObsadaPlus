@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import assignments, auth, availability, dashboard, geocode, licenses, map, matches, optimization, publications, referee_panel, referees, settings, statistics, users, venues
+from app.api import assignments, auth, availability, dashboard, geocode, imports, licenses, map, matches, optimization, publications, referee_panel, referees, settings, statistics, users, venues
 from app.api.deps import require_admin
 from app.config import get_config
 
@@ -17,7 +17,16 @@ async def lifespan(_: FastAPI):
         from app.database.init_db import init_db
 
         init_db(seed=cfg.seed_on_startup)
+    scheduler = None
+    if cfg.scheduler_enabled:
+        from app.database.db import SessionLocal
+        from app.services.auto_import_service import Scheduler
+
+        scheduler = Scheduler(SessionLocal)
+        scheduler.start()
     yield
+    if scheduler is not None:
+        scheduler.stop()
 
 
 def create_app() -> FastAPI:
@@ -40,7 +49,7 @@ def create_app() -> FastAPI:
     # Cała reszta API tylko dla zalogowanego obsadzającego.
     admin_only = [Depends(require_admin)]
     for module in (referees, venues, geocode, licenses, matches, availability, assignments, optimization, publications,
-                   settings, dashboard, users, statistics, map):
+                   settings, dashboard, users, statistics, map, imports):
         app.include_router(module.router, dependencies=admin_only)
 
     @app.get("/api/health", tags=["system"])

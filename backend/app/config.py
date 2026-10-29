@@ -35,6 +35,8 @@ class AppConfig(BaseSettings):
     # Logowanie: ważność sesji i ciasteczko. COOKIE_SECURE=true, gdy aplikacja działa po HTTPS.
     session_days: int = 30
     cookie_secure: bool = False
+    # Harmonogram w tle (automatyczny import meczów). W testach wyłączony.
+    scheduler_enabled: bool = True
     # Pierwsze konto obsadzającego — tworzone przy starcie, gdy w bazie nie ma żadnego użytkownika.
     admin_login: str = "admin"
     admin_password: str = ""

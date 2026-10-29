@@ -64,6 +64,7 @@ def import_matches(
     created = updated = 0
     errors: list[str] = []
     observer_levels = get_settings(db).observer_levels
+    changes: list[dict] = []
     # Nieznane obiekty zgłaszamy raz na obiekt (import z LNP potrafi mieć wiele meczów na tym samym boisku).
     unknown_venues: dict[str, int] = {}
     for i, r in enumerate(importer.fetch_matches(), start=1):
@@ -80,12 +81,14 @@ def import_matches(
             dt.datetime.combine(r.date, r.start_time) + dt.timedelta(minutes=default_duration_minutes)
         ).time()
         match = db.scalar(select(Match).where(Match.external_id == r.external_id)) if r.external_id else None
+        before = None
         if match is None:
             match = Match(external_id=r.external_id)
             db.add(match)
             created += 1
         else:
             updated += 1
+            before = (match.date, match.start_time, match.venue_id)
         match.date = r.date
         match.start_time = r.start_time
         match.estimated_end_time = end
@@ -95,6 +98,8 @@ def import_matches(
         match.venue_id = venue.id
         match.required_referees = r.required_referees
         match.arrival_before_minutes = r.arrival_before_minutes
+        if before is not None and match.assignments and before != (match.date, match.start_time, match.venue_id):
+            changes.append(_change(match, before, venue))
         want_observer = auto_observer(r.league, observer_levels)
         if not match.observer_manual and bool(match.observer_required) != want_observer:
             set_observer(match, want_observer)
@@ -104,4 +109,23 @@ def import_matches(
         for name, count in unknown_venues.items()
     ]
     errors += getattr(importer, "warnings", [])
-    return {"created": created, "updated": updated, "errors": errors}
+    return {"created": created, "updated": updated, "errors": errors, "changes": changes}
+
+
+def _change(match: Match, before: tuple, venue: Venue) -> dict:
+    """Opis zmiany obsadzonego meczu (termin / godzina / obiekt) do raportu importu."""
+    old_date, old_time, old_venue = before
+    what = []
+    if old_date != match.date:
+        what.append(f"data {old_date:%d.%m} → {match.date:%d.%m}")
+    if old_time != match.start_time:
+        what.append(f"godzina {old_time:%H:%M} → {match.start_time:%H:%M}")
+    if old_venue != match.venue_id:
+        what.append(f"obiekt → {venue.name}")
+    return {
+        "match_id": match.id,
+        "date": match.date.isoformat(),
+        "label": f"{match.home_team} – {match.away_team}",
+        "what": ", ".join(what),
+        "referees": [a.referee.full_name for a in match.assignments],
+    }

@@ -176,6 +176,14 @@ CP-SAT rozważa wszystkie mecze okresu naraz:
 Limit czasu: `optimizer_time_limit_s` (domyślnie 15 s). Bez pakietu `ortools` albo przy błędzie
 solvera używana jest metoda zachłanna; podgląd pokazuje, która metoda dała wynik i o ile lepszy.
 
+### Automatyczna aktualizacja meczów
+
+Wątek w backendzie (`services/auto_import_service.py`, wyłączany `SCHEDULER_ENABLED=false`)
+co minutę sprawdza, czy dziś po godzinie `auto_import_hour` (czas polski) był import
+automatyczny; jeśli nie — importuje nadchodzące mecze z 90minut.pl (`m90_season_id`,
+`m90_region_id`). Każdy import trafia do `import_runs` z listą obsadzonych meczów, którym
+zmieniła się data, godzina lub obiekt. API: `GET /api/imports`, `POST /api/imports/run`.
+
 ### Obserwatorzy
 
 Mecz z `observer_required` ma dodatkową rolę `OBSERVER` (po G/A1/A2/T). Flaga ustawia się

@@ -3,6 +3,7 @@
 import os
 
 os.environ.setdefault("AUTO_CREATE_TABLES", "false")
+os.environ.setdefault("SCHEDULER_ENABLED", "false")
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402

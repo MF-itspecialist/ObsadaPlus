@@ -51,6 +51,7 @@ export default function DashboardPage() {
     <div>
       <PageHeader title="Dashboard" subtitle={`Dni obsadowe pt–pon: ${formatDate(period.date_from)} – ${formatDate(period.date_to)}`} />
       <ErrorBanner message={stats.error} />
+      <ImportChangesBanner />
       {stats.loading && !s && <Loading />}
       {s && (
         <>
@@ -123,5 +124,20 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+  );
+}
+
+/** Ostrzeżenie: import z ostatnich 7 dni zmienił termin lub obiekt obsadzonych meczów. */
+function ImportChangesBanner() {
+  const runs = useAsync(() => api.importRuns(), []);
+  const since = Date.now() - 7 * 24 * 3600 * 1000;
+  const changed = new Set((runs.data ?? []).filter((r) => new Date(r.started_at).getTime() >= since).flatMap((r) => r.changes.map((c) => c.match_id)));
+  if (!changed.size) return null;
+  return (
+    <Link to="/imports" className="mb-4 flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 hover:bg-amber-100">
+      <TriangleAlert className="size-4 shrink-0" />
+      Aktualizacja terminarza zmieniła termin lub obiekt {changed.size} obsadzonych meczów w ostatnim tygodniu. Sprawdź, czy obsada jest dalej aktualna.
+      <ArrowRight className="ml-auto size-4 shrink-0" />
+    </Link>
   );
 }

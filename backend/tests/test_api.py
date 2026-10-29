@@ -146,7 +146,7 @@ def test_import_json_and_csv(client):
         "home_team": "A", "away_team": "B", "venue_name": "stadion ks ursus",
     }]
     r = client.post("/api/matches/import/json", json=records).json()
-    assert r == {"created": 1, "updated": 0, "errors": []}
+    assert r == {"created": 1, "updated": 0, "errors": [], "changes": []}
     m = client.get("/api/matches").json()[0]
     assert m["estimated_end_time"] == "13:45:00"  # domyślne 105 min
 
@@ -156,7 +156,7 @@ def test_import_json_and_csv(client):
         "EXT-2;2026-10-11;10:00;11:45;C;D;Nowy Orlik;52.1;21.0\n"
     )
     r = client.post("/api/matches/import", files={"file": ("mecze.csv", csv_body, "text/csv")}).json()
-    assert r == {"created": 1, "updated": 1, "errors": []}
+    assert r == {"created": 1, "updated": 1, "errors": [], "changes": []}
     assert len(client.get("/api/venues").json()) == 2
 
 
