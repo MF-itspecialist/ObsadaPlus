@@ -85,6 +85,8 @@ export interface MatchInput {
   away_team: string;
   venue_id: number;
   required_referees: number;
+  // null = automatycznie wg lig z Ustawień
+  observer_required?: boolean | null;
   status?: MatchStatus | null;
 }
 
@@ -101,6 +103,8 @@ export interface MatchAssignmentBrief {
 
 export interface Match extends MatchInput {
   id: number;
+  observer_required: boolean;
+  observer_manual: boolean;
   status: MatchStatus;
   venue: Venue;
   assignments: MatchAssignmentBrief[];
@@ -303,6 +307,7 @@ export interface SystemSettings {
   assume_available_without_entry: boolean;
   optimizer: "greedy" | "cpsat";
   optimizer_time_limit_s: number;
+  observer_levels: string[];
   routing_road_factor: number;
   routing_avg_speed_kmh: number;
   default_match_duration_minutes: number;

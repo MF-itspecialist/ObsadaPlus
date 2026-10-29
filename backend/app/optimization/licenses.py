@@ -223,7 +223,7 @@ def check_license(licenses: list[str] | tuple[str, ...], league: str, role: Refe
 @lru_cache(maxsize=4096)
 def _check_license(licenses: tuple[str, ...], league: str, role: RefereeRole) -> str | None:
     if role == RefereeRole.OBSERVER:
-        return None
+        return None if OBSERVER_LICENSE in licenses else "brak uprawnień obserwatora"
     match = classify_league(league)
     if match is None:
         return None
@@ -242,6 +242,9 @@ def _check_license(licenses: tuple[str, ...], league: str, role: RefereeRole) ->
     )
 
 
+OBSERVER_LICENSE = "Obserwator"
+
+
 def license_catalog() -> list[dict]:
     """Licencje pogrupowane do formularza (z opisem uprawnień)."""
     groups: dict[str, list[dict]] = {}
@@ -257,4 +260,7 @@ def license_catalog() -> list[dict]:
         groups.setdefault(rule.group, []).append(
             {"name": name, "scope": "; ".join(parts), "assumption": rule.assumption}
         )
+    groups["Obserwatorzy"] = [
+        {"name": OBSERVER_LICENSE, "scope": "obserwator meczów (rola O); nie uprawnia do sędziowania", "assumption": None}
+    ]
     return [{"title": title, "licenses": items} for title, items in groups.items()]

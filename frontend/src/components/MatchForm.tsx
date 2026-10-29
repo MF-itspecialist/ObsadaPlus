@@ -26,6 +26,7 @@ export default function MatchForm({ initial, defaultDate, venues, onSubmit, onCa
           away_team: initial.away_team,
           venue_id: initial.venue_id,
           required_referees: initial.required_referees,
+          observer_required: initial.observer_required,
           status: initial.status === "CANCELLED" ? "CANCELLED" : null,
         }
       : {
@@ -38,6 +39,7 @@ export default function MatchForm({ initial, defaultDate, venues, onSubmit, onCa
           away_team: "",
           venue_id: venues[0]?.id ?? 0,
           required_referees: 1,
+          observer_required: null,
         },
   );
   const [error, setError] = useState<string | null>(null);
@@ -94,6 +96,24 @@ export default function MatchForm({ initial, defaultDate, venues, onSubmit, onCa
           <input className="input" value={form.external_id ?? ""} onChange={(e) => set("external_id", e.target.value || null)} />
         </Field>
       </div>
+      <label className="flex items-start gap-2 text-sm">
+        <input
+          type="checkbox"
+          className="mt-1"
+          checked={!!form.observer_required}
+          onChange={(e) => set("observer_required", e.target.checked ? true : initial ? false : null)}
+        />
+        <span>
+          Obserwator na meczu
+          <span className="block text-xs text-zinc-500">
+            {initial
+              ? initial.observer_manual
+                ? "Ustawione ręcznie: zmiana lig w Ustawieniach tego meczu nie zmieni."
+                : "Ustawione automatycznie wg lig w Ustawieniach. Zmiana tutaj zostanie zapamiętana dla tego meczu."
+              : "Bez zaznaczenia: automatycznie, jeśli liga jest na liście w Ustawieniach."}
+          </span>
+        </span>
+      </label>
       {initial && (
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={form.status === "CANCELLED"} onChange={(e) => set("status", e.target.checked ? "CANCELLED" : null)} />

@@ -187,7 +187,12 @@ const MatchRow = memo(function MatchRow({ match: m, onEdit, onDelete }: {
         <span className="font-medium">{hhmm(m.start_time)}</span>
         <span className="text-zinc-400">–{hhmm(m.estimated_end_time)}</span>
       </td>
-      <td>{m.league && <Tag tone="brand">{m.league}</Tag>}</td>
+      <td>
+        <div className="flex flex-wrap gap-1">
+          {m.league && <Tag tone="brand">{m.league}</Tag>}
+          {m.observer_required && <Tag>+ obserwator</Tag>}
+        </div>
+      </td>
       <td className="font-medium">{m.home_team}</td>
       <td className="font-medium">{m.away_team}</td>
       <td>

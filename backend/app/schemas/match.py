@@ -17,6 +17,8 @@ class MatchBase(BaseModel):
     away_team: str = Field(min_length=1, max_length=200)
     venue_id: int
     required_referees: int = Field(1, ge=1, le=4)
+    # Obserwator: None = automatycznie wg lig z Ustawień (przy tworzeniu) / bez zmian (przy edycji).
+    observer_required: bool | None = None
 
     @model_validator(mode="after")
     def _times(self) -> "MatchBase":
@@ -46,6 +48,7 @@ class MatchAssignmentBrief(ORMModel):
 
 class MatchRead(MatchBase, ORMModel):
     id: int
+    observer_manual: bool = False
     status: MatchStatus
     venue: VenueRead
     assignments: list[MatchAssignmentBrief] = []

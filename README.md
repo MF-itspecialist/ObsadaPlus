@@ -176,6 +176,13 @@ CP-SAT rozważa wszystkie mecze okresu naraz:
 Limit czasu: `optimizer_time_limit_s` (domyślnie 15 s). Bez pakietu `ortools` albo przy błędzie
 solvera używana jest metoda zachłanna; podgląd pokazuje, która metoda dała wynik i o ile lepszy.
 
+### Obserwatorzy
+
+Mecz z `observer_required` ma dodatkową rolę `OBSERVER` (po G/A1/A2/T). Flaga ustawia się
+z automatu dla lig z `observer_levels` (Ustawienia, import, zapis ustawień przelicza przyszłe
+mecze), chyba że obsadzający zmienił ją przy meczu (`observer_manual`). Rolę O może objąć tylko
+licencja „Obserwator”; generator obsadza ją osobno od zespołu (bez wspólnego dojazdu).
+
 ### Mapa
 
 `GET /api/map` (okres): obiekty z meczami i stanem obsady oraz trasy sędziów dzień po dniu
