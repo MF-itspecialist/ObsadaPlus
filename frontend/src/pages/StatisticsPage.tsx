@@ -1,5 +1,6 @@
 import { Car, ChevronDown, ClipboardCheck, FileSpreadsheet, Trophy, Users, Wallet } from "lucide-react";
 import { Fragment, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { EmptyState, ErrorBanner, Loading, PageHeader } from "../components/Feedback";
 import { SearchBox, matchesText } from "../components/Filters";
@@ -232,6 +233,11 @@ function RefereeRow({ r, open, onToggle }: { r: RefereeStats; open: boolean; onT
                     </td>
                     <td className="py-1.5 pr-4 text-right whitespace-nowrap tabular-nums">{km(t.km)}</td>
                     <td className="py-1.5 text-right whitespace-nowrap tabular-nums">{zl(t.amount)}</td>
+                    <td className="py-1.5 pl-3 text-right">
+                      <Link className="text-xs font-medium text-brand-600 hover:underline" to={`/map?referee=${r.referee_id}&date=${t.date}`}>
+                        mapa
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>

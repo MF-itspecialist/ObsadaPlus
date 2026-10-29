@@ -176,6 +176,13 @@ CP-SAT rozważa wszystkie mecze okresu naraz:
 Limit czasu: `optimizer_time_limit_s` (domyślnie 15 s). Bez pakietu `ortools` albo przy błędzie
 solvera używana jest metoda zachłanna; podgląd pokazuje, która metoda dała wynik i o ile lepszy.
 
+### Mapa
+
+`GET /api/map` (okres): obiekty z meczami i stanem obsady oraz trasy sędziów dzień po dniu
+(dom → mecze → dom, km jak w kilometrówce). `GET /api/map/route?points=lat,lng;…` zwraca
+kształt drogi z OSRM (`/route`, cache w pamięci) albo linię prostą (`exact: false`).
+Frontend: Leaflet + kafelki OpenStreetMap (zakładka **Mapa**).
+
 Przepływ: **GENERUJ** (`POST /api/optimization/generate`) → **PODGLĄD** (zapisany jako
 `generation_runs`, obsada bez zmian) → **ZATWIERDŹ** (`POST /api/optimization/confirm`).
 

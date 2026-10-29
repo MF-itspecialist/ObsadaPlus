@@ -1,4 +1,4 @@
-import { BarChart3, CalendarCheck, CalendarDays, ClipboardList, KeyRound, LayoutDashboard, LogOut, MapPin, Settings, UserCog, Users, type LucideIcon } from "lucide-react";
+import { BarChart3, CalendarCheck, CalendarDays, ClipboardList, KeyRound, LayoutDashboard, LogOut, Map as MapIcon, MapPin, Settings, UserCog, Users, type LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
@@ -20,6 +20,7 @@ const MENU: MenuItem[] = [
   { to: "/availability", label: "Dyspozycyjność", icon: CalendarCheck },
   { to: "/assignments", label: "Obsada", icon: ClipboardList },
   { to: "/venues", label: "Obiekty", icon: MapPin },
+  { to: "/map", label: "Mapa", icon: MapIcon },
   { to: "/statistics", label: "Statystyki", icon: BarChart3 },
   { to: "/users", label: "Użytkownicy", icon: UserCog },
   { to: "/settings", label: "Ustawienia", icon: Settings },
