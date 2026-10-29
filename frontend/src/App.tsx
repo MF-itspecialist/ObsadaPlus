@@ -5,6 +5,7 @@ import AssignmentsPage from "./pages/AssignmentsPage";
 import AvailabilityPage from "./pages/AvailabilityPage";
 import DashboardPage from "./pages/DashboardPage";
 import MatchesPage from "./pages/MatchesPage";
+import PublicationPage from "./pages/PublicationPage";
 import RefereesPage from "./pages/RefereesPage";
 import SettingsPage from "./pages/SettingsPage";
 import VenuesPage from "./pages/VenuesPage";
@@ -12,6 +13,7 @@ import VenuesPage from "./pages/VenuesPage";
 export default function App() {
   return (
     <Routes>
+      <Route path="publication/:id" element={<PublicationPage />} />
       <Route element={<Layout />}>
         <Route index element={<DashboardPage />} />
         <Route path="matches" element={<MatchesPage />} />
