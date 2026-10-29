@@ -4,8 +4,8 @@
 ``GreedyScoringStrategy``: mecze chronologicznie, dla każdego najlepszy
 (najniższy SCORE) sędzia spełniający twarde ograniczenia. Mecz z kilkoma
 sędziami (G + A1 + A2) obsadzany jest jako zespół: wybierany jest skład
-z najniższym łącznym SCORE, czyli z uwzględnieniem tras wszystkich sędziów. Strategia OR-Tools /
-CP-SAT dostanie ten sam ``Problem`` i zwróci ten sam ``GenerationResult``.
+z najniższym łącznym SCORE, czyli z uwzględnieniem tras wszystkich sędziów. ``CpSatStrategy``
+(``cpsat.py``) dostaje ten sam ``Problem`` i zwraca ten sam ``GenerationResult``.
 """
 
 from __future__ import annotations
@@ -66,6 +66,9 @@ class GenerationStats:
     avg_distance_km: float = 0.0
     total_distance_km: float = 0.0
     conflicts: int = 0
+    # Która metoda dała wynik („greedy” albo „cpsat”) i krótki opis różnicy.
+    optimizer: str = "greedy"
+    optimizer_note: str = ""
 
 
 @dataclass

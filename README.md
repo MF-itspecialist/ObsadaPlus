@@ -8,7 +8,7 @@ równomierne rozłożenie spotkań. Logistyka ma największy wpływ na wybór.
 * **Backend:** Python 3.11+, FastAPI, SQLAlchemy 2.0, Pydantic 2, Alembic
 * **Baza:** PostgreSQL (docker) / SQLite (dev, testy)
 * **Frontend:** React 19, TypeScript, Tailwind CSS 4, Vite, ikony lucide-react, font Inter
-* **Optymalizacja:** własny algorytm scoringowy (strategia wymienna na OR-Tools / CP-SAT)
+* **Optymalizacja:** algorytm scoringowy (mecz po meczu) + optymalizacja całego okresu OR-Tools CP-SAT
 * **Routing:** `RoutingService` → Google Maps (Routes API, z kluczem) albo OSRM w Dockerze (bez klucza); szacunek, gdy serwis nie odpowiada
 
 Szczegóły architektury, modele i punkty rozbudowy: [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -158,6 +158,24 @@ Schemat tworzy migracja `backend/alembic/versions/0001_initial_schema.py` (Postg
 7. Statystyki: mecze, obsadzone, nieobsadzone, aktywni sędziowie, średnio meczów / sędziego,
    średnia i łączna odległość, liczba konfliktów.
 
+### Optymalizacja całego weekendu (CP-SAT)
+
+Domyślna metoda (`optimizer = "cpsat"` w Ustawieniach, `optimization/cpsat.py`). Metoda
+zachłanna może „zabrać” sędziego, który byłby jedynym kandydatem na późniejszy mecz;
+CP-SAT rozważa wszystkie mecze okresu naraz:
+
+1. wynik zachłanny jest podpowiedzią dla solvera i zabezpieczeniem,
+2. zmienne tylko dla par sędzia–slot spełniających twarde ograniczenia,
+3. ograniczenia: jeden sędzia na rolę, jedna rola sędziego w meczu, zdążenie z meczu na mecz
+   (parami, z buforem), limity dzienne i weekendowe,
+4. cel: najwięcej obsadzonych miejsc (wyższe ligi ważniejsze), potem koszt jak w SCORE
+   (dojazd, preferencje, obciążenie, wyrównanie),
+5. wybrane pary są sprawdzane zwykłym ewaluatorem, resztę dopełnia metoda zachłanna,
+6. zostaje lepszy z dwóch wyników (więcej miejsc, potem niższy łączny SCORE).
+
+Limit czasu: `optimizer_time_limit_s` (domyślnie 15 s). Bez pakietu `ortools` albo przy błędzie
+solvera używana jest metoda zachłanna; podgląd pokazuje, która metoda dała wynik i o ile lepszy.
+
 Przepływ: **GENERUJ** (`POST /api/optimization/generate`) → **PODGLĄD** (zapisany jako
 `generation_runs`, obsada bez zmian) → **ZATWIERDŹ** (`POST /api/optimization/confirm`).
 
@@ -288,7 +306,7 @@ ręczne zmiany a ponowne generowanie, ostrzeżenia o konfliktach, import JSON/CS
 
 * Routing: dopisz `OSRMRoutingService` / `GoogleMapsRoutingService` w `services/routing_service.py`
   i zarejestruj w `get_routing_service()`; wynik jest cache'owany przez `CachedRoutingService`.
-* Optymalizacja globalna: nowa `AssignmentStrategy` (np. CP-SAT) w `optimization/generator.py`,
+* Inna metoda obsady: nowa `AssignmentStrategy` (jak `CpSatStrategy` w `optimization/cpsat.py`),
   przyjmuje ten sam `Problem`, zwraca ten sam `GenerationResult`.
 * Nowe reguły (uprawnienia do lig, klasa sędziego, konflikt interesów, regiony): nowa klasa
   `HardConstraint` lub `ScoreComponent` i dopisanie do `DEFAULT_CONSTRAINTS` / `DEFAULT_COMPONENTS`.
