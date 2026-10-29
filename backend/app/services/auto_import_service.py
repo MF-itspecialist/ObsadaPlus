@@ -118,32 +118,3 @@ def auto_run_due(db: Session, now: dt.datetime) -> bool:
         select(ImportRun.id).where(ImportRun.trigger == "auto", ImportRun.started_at >= day_start).limit(1)
     )
     return done is None
-
-
-class Scheduler:
-    """Wątek sprawdzający co ``interval_s`` sekund, czy uruchomić import automatyczny."""
-
-    def __init__(self, session_factory: Callable[[], Session], interval_s: float = 60.0) -> None:
-        self.session_factory = session_factory
-        self.interval_s = interval_s
-        self._stop = threading.Event()
-        self._thread: threading.Thread | None = None
-
-    def tick(self) -> int | None:
-        with self.session_factory() as db:
-            due = auto_run_due(db, now_local())
-        return run_import(self.session_factory, "auto") if due else None
-
-    def _loop(self) -> None:
-        while not self._stop.wait(self.interval_s):
-            try:
-                self.tick()
-            except Exception:  # noqa: BLE001
-                log.exception("Harmonogram importu: błąd")
-
-    def start(self) -> None:
-        self._thread = threading.Thread(target=self._loop, name="auto-import", daemon=True)
-        self._thread.start()
-
-    def stop(self) -> None:
-        self._stop.set()

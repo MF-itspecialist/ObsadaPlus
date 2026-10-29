@@ -14,6 +14,7 @@ import RefereesPage from "./pages/RefereesPage";
 import SettingsPage from "./pages/SettingsPage";
 import ImportsPage from "./pages/ImportsPage";
 import MapPage from "./pages/MapPage";
+import NotificationsPage from "./pages/NotificationsPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import UsersPage from "./pages/UsersPage";
 import VenuesPage from "./pages/VenuesPage";
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="statistics" element={<StatisticsPage />} />
         <Route path="map" element={<MapPage />} />
         <Route path="imports" element={<ImportsPage />} />
+        <Route path="notifications" element={<NotificationsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

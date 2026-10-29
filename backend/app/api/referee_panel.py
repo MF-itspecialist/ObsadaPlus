@@ -2,10 +2,12 @@ import datetime as dt
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, Field
 
 from app.api.deps import CurrentUser, DbSession, PeriodParams
-from app.models import User, UserRole
+from app.models import Referee, User, UserRole
 from app.schemas.availability import AvailabilityRead, OwnAvailabilitySave
+from app.schemas.referee import EMAIL
 from app.services import referee_panel_service
 from app.services.referee_panel_service import PanelError
 
@@ -46,3 +48,26 @@ def save_my_availability(data: OwnAvailabilitySave, user: RefereeUser, db: DbSes
 def server_today(_: CurrentUser) -> dict[str, dt.date]:
     """Dzisiejsza data wg serwera (Europe/Warsaw) — od niej panel liczy weekendy."""
     return {"today": referee_panel_service.today()}
+
+
+class Contact(BaseModel):
+    email: str = Field("", max_length=200)
+    notify_email: bool = True
+
+
+@router.get("/contact", response_model=Contact)
+def my_contact(user: RefereeUser, db: DbSession):
+    ref = db.get(Referee, user.referee_id)
+    return Contact(email=ref.email, notify_email=ref.notify_email)
+
+
+@router.put("/contact", response_model=Contact)
+def save_my_contact(data: Contact, user: RefereeUser, db: DbSession):
+    """Sędzia sam podaje adres do powiadomień o obsadzie i przypomnień."""
+    email = data.email.strip()
+    if email and not EMAIL.fullmatch(email):
+        raise HTTPException(422, "Niepoprawny adres e-mail")
+    ref = db.get(Referee, user.referee_id)
+    ref.email, ref.notify_email = email, data.notify_email
+    db.commit()
+    return Contact(email=ref.email, notify_email=ref.notify_email)

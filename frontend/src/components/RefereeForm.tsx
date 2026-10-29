@@ -24,6 +24,8 @@ const EMPTY: RefereeInput = {
   avoided_clubs: [],
   conflict_clubs: [],
   own_region_only: false,
+  email: "",
+  notify_email: true,
 };
 
 interface Props {
@@ -66,6 +68,16 @@ export default function RefereeForm({ initial, onSubmit, onCancel }: Props) {
         <Field label="Nazwisko">
           <input className="input" required value={form.last_name} onChange={(e) => set("last_name", e.target.value)} />
         </Field>
+      </Section>
+
+      <Section title="Powiadomienia" hint="Na ten adres sędzia dostaje obsadę po publikacji i przypomnienia o dyspozycyjności. Może go też wpisać sam w panelu sędziego.">
+        <Field label="E-mail">
+          <input className="input" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
+        </Field>
+        <label className="flex items-center gap-2 self-end pb-2 text-sm">
+          <input type="checkbox" checked={form.notify_email} onChange={(e) => set("notify_email", e.target.checked)} />
+          Wysyłaj powiadomienia e-mail
+        </label>
       </Section>
 
       <fieldset>

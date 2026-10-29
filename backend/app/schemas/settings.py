@@ -41,6 +41,12 @@ class SystemSettings(BaseModel):
     auto_import_hour: int = Field(3, ge=0, le=23)
     m90_season_id: int = Field(109, ge=1)
     m90_region_id: int = Field(6, ge=1)
+    # Powiadomienia e-mail: po publikacji obsady i przypomnienie o dyspozycyjności
+    # (dzień tygodnia 0 = poniedziałek … 3 = czwartek; nadrabiane do czwartku).
+    notify_on_publish: bool = True
+    availability_reminder_enabled: bool = True
+    reminder_weekday: int = Field(1, ge=0, le=3)
+    reminder_hour: int = Field(18, ge=0, le=23)
     # Poziomy rozgrywek, na które generator wyznacza obserwatora (np. ["IV liga"]); pusto = tylko ręcznie.
     observer_levels: list[str] = []
     # Metoda obsady: „cpsat” rozważa cały okres naraz (OR-Tools), „greedy” mecz po meczu.

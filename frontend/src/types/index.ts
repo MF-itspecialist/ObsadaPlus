@@ -23,6 +23,8 @@ export interface RefereeInput {
   /** Kluby, z którymi sędzia jest związany — nigdy ich nie sędziuje. */
   conflict_clubs: string[];
   own_region_only: boolean;
+  email: string;
+  notify_email: boolean;
 }
 
 export interface Referee extends RefereeInput {
@@ -308,6 +310,10 @@ export interface SystemSettings {
   optimizer: "greedy" | "cpsat";
   optimizer_time_limit_s: number;
   observer_levels: string[];
+  notify_on_publish: boolean;
+  availability_reminder_enabled: boolean;
+  reminder_weekday: number;
+  reminder_hour: number;
   auto_import_enabled: boolean;
   auto_import_hour: number;
   m90_season_id: number;
@@ -405,6 +411,7 @@ export interface PublicationSummary {
   published_at: string;
   match_count: number;
   changed_matches: number[];
+  notifications?: { queued: number; without_email: string[] } | null;
 }
 
 export interface PublishedCrewMember {
@@ -429,6 +436,29 @@ export interface PublishedRow {
 
 export interface Publication extends PublicationSummary {
   rows: PublishedRow[];
+}
+
+export interface OutboxMessage {
+  id: number;
+  created_at: string;
+  sent_at: string | null;
+  referee_id: number | null;
+  to_email: string;
+  to_name: string;
+  kind: "publication" | "availability_reminder" | "test";
+  subject: string;
+  body: string;
+  status: "pending" | "sent" | "failed";
+  error: string;
+}
+
+export interface NotificationStatus {
+  smtp_configured: boolean;
+  smtp_from: string;
+  app_url: string;
+  pending: number;
+  active_referees: number;
+  referees_with_email: number;
 }
 
 export interface ImportChange {

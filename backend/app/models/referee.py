@@ -42,6 +42,9 @@ class Referee(Base):
     conflict_clubs: Mapped[list[str]] = mapped_column(JSON, default=list)
     # Tylko mecze w podokręgu sędziego.
     own_region_only: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Powiadomienia e-mail (obsada, przypomnienia o dyspozycyjności).
+    email: Mapped[str] = mapped_column(String(200), default="")
+    notify_email: Mapped[bool] = mapped_column(Boolean, default=True)
 
     availability: Mapped[list[Availability]] = relationship(
         back_populates="referee", cascade="all, delete-orphan"

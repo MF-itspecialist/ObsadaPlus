@@ -176,6 +176,16 @@ CP-SAT rozważa wszystkie mecze okresu naraz:
 Limit czasu: `optimizer_time_limit_s` (domyślnie 15 s). Bez pakietu `ortools` albo przy błędzie
 solvera używana jest metoda zachłanna; podgląd pokazuje, która metoda dała wynik i o ile lepszy.
 
+### Powiadomienia e-mail
+
+`services/notification_service.py`: po publikacji (`POST /api/publications`) wiadomość do
+każdego sędziego z obsady; przy kolejnej wersji tylko do tych, których mecze, role lub skład
+się zmieniły. Przypomnienie o dyspozycyjności na najbliższy weekend (`reminder_weekday`,
+`reminder_hour`, nadrabiane do czwartku; raz na weekend) wysyła harmonogram. Wszystko trafia
+do `outbox_messages`; wysyłka SMTP (`SMTP_HOST`, `SMTP_PORT` 587 STARTTLS / 465 SSL,
+`SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, `APP_URL`) w tle, bez skrzynki wiadomości czekają.
+API: `/api/notifications` (lista, `/status`, `/send-pending`, `/test`), sędzia: `/api/me/contact`.
+
 ### Automatyczna aktualizacja meczów
 
 Wątek w backendzie (`services/auto_import_service.py`, wyłączany `SCHEDULER_ENABLED=false`)
